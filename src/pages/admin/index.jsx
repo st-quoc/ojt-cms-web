@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import {
-  DesktopOutlined,
   FileOutlined,
   PieChartOutlined,
-  TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Breadcrumb, Dropdown, Layout, Menu, theme } from 'antd';
+import { Link } from 'react-router-dom';
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
   return {
@@ -17,18 +16,19 @@ function getItem(label, key, icon, children) {
   };
 }
 const items = [
-  getItem('Option 1', '1', <PieChartOutlined />),
-  getItem('Option 2', '2', <DesktopOutlined />),
-  getItem('User', 'sub1', <UserOutlined />, [
-    getItem('Tom', '3'),
-    getItem('Bill', '4'),
-    getItem('Alex', '5'),
+  getItem('Dashboard', 'dashboard', <PieChartOutlined />),
+  getItem('Products', 'sub1', <UserOutlined />, [
+    getItem('List Product', 'products'),
+    getItem('Create Product', 'product/create'),
   ]),
-  getItem('Team', 'sub2', <TeamOutlined />, [
-    getItem('Team 1', '6'),
-    getItem('Team 2', '8'),
+  getItem('Permissions', 'sub2', <UserOutlined />, [
+    getItem('List Manager', 'permissions'),
+    getItem('Create Manager', 'permission/create'),
   ]),
-  getItem('Files', '9', <FileOutlined />),
+  getItem('Categories', 'sub3', <FileOutlined />, [
+    getItem('List Categories', 'categories'),
+    getItem('Create Category', 'category/create'),
+  ]),
 ];
 export const AdminLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -47,16 +47,28 @@ export const AdminLayout = () => {
           theme="dark"
           defaultSelectedKeys={['1']}
           mode="inline"
-          items={items}
+          items={items.map(item => ({
+            ...item,
+            label: <p>{item.label}</p>,
+            children: item.children
+              ? item.children.map(subItem => ({
+                  ...subItem,
+                  label: (
+                    <Link to={`/admin/${subItem.key}`}>{subItem.label}</Link>
+                  ),
+                }))
+              : null,
+          }))}
         />
       </Sider>
       <Layout>
-        <Header
-          style={{
-            padding: 0,
-            background: colorBgContainer,
-          }}
-        />
+        <Header className="flex justify-end items-center p-0 px-4">
+          <Dropdown menu={{ items }} placement="bottomLeft">
+            <div className="w-[40px] h-[40px] rounded-full bg-gray-200 flex items-center justify-center cursor-pointer">
+              <UserOutlined />
+            </div>
+          </Dropdown>
+        </Header>
         <Content
           style={{
             margin: '0 16px',
