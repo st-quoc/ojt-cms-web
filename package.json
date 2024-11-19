@@ -12,6 +12,13 @@
     "lint-staged": "lint-staged"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@fortawesome/fontawesome-svg-core": "^6.7.0",
+    "@fortawesome/free-solid-svg-icons": "^6.7.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@mui/icons-material": "^6.1.7",
+    "@mui/material": "^6.1.7",
     "antd": "^5.22.0",
     "autoprefixer": "^10.4.20",
     "dayjs": "^1.11.10",
