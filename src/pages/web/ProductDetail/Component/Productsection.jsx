@@ -5,7 +5,6 @@ import 'slick-carousel/slick/slick-theme.css';
 import { Box, Typography, Button, Divider } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import 'swiper/css';
-
 const data = {
   product: {
     id: '1',
@@ -53,16 +52,13 @@ const data = {
     price: '200',
   },
 };
-
 export const Product = () => {
   const [selectedColor, setSelectedColor] = useState('red');
   const [selectedSize, setSelectedSize] = useState(null);
-
   const handleColorClick = color => {
     setSelectedColor(color);
     setSelectedSize(null);
   };
-
   const handleSizeClick = size => {
     setSelectedSize(size);
   };
@@ -99,7 +95,6 @@ export const Product = () => {
               </Slider>
             </Box>
           </Grid>
-
           <Grid
             item
             xs={12}
@@ -119,7 +114,6 @@ export const Product = () => {
             <Typography variant="h6" fontWeight="bold" mt={2}>
               {data.product.price} €
             </Typography>
-
             <Box mb={4}>
               <Typography variant="body2" color="text.secondary" mb={2}>
                 COLOR: {selectedColor || 'Select a color'}
@@ -155,7 +149,6 @@ export const Product = () => {
                 })}
               </Box>
             </Box>
-
             <Box mb={6}>
               <Typography
                 variant="body2"
@@ -169,8 +162,7 @@ export const Product = () => {
                 {selectedColor &&
                   data.product.color
                     .find(colorObj => colorObj[selectedColor])
-                    [selectedColor] // Sửa lỗi không mong đợi dòng mới ở đây
-                    .map(sizeObj => (
+                    [selectedColor].map(sizeObj => (
                       <Grid item key={sizeObj.size}>
                         <Button
                           onClick={() => handleSizeClick(sizeObj.size)}
@@ -200,7 +192,6 @@ export const Product = () => {
                     ))}
               </Grid>
             </Box>
-
             <Button
               variant="contained"
               color="primary"
@@ -218,11 +209,9 @@ export const Product = () => {
             >
               ADD TO CART
             </Button>
-
             <Divider sx={{ borderColor: 'black', mt: 6 }} />
           </Grid>
         </Grid>
-
         <Box
           display="flex"
           textAlign="center"
@@ -257,7 +246,6 @@ export const Product = () => {
               {data.product.details}
             </Typography>
           </Box>
-
           <Box
             display="flex"
             flexDirection="column"
@@ -276,7 +264,6 @@ export const Product = () => {
                 width: '100%',
               }}
             />
-
             <Box display="flex" width="100%" mb={1}>
               <Typography
                 variant="body2"
@@ -289,7 +276,6 @@ export const Product = () => {
                 {data.product.brand}
               </Typography>
             </Box>
-
             <Box display="flex" width="100%" mb={1}>
               <Typography
                 variant="body2"
@@ -302,7 +288,6 @@ export const Product = () => {
                 {data.product.id}
               </Typography>
             </Box>
-
             <Box display="flex" width="100%">
               <Typography
                 variant="body2"
