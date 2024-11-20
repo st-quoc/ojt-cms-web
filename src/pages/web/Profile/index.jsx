@@ -1,29 +1,23 @@
 import React, { useState } from 'react';
-
 const Profile = () => {
-  // Khởi tạo state với dữ liệu mặc định
   const [profileData, setProfileData] = useState([
     { label: 'First name', type: 'text', value: 'John' },
     { label: 'Last name', type: 'text', value: 'Doe' },
     { label: 'Email address', type: 'email', value: 'johndoe@example.com' },
     { label: 'Username', type: 'text', value: 'johndoe123' },
   ]);
-
-  // Hàm xử lý khi người dùng thay đổi giá trị
   const handleChange = (index, newValue) => {
     const updatedProfileData = [...profileData];
-    updatedProfileData[index].value = newValue; // Cập nhật giá trị mới
-    setProfileData(updatedProfileData); // Cập nhật state
+    updatedProfileData[index].value = newValue;
+    setProfileData(updatedProfileData);
   };
   const handleSave = () => {
     console.log('Saved data:', profileData);
   };
-
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">
       <div className="max-w-4xl mx-auto bg-gray-800 rounded-lg shadow-lg p-8">
         <h1 className="text-2xl font-bold mb-6">Account</h1>
-
         {/* Personal Information */}
         <section className="mb-8">
           <h2 className="text-xl font-semibold mb-4">Personal Information</h2>
@@ -46,7 +40,7 @@ const Profile = () => {
                 <input
                   type={field.type}
                   value={field.value}
-                  onChange={e => handleChange(index, e.target.value)} // Cập nhật giá trị khi nhập
+                  onChange={e => handleChange(index, e.target.value)}
                   className="w-full bg-gray-700 border border-gray-600 rounded p-2 text-white"
                 />
               </div>
