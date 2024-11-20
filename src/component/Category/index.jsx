@@ -35,9 +35,9 @@ export const Category = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-4 w-[10%]">
+    <div className="flex flex-col md:flex-row gap-4 w-[15%]">
       {/* Sidebar */}
-      <aside className="md:w-1/4">
+      <aside>
         {/* Categories */}
         <div className="mb-6">
           <h2 className="text-lg font-semibold mb-4">Categories</h2>
@@ -52,7 +52,7 @@ export const Category = () => {
                     {category.name}
                   </span>
                   <span
-                    className="cursor-pointer text-gray-500 text-lg font-bold mr-[10%]"
+                    className="cursor-pointer text-gray-500 text-lg font-bold"
                     onClick={() => handleCategoryToggle(category.name)}
                   >
                     {expandedCategories[category.name] ? '-' : '+'}
