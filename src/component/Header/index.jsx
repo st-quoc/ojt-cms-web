@@ -1,12 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faSearch,
-  faUser,
-  faCartShopping,
-  faBars,
-  faTimes,
-} from '@fortawesome/free-solid-svg-icons';
+import PersonIcon from '@mui/icons-material/Person';
+import CloseIcon from '@mui/icons-material/Close';
+import SearchIcon from '@mui/icons-material/Search';
+import MenuIcon from '@mui/icons-material/Menu';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+
 export const Header = ({ cartQuantity }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
@@ -86,25 +84,13 @@ export const Header = ({ cartQuantity }) => {
         <div className="flex items-center space-x-4">
           <span className="hidden lg:block font-bold">CALL US: 123456789</span>
           <a href="#search" className="hover:text-gray-600">
-            <FontAwesomeIcon
-              icon={faSearch}
-              size="1x"
-              style={{ color: 'black' }}
-            />
+            <SearchIcon />
           </a>
           <a href="#account" className="hover:text-gray-600">
-            <FontAwesomeIcon
-              icon={faUser}
-              size="1x"
-              style={{ color: 'black' }}
-            />
+            <PersonIcon />
           </a>
           <a href="/cart" className="relative hover:text-gray-600">
-            <FontAwesomeIcon
-              icon={faCartShopping}
-              size="1x"
-              style={{ color: 'black' }}
-            />
+            <ShoppingCartIcon />
             {cartQuantity > 0 && (
               <span className="absolute top-4 right-[-10px] text-xs bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center transform translate-x-1 translate-y-1">
                 {cartQuantity}
@@ -116,7 +102,7 @@ export const Header = ({ cartQuantity }) => {
             className="block md:hidden text-black focus:outline-none z-50"
             onClick={() => setMenuOpen(!menuOpen)}
           >
-            <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} size="1x" />
+            {menuOpen ? <CloseIcon /> : <MenuIcon />}
           </button>
         </div>
       </header>

@@ -1,128 +1,38 @@
-import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTh, faList } from '@fortawesome/free-solid-svg-icons';
+import { useState, useMemo } from 'react';
+import GridViewIcon from '@mui/icons-material/GridView';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import classNames from 'classnames';
 import { Header } from '../../../component/Header';
 import { Category } from '../../../component/Category';
 import { Product } from '../../../component/Product';
-import { Box } from '@mui/material';
-import { Pagination } from '../../../component/Pagination';
-
-const products = [
-  {
-    id: 1,
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiLPcMp0kKtvIMio1uLkk24WNd_zWcTTppcw&s',
-    name: 'Antique Radio',
-    price1: 1.0,
-    price2: 10.0,
-    brand: {
-      BrandName: 'Adidas',
-      BrandStyle: 'Adidas Hunter',
-    },
-  },
-  {
-    id: 2,
-    image:
-      'https://product.hstatic.net/1000341630/product/1_8e57b543785d4e8095dc102ec0a202f8_master.jpg',
-    name: 'Antique Radio',
-    price1: 10.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Nike',
-      BrandStyle: 'Nike Hunter',
-    },
-  },
-  {
-    id: 3,
-    image:
-      'https://www.vascara.com/uploads/cms_productmedia/2023/February/3/snk-0061-wht--4-__68226__1675395238-medium.jpg',
-    name: 'Antique Radio',
-    price1: 20.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Adidas',
-      BrandStyle: 'Adidas Dream',
-    },
-  },
-  {
-    id: 4,
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiLPcMp0kKtvIMio1uLkk24WNd_zWcTTppcw&s',
-    name: 'Antique Radio',
-    price1: 30.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Hunter',
-      BrandStyle: 'Hunter Ababass',
-    },
-  },
-];
-
-const categories = [];
-
-// Group products by BrandName and BrandStyle
-const brandCount = {};
-
-products.forEach(product => {
-  const { BrandName, BrandStyle } = product.brand;
-
-  if (!brandCount[BrandName]) {
-    brandCount[BrandName] = {};
-  }
-
-  if (!brandCount[BrandName][BrandStyle]) {
-    brandCount[BrandName][BrandStyle] = 0;
-  }
-
-  brandCount[BrandName][BrandStyle]++;
-});
-
-// Convert brandCount object to categories array
-for (let BrandName in brandCount) {
-  const subCategories = [];
-  for (let BrandStyle in brandCount[BrandName]) {
-    subCategories.push({
-      name: BrandStyle,
-      count: brandCount[BrandName][BrandStyle],
-    });
-  }
-
-  categories.push({
-    name: BrandName,
-    subCategories: subCategories,
-  });
-}
+import Pagination from '../../../component/Pagination';
+import mockProduct from './mockProduct';
 
 export const ProductsListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(9); // Default to 9 items per page
+  const [itemsPerPage, setItemsPerPage] = useState(9);
   const [viewMode, setViewMode] = useState('grid');
   const [sortBy, setSortBy] = useState('default');
   const [selectedSubCategory] = useState(null);
 
-  const handleSortChange = event => {
-    setSortBy(event.target.value);
-  };
-
+  const handleSortChange = event => setSortBy(event.target.value);
   const handleItemsPerPageChange = event => {
     setItemsPerPage(Number(event.target.value));
-    setCurrentPage(1); // Reset pagination when items per page changes
+    setCurrentPage(1); // Reset pagination on change
   };
+  const handlePageChange = (event, pageNumber) => setCurrentPage(pageNumber);
+  const handleViewToggle = mode => setViewMode(mode);
 
-  const handlePageChange = pageNumber => {
-    setCurrentPage(pageNumber);
-  };
-
-  const handleViewToggle = mode => {
-    setViewMode(mode);
-  };
-
-  const sortedProducts = [...products].sort((a, b) => {
-    if (sortBy === 'lowToHigh') return a.price1 - b.price1;
-    if (sortBy === 'highToLow') return b.price1 - a.price1;
-    if (sortBy === 'newest') return b.id - a.id;
-    return 0; // Default sorting
-  });
+  const sortedProducts = useMemo(() => {
+    return [...mockProduct].sort((a, b) => {
+      if (sortBy === 'lowToHigh') return a.price1 - b.price1;
+      if (sortBy === 'highToLow') return b.price1 - a.price1;
+      if (sortBy === 'newest') return b.id - a.id;
+      return 0; // Default sorting
+    });
+  }, [sortBy]);
 
   const filteredProducts = selectedSubCategory
     ? sortedProducts.filter(
@@ -130,23 +40,23 @@ export const ProductsListPage = () => {
       )
     : sortedProducts;
 
-  // Pagination logic
+  // Pagination Logic
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredProducts.slice(
-    indexOfFirstItem,
-    indexOfLastItem,
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
   );
 
   return (
-    <>
-      <Box>
-        <Header />
-        <Box className="flex flex-col md:flex-row gap-4">
+    <Box>
+      <Header />
+      <Container maxWidth="xl">
+        {' '}
+        {/* Thêm Container để căn chỉnh nội dung */}
+        <Box className="flex flex-col md:flex-row gap-4 mx-[auto] ">
           <Category />
           {/* Main Content */}
-          <main className="w-full md:w-3/4 mr-[5%]">
+          <main className="w-[100%]">
             <div className="bg-gray-100 p-10 rounded-lg mb-6 flex items-center justify-center">
               <div className="text-center">
                 <p className="text-gray-500">Save up to 25% off</p>
@@ -157,33 +67,31 @@ export const ProductsListPage = () => {
               </div>
             </div>
 
+            {/* Filter and View Mode */}
             <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg mb-4">
-              {/* View Mode */}
               <div className="flex space-x-2">
                 <button
                   onClick={() => handleViewToggle('grid')}
-                  className={`px-3 py-2 rounded ${
-                    viewMode === 'grid'
-                      ? 'bg-orange-500 text-white'
-                      : 'bg-gray-200'
-                  }`}
+                  className={classNames('px-3 py-2 rounded', {
+                    'bg-orange-500 text-white': viewMode === 'grid',
+                    'bg-gray-200': viewMode !== 'grid',
+                  })}
                 >
-                  <FontAwesomeIcon icon={faTh} />
+                  <GridViewIcon />
                 </button>
                 <button
                   onClick={() => handleViewToggle('list')}
-                  className={`px-3 py-2 rounded ${
-                    viewMode === 'list'
-                      ? 'bg-orange-500 text-white'
-                      : 'bg-gray-200'
-                  }`}
+                  className={classNames('px-3 py-2 rounded', {
+                    'bg-orange-500 text-white': viewMode === 'list',
+                    'bg-gray-200': viewMode !== 'list',
+                  })}
                 >
-                  <FontAwesomeIcon icon={faList} />
+                  <FormatListBulletedIcon />
                 </button>
               </div>
 
-              {/* Sorting */}
               <div className="flex items-center space-x-4">
+                {/* Sort By Dropdown */}
                 <div className="flex items-center space-x-1">
                   <span>Sort By</span>
                   <select
@@ -198,6 +106,7 @@ export const ProductsListPage = () => {
                   </select>
                 </div>
 
+                {/* Show items per page */}
                 <div className="flex items-center space-x-1">
                   <span>Show</span>
                   <select
@@ -213,21 +122,21 @@ export const ProductsListPage = () => {
               </div>
             </div>
 
-            {/* Products */}
-
+            {/* Product Grid/List View */}
             <Product products={currentItems} viewMode={viewMode} />
 
+            {/* Pagination */}
             <Pagination
-              filteredProducts={filteredProducts}
-              currentPage={currentPage}
-              indexOfFirstItem={indexOfFirstItem}
-              indexOfLastItem={indexOfLastItem}
               totalPages={totalPages}
+              currentPage={currentPage}
               handlePageChange={handlePageChange}
             />
           </main>
         </Box>
-      </Box>
-    </>
+      </Container>{' '}
+      {/* Đóng Container */}
+    </Box>
   );
 };
+
+export default ProductsListPage;

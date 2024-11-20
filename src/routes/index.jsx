@@ -8,7 +8,6 @@ import { CartPage } from '../pages/web/Cart';
 import { Dashboard } from '../pages/admin/Dashboard';
 // import PrivateRoute from './PrivateRoute';
 import Checkout from '../pages/web/Checkout';
-import { BlogPage } from '../pages/web/BlogPage';
 
 export const Router = () => {
   return (
@@ -19,7 +18,6 @@ export const Router = () => {
         <Route element={<Checkout />} path="checkout" />
         <Route element={<ProductsListPage />} path="products" />
         <Route element={<ProductDetailPage />} path="product/:productId" />
-        <Route element={<BlogPage />} path="blogs" />
       </Route>
 
       <Route

@@ -1,35 +1,33 @@
-export const Pagination = ({
-  filteredProducts,
+import { Pagination } from '@mui/material';
+
+// Pagination Component
+const PaginationBase = ({
+  totalItems,
   currentPage,
-  indexOfFirstItem,
-  indexOfLastItem,
-  totalPages,
+  itemsPerPage,
   handlePageChange,
 }) => {
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  // Tính số sản phẩm hiển thị
+  const startItem = (currentPage - 1) * itemsPerPage + 1;
+  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+
   return (
     <div className="flex justify-between items-center mt-6">
       <div>
-        Showing {indexOfFirstItem + 1} to{' '}
-        {indexOfLastItem < filteredProducts.length
-          ? indexOfLastItem
-          : filteredProducts.length}{' '}
-        of {filteredProducts.length} products
+        Showing {startItem} to {endItem} of {totalItems} products
       </div>
-      <div className="flex space-x-2">
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index + 1}
-            className={`px-3 py-2 rounded ${
-              currentPage === index + 1
-                ? 'bg-orange-500 text-white'
-                : 'bg-gray-200'
-            }`}
-            onClick={() => handlePageChange(index + 1)}
-          >
-            {index + 1}
-          </button>
-        ))}
-      </div>
+      <Pagination
+        count={totalPages}
+        page={currentPage}
+        onChange={handlePageChange}
+        showFirstButton
+        showLastButton
+        color="primary"
+      />
     </div>
   );
 };
+
+export default PaginationBase;
