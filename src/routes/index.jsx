@@ -6,7 +6,9 @@ import { ProductDetailPage } from '../pages/web/ProductDetail';
 import { ProductsListPage } from '../pages/web/ProductsList';
 import { CartPage } from '../pages/web/Cart';
 import { Dashboard } from '../pages/admin/Dashboard';
-import PrivateRoute from './PrivateRoute';
+// import PrivateRoute from './PrivateRoute';
+import Checkout from '../pages/web/Checkout';
+import { BlogPage } from '../pages/web/BlogPage';
 
 export const Router = () => {
   return (
@@ -14,15 +16,17 @@ export const Router = () => {
       <Route path="/">
         <Route index element={<HomePage />} />
         <Route element={<CartPage />} path="cart" />
+        <Route element={<Checkout />} path="checkout" />
         <Route element={<ProductsListPage />} path="products" />
         <Route element={<ProductDetailPage />} path="product/:productId" />
+        <Route element={<BlogPage />} path="blogs" />
       </Route>
 
       <Route
         element={
-          <PrivateRoute>
-            <AdminLayout />
-          </PrivateRoute>
+          // <PrivateRoute>
+          <AdminLayout />
+          // </PrivateRoute>
         }
         path="admin"
       >
