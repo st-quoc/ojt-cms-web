@@ -3,7 +3,6 @@ export const Footer = () => {
     <section>
       <footer className="bg-gray-900 text-white p-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Information Section */}
           <div>
             <h3 className="font-bold mb-4">Information</h3>
             <ul className="space-y-2">
@@ -14,7 +13,6 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* My Account Section (hidden on <460px) */}
           <div className="hidden sm:block">
             <h3 className="font-bold mb-4">My Account</h3>
             <ul className="space-y-2">
@@ -25,13 +23,11 @@ export const Footer = () => {
             </ul>
           </div>
 
-          {/* Our Client Says Section (hidden on <460px) */}
           <div className="hidden sm:block">
             <h3 className="font-bold mb-4">Our Client Says</h3>
             <p>Excellent company! I would recommend it to everyone.</p>
           </div>
 
-          {/* Contact Info Section */}
           <div>
             <h3 className="font-bold mb-4">Contact Info</h3>
             <p>1234 Vintage Ave, NY, USA</p>

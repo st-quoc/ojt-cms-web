@@ -1,4 +1,4 @@
-import Header from '../../../component/Header/Header';
+import Header from '../../../component/Header';
 import LandingPage from './Components/LandingPage';
 import BestSeller from './Components/BestSeller';
 import MostCategory from './Components/MostCategory';

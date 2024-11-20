@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import Header from '../../../component/Header/Header';
 import Footer from '../../../component/Footer/Footer';
+import Header from '../../../component/Header';
 
 export const CartPage = () => {
   const [cartItems, setCartItems] = useState([
@@ -30,13 +30,11 @@ export const CartPage = () => {
     },
   ]);
 
-  // Calculate the total quantity of items in the cart
   const getCartQuantity = () => {
     const uniqueProductIds = new Set(cartItems.map(item => item.id));
     return uniqueProductIds.size;
   };
 
-  // Calculate total, shipping, and tax as before...
   const calculateTotal = () => {
     return cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
   };

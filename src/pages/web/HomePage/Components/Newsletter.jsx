@@ -1,7 +1,6 @@
 export const Newsletter = () => {
   return (
     <section className="flex flex-col md:flex-row items-center justify-between bg-white p-4 md:p-8 border-t">
-      {/* Text Content */}
       <div className="text-center md:text-left md:ml-10 lg:ml-40">
         <h2 className="text-lg md:text-xl font-semibold">
           Join Our Newsletter
@@ -21,7 +20,6 @@ export const Newsletter = () => {
         </div>
       </div>
 
-      {/* Image */}
       <img
         src="https://www.kienminh.edu.vn/Upload/Editor/2022/5/25/8-57ff.png"
         alt="Telescope"
