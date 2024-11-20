@@ -1,6 +1,6 @@
-import { Title } from 'chart.js';
 import cailoaImage from '../../../../assets/cailoa.png';
 import { Product } from '../../../../component/Product';
+import { Title } from '../../../../component/Title';
 
 const products = [
   { id: 1, name: 'Historical', image: cailoaImage, items: 10 },
