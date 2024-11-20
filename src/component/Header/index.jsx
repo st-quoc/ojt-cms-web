@@ -9,6 +9,7 @@ export const Header = ({ cartQuantity }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
+
   useEffect(() => {
     const handleClickOutside = event => {
       if (
@@ -25,6 +26,7 @@ export const Header = ({ cartQuantity }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
   return (
     <section>
       <div className="w-full bg-black text-white text-center py-2 text-sm">
@@ -75,7 +77,7 @@ export const Header = ({ cartQuantity }) => {
             MORE
           </a>
           <a
-            href="Blog"
+            href="Blogs"
             className="hover:text-gray-600 text-black text-sm md:text-base pb-2"
           >
             BLOGS
