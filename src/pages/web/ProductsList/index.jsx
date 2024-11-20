@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTh, faList } from '@fortawesome/free-solid-svg-icons';
+import { Header } from '../../../component/Header';
+import { Category } from '../../../component/Category';
+import { Box } from '@mui/material';
 
 const products = [
   {
@@ -289,25 +292,10 @@ for (let BrandName in brandCount) {
 
 export const ProductsListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [expandedCategories, setExpandedCategories] = useState({});
   const [itemsPerPage, setItemsPerPage] = useState(9); // Default to 9 items per page
   const [viewMode, setViewMode] = useState('grid');
   const [sortBy, setSortBy] = useState('default');
-  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
-
-  const handleCategoryToggle = categoryName => {
-    setExpandedCategories(prev => ({
-      ...prev,
-      [categoryName]: !prev[categoryName],
-    }));
-  };
-
-  const handleSubCategoryClick = subCategoryName => {
-    setSelectedSubCategory(prev =>
-      prev === subCategoryName ? null : subCategoryName,
-    );
-    setCurrentPage(1); // Reset pagination when subcategory changes
-  };
+  const [selectedSubCategory] = useState(null);
 
   const handleSortChange = event => {
     setSortBy(event.target.value);
@@ -349,219 +337,142 @@ export const ProductsListPage = () => {
   );
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="flex flex-col md:flex-row gap-4">
-        {/* Sidebar */}
-        <aside className="ml-[5%] md:w-1/4">
-          {/* Categories */}
-          <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-4">Categories</h2>
-            <ul className="space-y-2">
-              {categories.map((category, index) => (
-                <li key={index}>
-                  <div className="flex justify-between">
-                    <span
-                      className="text-gray-700 text-sm cursor-pointer"
-                      onClick={() => handleCategoryToggle(category.name)}
-                    >
-                      {category.name}
-                    </span>
-                    <span
-                      className="cursor-pointer text-gray-500 text-lg font-bold mr-[10%]"
-                      onClick={() => handleCategoryToggle(category.name)}
-                    >
-                      {expandedCategories[category.name] ? '-' : '+'}
-                    </span>
-                  </div>
-                  {expandedCategories[category.name] && (
-                    <ul className="pl-4 text-gray-500">
-                      {category.subCategories.map((subCategory, subIndex) => (
-                        <li
-                          key={subIndex}
-                          onClick={() =>
-                            handleSubCategoryClick(subCategory.name)
-                          }
-                          className={`cursor-pointer hover:text-gray-700 ${
-                            selectedSubCategory === subCategory.name
-                              ? 'font-semibold text-gray-900'
-                              : ''
-                          }`}
-                        >
-                          {subCategory.name} ({subCategory.count})
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Best Sellers */}
-          {/* <div className="mb-6">
-            <h2 className="text-lg font-semibold mb-4">Best Sellers</h2>
-            <div className="space-y-4">
-              {bestSellers.map((item, index) => (
-                <div key={index}>
-                  <p>{item.name}</p>
-                  <p className="text-red-600">
-                    ${item.price1.toFixed(2)}{' '}
-                    <span className="line-through text-gray-500">
-                      ${item.price2.toFixed(2)}
-                    </span>
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div> */}
-
-          {/* Refine Search */}
-          {/* <div>
-            <h2 className="text-lg font-semibold mb-4">Refine Search</h2>
-            {priceFilters.map((filter, index) => (
-              <label key={index} className="flex items-center space-x-2 mb-2">
-                <input
-                  type="checkbox"
-                  className="form-checkbox text-orange-600"
-                />
-                <span>{filter.label}</span>
-              </label>
-            ))}
-
-          </div> */}
-        </aside>
-
-        {/* Main Content */}
-        <main className="w-full md:w-3/4 mr-[5%]">
-          <div className="bg-gray-100 p-10 rounded-lg mb-6 flex items-center justify-center">
-            <div className="text-center">
-              <p className="text-gray-500">Save up to 25% off</p>
-              <h1 className="text-xl font-bold">Geographic Map Compass</h1>
-              <button className="mt-2 px-8 py-2 bg-black text-white">
-                Shop Now
-              </button>
-            </div>
-          </div>
-
-          <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg mb-4">
-            {/* View Mode */}
-            <div className="flex space-x-2">
-              <button
-                onClick={() => handleViewToggle('grid')}
-                className={`px-3 py-2 rounded ${
-                  viewMode === 'grid'
-                    ? 'bg-orange-500 text-white'
-                    : 'bg-gray-200'
-                }`}
-              >
-                <FontAwesomeIcon icon={faTh} />
-              </button>
-              <button
-                onClick={() => handleViewToggle('list')}
-                className={`px-3 py-2 rounded ${
-                  viewMode === 'list'
-                    ? 'bg-orange-500 text-white'
-                    : 'bg-gray-200'
-                }`}
-              >
-                <FontAwesomeIcon icon={faList} />
-              </button>
-            </div>
-
-            {/* Sorting */}
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-1">
-                <span>Sort By</span>
-                <select
-                  className="border rounded px-2 py-1 cursor-pointer"
-                  value={sortBy}
-                  onChange={handleSortChange}
-                >
-                  <option value="default">Default</option>
-                  <option value="lowToHigh">Price: Low to High</option>
-                  <option value="highToLow">Price: High to Low</option>
-                  <option value="newest">Newest</option>
-                </select>
-              </div>
-
-              <div className="flex items-center space-x-1">
-                <span>Show</span>
-                <select
-                  className="border rounded px-2 py-1 cursor-pointer"
-                  value={itemsPerPage}
-                  onChange={handleItemsPerPageChange}
-                >
-                  <option value={9}>9</option>
-                  <option value={15}>15</option>
-                  <option value={18}>18</option>
-                </select>
+    <>
+      <Box>
+        <Header />
+        <Box className="flex flex-col md:flex-row gap-4">
+          <Category />
+          {/* Main Content */}
+          <main className="w-full md:w-3/4 mr-[5%]">
+            <div className="bg-gray-100 p-10 rounded-lg mb-6 flex items-center justify-center">
+              <div className="text-center">
+                <p className="text-gray-500">Save up to 25% off</p>
+                <h1 className="text-xl font-bold">Geographic Map Compass</h1>
+                <button className="mt-2 px-8 py-2 bg-black text-white">
+                  Shop Now
+                </button>
               </div>
             </div>
-          </div>
 
-          {/* Products */}
-          <div
-            className={
-              viewMode === 'grid'
-                ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'
-                : 'space-y-4'
-            }
-          >
-            {currentItems.map(product => (
-              <div
-                key={product.id}
-                className={`border rounded-lg overflow-hidden ${viewMode === 'list' ? 'flex items-center' : ''}`}
-              >
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className={
-                    viewMode === 'list'
-                      ? 'w-32 h-32 object-cover mr-4'
-                      : 'w-full h-64 object-cover'
-                  }
-                />
-                <div className="p-4">
-                  <h3 className="font-semibold text-lg">{product.name}</h3>
-                  <p className="text-gray-500">{product.description}</p>
-                  <div className="flex justify-between items-center mt-2">
-                    <p className="text-xl font-semibold">${product.price1}</p>
-                    <button className="bg-orange-500 text-white px-4 py-2 rounded">
-                      Add to Cart
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Pagination */}
-          <div className="flex justify-between items-center mt-6">
-            <div>
-              Showing {indexOfFirstItem + 1} to{' '}
-              {indexOfLastItem < filteredProducts.length
-                ? indexOfLastItem
-                : filteredProducts.length}{' '}
-              of {filteredProducts.length} products
-            </div>
-            <div className="flex space-x-2">
-              {Array.from({ length: totalPages }, (_, index) => (
+            <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg mb-4">
+              {/* View Mode */}
+              <div className="flex space-x-2">
                 <button
-                  key={index + 1}
+                  onClick={() => handleViewToggle('grid')}
                   className={`px-3 py-2 rounded ${
-                    currentPage === index + 1
+                    viewMode === 'grid'
                       ? 'bg-orange-500 text-white'
                       : 'bg-gray-200'
                   }`}
-                  onClick={() => handlePageChange(index + 1)}
                 >
-                  {index + 1}
+                  <FontAwesomeIcon icon={faTh} />
                 </button>
+                <button
+                  onClick={() => handleViewToggle('list')}
+                  className={`px-3 py-2 rounded ${
+                    viewMode === 'list'
+                      ? 'bg-orange-500 text-white'
+                      : 'bg-gray-200'
+                  }`}
+                >
+                  <FontAwesomeIcon icon={faList} />
+                </button>
+              </div>
+
+              {/* Sorting */}
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-1">
+                  <span>Sort By</span>
+                  <select
+                    className="border rounded px-2 py-1 cursor-pointer"
+                    value={sortBy}
+                    onChange={handleSortChange}
+                  >
+                    <option value="default">Default</option>
+                    <option value="lowToHigh">Price: Low to High</option>
+                    <option value="highToLow">Price: High to Low</option>
+                    <option value="newest">Newest</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center space-x-1">
+                  <span>Show</span>
+                  <select
+                    className="border rounded px-2 py-1 cursor-pointer"
+                    value={itemsPerPage}
+                    onChange={handleItemsPerPageChange}
+                  >
+                    <option value={9}>9</option>
+                    <option value={15}>15</option>
+                    <option value={18}>18</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Products */}
+            <div
+              className={
+                viewMode === 'grid'
+                  ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'
+                  : 'space-y-4'
+              }
+            >
+              {currentItems.map(product => (
+                <div
+                  key={product.id}
+                  className={`border rounded-lg overflow-hidden ${viewMode === 'list' ? 'flex items-center' : ''}`}
+                >
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className={
+                      viewMode === 'list'
+                        ? 'w-32 h-32 object-cover mr-4'
+                        : 'w-full h-64 object-cover'
+                    }
+                  />
+                  <div className="p-4">
+                    <div className="text-center items-center mt-2">
+                      <h3 className="font-semibold text-lg">
+                        {product.brand.BrandName}
+                      </h3>
+                      <p className="text-gray-500">{product.name}</p>
+                      <p className="text-xl font-semibold">${product.price1}</p>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
-          </div>
-        </main>
-      </div>
-    </div>
+
+            {/* Pagination */}
+            <div className="flex justify-between items-center mt-6">
+              <div>
+                Showing {indexOfFirstItem + 1} to{' '}
+                {indexOfLastItem < filteredProducts.length
+                  ? indexOfLastItem
+                  : filteredProducts.length}{' '}
+                of {filteredProducts.length} products
+              </div>
+              <div className="flex space-x-2">
+                {Array.from({ length: totalPages }, (_, index) => (
+                  <button
+                    key={index + 1}
+                    className={`px-3 py-2 rounded ${
+                      currentPage === index + 1
+                        ? 'bg-orange-500 text-white'
+                        : 'bg-gray-200'
+                    }`}
+                    onClick={() => handlePageChange(index + 1)}
+                  >
+                    {index + 1}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </main>
+        </Box>
+      </Box>
+    </>
   );
 };
