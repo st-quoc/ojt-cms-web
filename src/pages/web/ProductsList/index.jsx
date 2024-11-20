@@ -3,7 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTh, faList } from '@fortawesome/free-solid-svg-icons';
 import { Header } from '../../../component/Header';
 import { Category } from '../../../component/Category';
+import { Product } from '../../../component/Product';
 import { Box } from '@mui/material';
+import { Pagination } from '../../../component/Pagination';
 
 const products = [
   {
@@ -54,198 +56,6 @@ const products = [
       BrandStyle: 'Hunter Ababass',
     },
   },
-  {
-    id: 5,
-    image:
-      'https://www.vascara.com/uploads/cms_productmedia/2023/February/3/snk-0061-wht--4-__68226__1675395238-medium.jpg',
-    name: 'Antique Radio',
-    price1: 40.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Abibas',
-      BrandStyle: 'Abibas Hunter',
-    },
-  },
-  {
-    id: 6,
-    image:
-      'https://product.hstatic.net/1000341630/product/1_8e57b543785d4e8095dc102ec0a202f8_master.jpg',
-    name: 'Antique Radio',
-    price1: 50.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Nike',
-      BrandStyle: 'Nike Hunter',
-    },
-  },
-  {
-    id: 7,
-    image:
-      'https://product.hstatic.net/1000341630/product/thunder_bird6507_6_d952334c020a487597adbd77c0b0bdd5_master.jpg',
-    name: 'Antique Radio',
-    price1: 60.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Adidas',
-      BrandStyle: 'Adidas Hunter',
-    },
-  },
-  {
-    id: 8,
-    image:
-      'https://bizweb.dktcdn.net/thumb/1024x1024/100/449/472/products/2af86fae-39f3-42ab-a563-5953cbe696ec.jpg?v=1655566986927',
-    name: 'Antique Radio',
-    price1: 70.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Adidas',
-      BrandStyle: 'Adidas Hunter',
-    },
-  },
-  {
-    id: 9,
-    image:
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqGHjn7_HEireoE6NBSymnKVSuCEYkdalrwA&s',
-    name: 'Antique Radio',
-    price1: 80.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Adidas',
-      BrandStyle: 'Adidas Hunter',
-    },
-  },
-  {
-    id: 10,
-    image:
-      'https://bizweb.dktcdn.net/100/405/002/products/130.png?v=1692952475837',
-    name: 'Antique Radio',
-    price1: 90.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Adidas',
-      BrandStyle: 'Adidas Hunter',
-    },
-  },
-  {
-    id: 11,
-    image:
-      'https://bizweb.dktcdn.net/thumb/1024x1024/100/415/445/products/370031-black-1.jpg',
-    name: 'Antique Radio',
-    price1: 100.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Adidas',
-      BrandStyle: 'Adidas Hunter',
-    },
-  },
-  {
-    id: 12,
-    image:
-      'https://product.hstatic.net/1000150581/product/1124a7790-2__1_-2_5cc708555e894a9f8ab32abbeeff8a6c_1024x1024.jpg',
-    name: 'Antique Radio',
-    price1: 110.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Adidas',
-      BrandStyle: 'Adidas Hunter',
-    },
-  },
-  {
-    id: 13,
-    image:
-      'https://bizweb.dktcdn.net/100/405/002/products/130.png?v=1692952475837',
-    name: 'Antique Radio',
-    price1: 120.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Adidas',
-      BrandStyle: 'Adidas Hunter',
-    },
-  },
-  {
-    id: 14,
-    image:
-      'https://bizweb.dktcdn.net/thumb/1024x1024/100/415/445/products/370031-black-1.jpg',
-    name: 'Antique Radio',
-    price1: 130.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Adidas',
-      BrandStyle: 'Adidas Hunter',
-    },
-  },
-  {
-    id: 15,
-    image:
-      'https://product.hstatic.net/1000150581/product/1124a7790-2__1_-2_5cc708555e894a9f8ab32abbeeff8a6c_1024x1024.jpg',
-    name: 'Antique Radio',
-    price1: 140.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Adidas',
-      BrandStyle: 'Adidas Hunter',
-    },
-  },
-  {
-    id: 16,
-    image:
-      'https://www.vascara.com/uploads/cms_productmedia/2023/February/3/snk-0061-wht--4-__68226__1675395238-medium.jpg',
-    name: 'Antique Radio',
-    price1: 150.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Adidas',
-      BrandStyle: 'Adidas Hunter',
-    },
-  },
-  {
-    id: 17,
-    image:
-      'https://product.hstatic.net/1000341630/product/1_8e57b543785d4e8095dc102ec0a202f8_master.jpg',
-    name: 'Antique Radio',
-    price1: 160.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Adidas',
-      BrandStyle: 'Adidas Hunter',
-    },
-  },
-  {
-    id: 18,
-    image:
-      'https://product.hstatic.net/1000341630/product/thunder_bird6507_6_d952334c020a487597adbd77c0b0bdd5_master.jpg',
-    name: 'Antique Radio',
-    price1: 170.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Adidas',
-      BrandStyle: 'Adidas Hunter',
-    },
-  },
-  {
-    id: 19,
-    image:
-      'https://product.hstatic.net/1000341630/product/thunder_bird6507_6_d952334c020a487597adbd77c0b0bdd5_master.jpg',
-    name: 'Antique Radio',
-    price1: 170.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Adidas',
-      BrandStyle: 'Adidas Hunter',
-    },
-  },
-  {
-    id: 20,
-    image:
-      'https://product.hstatic.net/1000341630/product/thunder_bird6507_6_d952334c020a487597adbd77c0b0bdd5_master.jpg',
-    name: 'Antique Radio',
-    price1: 170.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Adidas',
-      BrandStyle: 'Adidas Hunter',
-    },
-  },
 ];
 
 const categories = [];
@@ -282,13 +92,6 @@ for (let BrandName in brandCount) {
     subCategories: subCategories,
   });
 }
-
-// const bestSellers = [
-//   { name: 'Bell Telephone', price1: 98.0, price2: 122.0 },
-//   { name: 'Trimline Telephone', price1: 302.0, price2: 337.99 },
-// ];
-
-// const priceFilters = [{ label: '$150 - $350' }, { label: '$49 - $149' }];
 
 export const ProductsListPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -411,65 +214,17 @@ export const ProductsListPage = () => {
             </div>
 
             {/* Products */}
-            <div
-              className={
-                viewMode === 'grid'
-                  ? 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'
-                  : 'space-y-4'
-              }
-            >
-              {currentItems.map(product => (
-                <div
-                  key={product.id}
-                  className={`border rounded-lg overflow-hidden ${viewMode === 'list' ? 'flex items-center' : ''}`}
-                >
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className={
-                      viewMode === 'list'
-                        ? 'w-32 h-32 object-cover mr-4'
-                        : 'w-full h-64 object-cover'
-                    }
-                  />
-                  <div className="p-4">
-                    <div className="text-center items-center mt-2">
-                      <h3 className="font-semibold text-lg">
-                        {product.brand.BrandName}
-                      </h3>
-                      <p className="text-gray-500">{product.name}</p>
-                      <p className="text-xl font-semibold">${product.price1}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
 
-            {/* Pagination */}
-            <div className="flex justify-between items-center mt-6">
-              <div>
-                Showing {indexOfFirstItem + 1} to{' '}
-                {indexOfLastItem < filteredProducts.length
-                  ? indexOfLastItem
-                  : filteredProducts.length}{' '}
-                of {filteredProducts.length} products
-              </div>
-              <div className="flex space-x-2">
-                {Array.from({ length: totalPages }, (_, index) => (
-                  <button
-                    key={index + 1}
-                    className={`px-3 py-2 rounded ${
-                      currentPage === index + 1
-                        ? 'bg-orange-500 text-white'
-                        : 'bg-gray-200'
-                    }`}
-                    onClick={() => handlePageChange(index + 1)}
-                  >
-                    {index + 1}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <Product products={currentItems} viewMode={viewMode} />
+
+            <Pagination
+              filteredProducts={filteredProducts}
+              currentPage={currentPage}
+              indexOfFirstItem={indexOfFirstItem}
+              indexOfLastItem={indexOfLastItem}
+              totalPages={totalPages}
+              handlePageChange={handlePageChange}
+            />
           </main>
         </Box>
       </Box>
