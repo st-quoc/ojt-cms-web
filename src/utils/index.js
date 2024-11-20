@@ -1,4 +1,3 @@
-// utils.js
 export const sortProducts = (products, sortBy) => {
   switch (sortBy) {
     case 'lowToHigh':

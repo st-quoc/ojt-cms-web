@@ -20,7 +20,7 @@ export const ProductsListPage = () => {
   const handleSortChange = event => setSortBy(event.target.value);
   const handleItemsPerPageChange = event => {
     setItemsPerPage(Number(event.target.value));
-    setCurrentPage(1); // Reset pagination on change
+    setCurrentPage(1);
   };
   const handlePageChange = (event, pageNumber) => setCurrentPage(pageNumber);
   const handleViewToggle = mode => setViewMode(mode);
@@ -30,7 +30,7 @@ export const ProductsListPage = () => {
       if (sortBy === 'lowToHigh') return a.price1 - b.price1;
       if (sortBy === 'highToLow') return b.price1 - a.price1;
       if (sortBy === 'newest') return b.id - a.id;
-      return 0; // Default sorting
+      return 0;
     });
   }, [sortBy]);
 
@@ -40,7 +40,6 @@ export const ProductsListPage = () => {
       )
     : sortedProducts;
 
-  // Pagination Logic
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const currentItems = filteredProducts.slice(
     (currentPage - 1) * itemsPerPage,
@@ -51,11 +50,8 @@ export const ProductsListPage = () => {
     <Box>
       <Header />
       <Container maxWidth="xl">
-        {' '}
-        {/* Thêm Container để căn chỉnh nội dung */}
         <Box className="flex flex-col md:flex-row gap-4 mx-[auto] ">
           <Category />
-          {/* Main Content */}
           <main className="w-[100%]">
             <div className="bg-gray-100 p-10 rounded-lg mb-6 flex items-center justify-center">
               <div className="text-center">
@@ -67,7 +63,6 @@ export const ProductsListPage = () => {
               </div>
             </div>
 
-            {/* Filter and View Mode */}
             <div className="flex justify-between items-center bg-gray-100 p-4 rounded-lg mb-4">
               <div className="flex space-x-2">
                 <button
@@ -106,7 +101,6 @@ export const ProductsListPage = () => {
                   </select>
                 </div>
 
-                {/* Show items per page */}
                 <div className="flex items-center space-x-1">
                   <span>Show</span>
                   <select
@@ -122,10 +116,8 @@ export const ProductsListPage = () => {
               </div>
             </div>
 
-            {/* Product Grid/List View */}
             <Product products={currentItems} viewMode={viewMode} />
 
-            {/* Pagination */}
             <Pagination
               totalPages={totalPages}
               currentPage={currentPage}
@@ -133,8 +125,7 @@ export const ProductsListPage = () => {
             />
           </main>
         </Box>
-      </Container>{' '}
-      {/* Đóng Container */}
+      </Container>
     </Box>
   );
 };

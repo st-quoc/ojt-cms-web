@@ -1,6 +1,5 @@
 import { Pagination } from '@mui/material';
 
-// Pagination Component
 const PaginationBase = ({
   totalItems,
   currentPage,
@@ -9,7 +8,6 @@ const PaginationBase = ({
 }) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  // Tính số sản phẩm hiển thị
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
