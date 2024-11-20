@@ -6,6 +6,7 @@ import { ProductDetailPage } from '../pages/web/ProductDetail';
 import { ProductsListPage } from '../pages/web/ProductsList';
 import { CartPage } from '../pages/web/Cart';
 import { Dashboard } from '../pages/admin/Dashboard';
+import { Account } from '../pages/web/Account';
 // import PrivateRoute from './PrivateRoute';
 import Checkout from '../pages/web/Checkout';
 
@@ -18,6 +19,7 @@ export const Router = () => {
         <Route element={<Checkout />} path="checkout" />
         <Route element={<ProductsListPage />} path="products" />
         <Route element={<ProductDetailPage />} path="product/:productId" />
+        <Route element={<Account />} path="account" />
       </Route>
 
       <Route
