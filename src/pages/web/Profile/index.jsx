@@ -16,7 +16,7 @@ const Profile = () => {
     setProfileData(updatedProfileData); // Cập nhật state
   };
   const handleSave = () => {
-    console.log( "Saved data:", profileData);
+    console.log('Saved data:', profileData);
   };
 
   return (

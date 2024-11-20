@@ -7,7 +7,7 @@ import { ProductsListPage } from '../pages/web/ProductsList';
 import { CartPage } from '../pages/web/Cart';
 import { Dashboard } from '../pages/admin/Dashboard';
 import PrivateRoute from './PrivateRoute';
-
+import Profile from '../pages/web/Profile';
 export const Router = () => {
   return (
     <Routes>
@@ -16,6 +16,7 @@ export const Router = () => {
         <Route element={<CartPage />} path="cart" />
         <Route element={<ProductsListPage />} path="products" />
         <Route element={<ProductDetailPage />} path="product/:productId" />
+        <Route element={<Profile />} path="profile" />
       </Route>
 
       <Route
