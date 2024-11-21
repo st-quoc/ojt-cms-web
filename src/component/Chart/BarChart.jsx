@@ -20,11 +20,11 @@ ChartJS.register(
 
 const BarChart = () => {
   const data = {
-    labels: ['January', 'February', 'March', 'April', 'May'], // Các nhãn cho trục X
+    labels: ['January', 'February', 'March', 'April', 'May'],
     datasets: [
       {
         label: 'Sales Over Months',
-        data: [65, 59, 80, 81, 56], // Dữ liệu cho trục Y
+        data: [65, 59, 80, 81, 56],
         backgroundColor: 'rgba(75, 192, 192, 0.2)',
         borderColor: 'rgba(75, 192, 192, 1)',
         borderWidth: 1,
@@ -32,7 +32,6 @@ const BarChart = () => {
     ],
   };
 
-  // Tùy chỉnh cho biểu đồ
   const options = {
     responsive: true,
     plugins: {

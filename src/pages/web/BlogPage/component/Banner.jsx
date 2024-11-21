@@ -5,7 +5,7 @@ export const Banner = () => {
     <div>
       <div className="relative">
         <img
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRatRNny26CUr1qknhQHrVlpwbJ5Q0cG5IXRw&s" // Thay thế bằng ảnh của bạn
+          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRatRNny26CUr1qknhQHrVlpwbJ5Q0cG5IXRw&s"
           alt="Background"
           className="absolute inset-0 w-full h-48 object-cover"
         />
