@@ -1,4 +1,12 @@
+import { useNavigate } from 'react-router-dom';
+
 export const ProductGrid = ({ products, addToCart }) => {
+  const navigate = useNavigate();
+
+  const handleProductDetailClick = () => {
+    navigate(`/product/${products.id}`);
+  };
+
   if (!products) {
     return <div>Loading...</div>;
   }
@@ -25,6 +33,12 @@ export const ProductGrid = ({ products, addToCart }) => {
             className="mt-4 px-4 py-2 w-full rounded-lg border-2 border-slate-300 bg-zinc-200 hover:bg-zinc-700 hover:text-gray-100 transition"
           >
             Add to Cart
+          </button>
+          <button
+            onClick={handleProductDetailClick}
+            className="mt-4 px-4 py-2 w-full rounded-lg border-2 border-slate-300 bg-blue-500  hover:bg-blue-700 transition"
+          >
+            View Details
           </button>
         </div>
       ))}

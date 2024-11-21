@@ -1,4 +1,10 @@
+import { useNavigate } from 'react-router-dom';
+
 export const ProductList = ({ products, addToCart }) => {
+  const navigate = useNavigate();
+  const handleProductDetailClick = () => {
+    navigate(`/product/${products.id}`);
+  };
   return (
     <div className="space-y-4">
       {products.map(product => (
@@ -19,9 +25,15 @@ export const ProductList = ({ products, addToCart }) => {
           </div>
           <button
             onClick={() => addToCart(product.id)}
-            className="ml-4 px-4 py-2 rounded-lg border-2 border-slate-300 bg-zinc-200 hover:bg-zinc-700 hover:text-gray-100 transition"
+            className="px-4 py-2 rounded-lg border-2 border-slate-300 bg-zinc-200 hover:bg-zinc-700 hover:text-gray-100 transition"
           >
             Add to Cart
+          </button>
+          <button
+            onClick={() => handleProductDetailClick(product.id)}
+            className="px-4 py-2 rounded-lg border-2 border-slate-300 bg-blue-500 text-white hover:bg-blue-700 transition"
+          >
+            View Details
           </button>
         </div>
       ))}

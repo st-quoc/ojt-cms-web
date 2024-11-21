@@ -1,4 +1,12 @@
+import { useNavigate } from 'react-router-dom';
+
 export const Product = ({ product }) => {
+  const navigate = useNavigate();
+
+  const handleProductDetailClick = () => {
+    navigate(`/product/${product.id}`);
+  };
+
   const addToCart = productId => {
     console.log('ᥫᩣ:rocket:  productId  :rocket:ᥫᩣ ', productId);
   };
@@ -18,6 +26,12 @@ export const Product = ({ product }) => {
         className="border-2 border-slate-300 mt-4 px-4 py-2 rounded-lg bg-zinc-200 hover:bg-zinc-700 hover:text-gray-100 transition"
       >
         Add to cart
+      </button>
+      <button
+        onClick={handleProductDetailClick}
+        className="border-2 border-gray-300 px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-700 transition"
+      >
+        View Details
       </button>
     </div>
   );
