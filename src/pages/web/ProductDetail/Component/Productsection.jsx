@@ -50,6 +50,8 @@ const data = {
       },
     ],
     price: '200',
+    releaseDate: '2023-09-15',
+    category: 'Sneakers',
   },
 };
 export const Product = () => {
@@ -70,240 +72,243 @@ export const Product = () => {
     slidesToScroll: 1,
   };
   return (
-    <>
-      <Box sx={{ px: 1, py: 2 }}>
-        <Grid container spacing={4} justifyContent="center">
-          <Grid item xs={12} md={6}>
-            <Box display="flex" alignItems="center" justifyContent="center">
-              <Slider {...settings} style={{ width: '450px', height: 'auto' }}>
-                {data.product.images.map((image, index) => (
-                  <Box key={index}>
-                    <Box
-                      component="img"
-                      src={image}
-                      alt={`Product Image ${index + 1}`}
-                      sx={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        maxWidth: '450px',
-                        maxHeight: '450px',
-                      }}
-                    />
-                  </Box>
-                ))}
-              </Slider>
-            </Box>
-          </Grid>
-          <Grid
-            item
-            xs={12}
-            md={6}
-            width="400px"
-            display="flex"
-            flexDirection="column"
-            alignItems="flex-start"
-            justifyContent="center"
-          >
-            <Typography variant="h5" fontWeight="bold">
-              {data.product.brand}
-            </Typography>
-            <Typography variant="subtitle1" color="text.secondary" mt={1}>
-              {data.product.name}
-            </Typography>
-            <Typography variant="h6" fontWeight="bold" mt={2}>
-              {data.product.price} €
-            </Typography>
-            <Box mb={4}>
-              <Typography variant="body2" color="text.secondary" mb={2}>
-                COLOR: {selectedColor || 'Select a color'}
-              </Typography>
-              <Box display="flex" gap={2}>
-                {data.product.color.map((colorObj, index) => {
-                  const colorName = Object.keys(colorObj)[0];
-                  return (
-                    <Box
-                      px={2}
-                      key={index}
-                      onClick={() => handleColorClick(colorName)}
-                      sx={{
-                        bgcolor: 'grey.200',
-                        height: '40px',
-                        borderRadius: 1,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        cursor: 'pointer',
-                        border:
-                          selectedColor === colorName
-                            ? '2px solid black'
-                            : 'none',
-                        width: 'max-content',
-                      }}
-                    >
-                      <Typography textTransform="capitalize">
-                        {colorName}
-                      </Typography>
-                    </Box>
-                  );
-                })}
-              </Box>
-            </Box>
-            <Box mb={6}>
-              <Typography
-                variant="body2"
-                fontWeight="bold"
-                color="text.primary"
-                mb={2}
-              >
-                SIZE
-              </Typography>
-              <Grid container spacing={1}>
-                {selectedColor &&
-                  data.product.color
-                    .find(colorObj => colorObj[selectedColor])
-                    [selectedColor].map(sizeObj => (
-                      <Grid item key={sizeObj.size}>
-                        <Button
-                          onClick={() => handleSizeClick(sizeObj.size)}
-                          variant={
-                            selectedSize === sizeObj.size
-                              ? 'contained'
-                              : 'outlined'
-                          }
-                          sx={{
-                            py: 1,
-                            px: 2,
-                            borderColor: 'black',
-                            color:
-                              selectedSize === sizeObj.size ? 'white' : 'black',
-                            '&:hover': {
-                              bgcolor:
-                                selectedSize === sizeObj.size
-                                  ? 'black'
-                                  : 'grey.800',
-                              color: 'white',
-                            },
-                          }}
-                        >
-                          {sizeObj.size}
-                        </Button>
-                      </Grid>
-                    ))}
-              </Grid>
-            </Box>
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{
-                bgcolor: 'black',
-                color: 'white',
-                py: 2,
-                px: 4,
-                width: '100%',
-                mb: 6,
-                '&:hover': {
-                  bgcolor: 'grey.800',
-                },
-              }}
-            >
-              ADD TO CART
-            </Button>
-            <Divider sx={{ borderColor: 'black', mt: 6 }} />
-          </Grid>
+    <Box sx={{ px: 1, py: 2 }}>
+      <Grid container spacing={4} justifyContent="center">
+        <Grid item xs={12} md={6}>
+          <Box display="flex" alignItems="center" justifyContent="center">
+            <Slider {...settings} style={{ width: '450px', height: 'auto' }}>
+              {data.product.images.map((image, index) => (
+                <Box key={index}>
+                  <Box
+                    component="img"
+                    src={image}
+                    alt={`Product Image ${index + 1}`}
+                    sx={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      maxWidth: '450px',
+                      maxHeight: '450px',
+                    }}
+                  />
+                </Box>
+              ))}
+            </Slider>
+          </Box>
         </Grid>
-        <Box
+
+        <Grid
+          item
+          xs={12}
+          md={6}
+          width="400px"
           display="flex"
-          textAlign="center"
-          justifyContent="space-between"
-          width="80%"
-          mx="auto"
-          px={2}
+          flexDirection="column"
+          alignItems="flex-start"
+          justifyContent="center"
         >
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="flex-start"
-            width="65%"
-            mr={2}
-          >
-            <Typography variant="h6" fontWeight="bold" mb={1} textAlign="left">
-              DETAILS
+          <Typography variant="h5" fontWeight="bold">
+            {data.product.brand}
+          </Typography>
+          <Typography variant="subtitle1" color="text.secondary" mt={1}>
+            {data.product.name}
+          </Typography>
+          <Typography variant="h6" fontWeight="bold" mt={2}>
+            {data.product.price} €
+          </Typography>
+
+          <Box mb={4}>
+            <Typography variant="body2" color="text.secondary" mb={2}>
+              COLOR: {selectedColor || 'Select a color'}
             </Typography>
-            <Divider
-              sx={{
-                borderColor: 'black',
-                borderWidth: '1.5px',
-                mb: 2,
-                width: '100%',
-              }}
-            />
+            <Box display="flex" gap={2}>
+              {data.product.color.map((colorObj, index) => {
+                const colorName = Object.keys(colorObj)[0];
+                return (
+                  <Box
+                    px={2}
+                    key={index}
+                    onClick={() => handleColorClick(colorName)}
+                    sx={{
+                      bgcolor: 'grey.200',
+                      height: '40px',
+                      borderRadius: 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      border:
+                        selectedColor === colorName
+                          ? '2px solid black'
+                          : 'none',
+                      width: 'max-content',
+                    }}
+                  >
+                    <Typography textTransform="capitalize">
+                      {colorName}
+                    </Typography>
+                  </Box>
+                );
+              })}
+            </Box>
+          </Box>
+
+          <Box mb={6}>
             <Typography
               variant="body2"
-              color="text.secondary"
-              sx={{ textAlign: 'justify' }}
+              fontWeight="bold"
+              color="text.primary"
+              mb={2}
             >
-              {data.product.details}
+              SIZE
             </Typography>
+            <Grid container spacing={1}>
+              {selectedColor &&
+                data.product.color
+                  .find(colorObj => colorObj[selectedColor])
+                  [selectedColor].map(sizeObj => (
+                    <Grid item key={sizeObj.size}>
+                      <Button
+                        onClick={() => handleSizeClick(sizeObj.size)}
+                        variant={
+                          selectedSize === sizeObj.size
+                            ? 'contained'
+                            : 'outlined'
+                        }
+                        sx={{
+                          py: 1,
+                          px: 2,
+                          borderColor: 'black',
+                          color:
+                            selectedSize === sizeObj.size ? 'white' : 'black',
+                          '&:hover': {
+                            bgcolor:
+                              selectedSize === sizeObj.size
+                                ? 'black'
+                                : 'grey.800',
+                            color: 'white',
+                          },
+                        }}
+                      >
+                        {sizeObj.size}
+                      </Button>
+                    </Grid>
+                  ))}
+            </Grid>
           </Box>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="flex-start"
-            width="35%"
-            ml={2}
+
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              bgcolor: 'black',
+              color: 'white',
+              py: 2,
+              px: 4,
+              width: '100%',
+              mb: 6,
+              '&:hover': {
+                bgcolor: 'grey.800',
+              },
+            }}
           >
-            <Typography variant="h6" fontWeight="bold" mb={1} textAlign="left">
-              FACTS
-            </Typography>
-            <Divider
-              sx={{
-                borderColor: 'black',
-                borderWidth: '1.5px',
-                mb: 2,
-                width: '100%',
-              }}
-            />
-            <Box display="flex" width="100%" mb={1}>
-              <Typography
-                variant="body2"
-                fontWeight="bold"
-                sx={{ minWidth: '100px' }}
+            ADD TO CART
+          </Button>
+
+          <Divider sx={{ borderColor: 'black', mt: 6 }} />
+        </Grid>
+      </Grid>
+
+      <Box
+        display="flex"
+        textAlign="center"
+        justifyContent="space-between"
+        width="80%"
+        mx="auto"
+        px={2}
+      >
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          width="65%"
+          mr={2}
+        >
+          <Typography variant="h6" fontWeight="bold" mb={1} textAlign="left">
+            DETAILS
+          </Typography>
+          <Divider
+            sx={{
+              borderColor: 'black',
+              borderWidth: '1.5px',
+              mb: 2,
+              width: '100%',
+            }}
+          />
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ textAlign: 'justify' }}
+          >
+            {data.product.details}
+          </Typography>
+        </Box>
+
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          width="35%"
+          ml={2}
+        >
+          <Typography variant="h6" fontWeight="bold" mb={1} textAlign="left">
+            FACTS
+          </Typography>
+          <Divider
+            sx={{
+              borderColor: 'black',
+              borderWidth: '1.5px',
+              mb: 2,
+              width: '100%',
+            }}
+          />
+
+          {[
+            { label: 'Brand:', value: data.product.brand },
+            { label: 'Manufacturer ID:', value: data.product.id },
+            { label: 'Color:', value: selectedColor },
+            { label: 'Category:', value: data.product.category },
+            { label: 'Release Date:', value: data.product.releaseDate },
+          ].map((fact, index) => (
+            <Box
+              display="flex"
+              width="100%"
+              mb={1}
+              key={index}
+              alignItems="flex-start"
+            >
+              <Box
+                sx={{
+                  minWidth: '180px',
+                  marginRight: '20px',
+                  textAlign: 'left',
+                }}
               >
-                Brand:
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {data.product.brand}
-              </Typography>
+                <Typography variant="body2" fontWeight="bold">
+                  {fact.label}
+                </Typography>
+              </Box>
+              <Box sx={{ textAlign: 'left' }}>
+                <Typography variant="body2" color="text.secondary">
+                  {fact.value}
+                </Typography>
+              </Box>
             </Box>
-            <Box display="flex" width="100%" mb={1}>
-              <Typography
-                variant="body2"
-                fontWeight="bold"
-                sx={{ minWidth: '100px' }}
-              >
-                Product ID:
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {data.product.id}
-              </Typography>
-            </Box>
-            <Box display="flex" width="100%">
-              <Typography
-                variant="body2"
-                fontWeight="bold"
-                sx={{ minWidth: '100px' }}
-              >
-                Price:
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {data.product.price} €
-              </Typography>
-            </Box>
-          </Box>
+          ))}
         </Box>
       </Box>
-    </>
+    </Box>
   );
 };
+
 export default Product;

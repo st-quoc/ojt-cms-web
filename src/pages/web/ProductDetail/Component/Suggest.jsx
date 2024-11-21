@@ -1,9 +1,7 @@
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { Box, Typography } from '@mui/material';
-
-import { Swiper, SwiperSlide } from 'swiper/react';
-import 'swiper/css';
+import { Box, Card, CardMedia, CardContent, Typography } from '@mui/material';
+import Slider from 'react-slick';
 
 const data = {
   products: [
@@ -13,114 +11,150 @@ const data = {
       brand: 'Nike',
       images: [
         'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/b7d9211c-26e7-431a-ac24-b0540fb3c00f/AIR+FORCE+1+%2707.png',
-        'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/33533fe2-1157-4001-896e-1803b30659c8/AIR+FORCE+1+%2707.png',
       ],
       price: '200',
     },
     {
       id: '2',
-      name: 'Adidas Ultraboost 21',
-      brand: 'Adidas',
+      name: 'Nike Airforce 1',
+      brand: 'Nike',
       images: [
-        'https://assets.adidas.com/images/w_600,f_auto,q_auto/6e40bbf29b7f4025b94eac66014846ed_9366/Ultraboost_21_Shoes_White_FY0377_01_standard.jpg',
-        'https://assets.adidas.com/images/w_600,f_auto,q_auto/15c34f8ec02f4be19267ac66014853d8_9366/Ultraboost_21_Shoes_White_FY0377_02_standard.jpg',
+        'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/b7d9211c-26e7-431a-ac24-b0540fb3c00f/AIR+FORCE+1+%2707.png',
       ],
-      price: '180',
+      price: '200',
     },
     {
       id: '3',
-      name: 'Puma RS-X',
-      brand: 'Puma',
+      name: 'Nike Airforce 1',
+      brand: 'Nike',
       images: [
-        'https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa/global/373236/01/sv01/fnd/IND/fmt/png/RS-X-Reinvention-Sneakers',
-        'https://images.puma.com/image/upload/f_auto,q_auto,b_rgb:fafafa/global/373236/02/sv01/fnd/IND/fmt/png/RS-X-Reinvention-Sneakers',
+        'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/b7d9211c-26e7-431a-ac24-b0540fb3c00f/AIR+FORCE+1+%2707.png',
       ],
-      price: '150',
+      price: '200',
     },
     {
       id: '4',
-      name: 'Converse Chuck Taylor All Star',
-      brand: 'Converse',
+      name: 'Nike Airforce 1',
+      brand: 'Nike',
       images: [
-        'https://www.converse.com/on/demandware.static/-/Sites-masterCatalog/default/dwb7b77c2f/images/a_107/M7650C_A_107X1.jpg',
-        'https://www.converse.com/on/demandware.static/-/Sites-masterCatalog/default/dw4e50913e/images/h_107/M7650C_H_107X1.jpg',
+        'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/b7d9211c-26e7-431a-ac24-b0540fb3c00f/AIR+FORCE+1+%2707.png',
       ],
-      price: '70',
+      price: '200',
+    },
+    {
+      id: '6',
+      name: 'Nike Airforce 1',
+      brand: 'Nike',
+      images: [
+        'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/b7d9211c-26e7-431a-ac24-b0540fb3c00f/AIR+FORCE+1+%2707.png',
+      ],
+      price: '200',
+    },
+    {
+      id: '7',
+      name: 'Nike Airforce 1',
+      brand: 'Nike',
+      images: [
+        'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/b7d9211c-26e7-431a-ac24-b0540fb3c00f/AIR+FORCE+1+%2707.png',
+      ],
+      price: '200',
     },
   ],
 };
 
-export const Suggest = () => {
+const ProductCarousel = () => {
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 5,
+    slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 1600,
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 1200,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
+  };
+
   return (
-    <>
-      <Box
-        display="flex"
-        flexDirection="column"
-        textAlign="center"
-        justifyContent="center"
-        width="100%"
-      >
-        <Typography variant="h4" fontWeight="500" mb={4}>
-          RECOMMENDATIONS FOR YOU
-        </Typography>
-        <Box
-          display="flex"
-          flexDirection="column"
-          textAlign="center"
-          justifyContent="center"
-          width="100%"
-        >
-          <Swiper
-            spaceBetween={10}
-            slidesPerView={4}
-            onSlideChange={() => console.log('slide change')}
-            onSwiper={swiper => console.log(swiper)}
-            style={{ width: '100%', height: '300px' }}
-          >
-            {data.products.map((product, index) => (
-              <SwiperSlide key={index}>
-                <Box display="flex" flexDirection="column" alignItems="center">
-                  <img
-                    style={{
-                      width: '200px',
-                      height: '200px',
-                      objectFit: 'cover',
-                    }}
-                    src={product.images[0]}
-                    alt={`Product Image ${index}`}
-                  />
-                  <Box
-                    display="flex"
-                    flexDirection="column"
-                    textAlign="center"
-                    mt={2}
-                  >
-                    <Typography
-                      variant="body1"
-                      fontWeight="semibold"
-                      color="primary"
-                    >
-                      {product.brand}
-                    </Typography>
-                    <Typography variant="body2" fontWeight="semibold" mt={1}>
-                      {product.name}
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      fontWeight="semibold"
-                      mt={1}
-                      color="secondary"
-                    >
-                      {product.price} €
-                    </Typography>
-                  </Box>
-                </Box>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </Box>
-      </Box>
-    </>
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      textAlign="center"
+      justifyContent="center"
+      width={{ xs: '90%', sm: '85%', md: '80%' }}
+      margin="0 auto"
+    >
+      <Typography variant="h4" fontWeight="500" mb={4}>
+        RECOMMENDATIONS FOR YOU
+      </Typography>
+      <Slider {...settings} style={{ width: '100%' }}>
+        {data.products.map(product => (
+          <Box key={product.id} px={{ xs: 0.5, sm: 1 }}>
+            <Card
+              sx={{ maxWidth: { xs: 180, sm: 200, md: 240 }, margin: 'auto' }}
+            >
+              <CardMedia
+                component="img"
+                sx={{ height: 240, width: 240, objectFit: 'cover' }}
+                image={product.images[0]}
+                alt={product.name}
+              />
+              <CardContent>
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  component="div"
+                  fontSize={{ xs: 12, sm: 14 }}
+                >
+                  {product.name}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Brand: {product.brand}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Price: {product.price} €
+                </Typography>
+              </CardContent>
+            </Card>
+          </Box>
+        ))}
+      </Slider>
+    </Box>
   );
 };
-export default Suggest;
+
+export default ProductCarousel;

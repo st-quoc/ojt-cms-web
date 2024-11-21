@@ -1,21 +1,18 @@
 import { Box, Typography } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
-import { Navigate } from 'react-router-dom';
-
-const data = {
-  product: {
-    id: '1',
-    name: 'Nike Airforce 1',
-  },
-};
+import { useNavigate } from 'react-router-dom';
 
 export const Banner = () => {
+  const navigate = useNavigate();
+
   const handleHomeClick = () => {
-    Navigate('/');
+    navigate('/');
   };
+
   const handleShopClick = () => {
-    Navigate('/');
+    navigate('/products');
   };
+
   return (
     <>
       <Box
@@ -57,11 +54,12 @@ export const Banner = () => {
               Shop
             </Typography>
             <Typography sx={{ mx: 1 }}>/</Typography>
-            <Typography color="orange">{data.product.name}</Typography>
+            <Typography color="orange">Nike Airforce 1</Typography>
           </Box>
         </Box>
       </Box>
     </>
   );
 };
+
 export default Banner;
