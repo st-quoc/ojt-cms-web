@@ -1,22 +1,28 @@
-import { Pagination } from '@mui/material';
+import { Box, Pagination } from '@mui/material';
+import PropTypes from 'prop-types';
 
 const PaginationBase = ({
-  totalItems,
-  currentPage,
-  itemsPerPage,
+  totalItems = 0,
+  currentPage = 1,
+  itemsPerPage = 9,
   handlePageChange,
 }) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  const startItem = (currentPage - 1) * itemsPerPage + 1;
-  const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+  const startItem = totalItems > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0;
+  const endItem =
+    totalItems > 0 ? Math.min(currentPage * itemsPerPage, totalItems) : 0;
 
   return (
-    <div className="flex justify-between items-center mt-6">
-      <div>
-        Showing {startItem} to {endItem} of {totalItems} products
-      </div>
+    <Box className="py-10">
+      <Box className="text-gray-600 mb-4">
+        {totalItems > 0
+          ? `Showing ${startItem} to ${endItem} of ${totalItems} products`
+          : 'No products available'}
+      </Box>
+
       <Pagination
+        className="flex items-end justify-end"
         count={totalPages}
         page={currentPage}
         onChange={handlePageChange}
@@ -24,8 +30,21 @@ const PaginationBase = ({
         showLastButton
         color="primary"
       />
-    </div>
+    </Box>
   );
+};
+
+PaginationBase.propTypes = {
+  totalItems: PropTypes.number,
+  currentPage: PropTypes.number,
+  itemsPerPage: PropTypes.number,
+  handlePageChange: PropTypes.func.isRequired,
+};
+
+PaginationBase.defaultProps = {
+  totalItems: 0,
+  currentPage: 1,
+  itemsPerPage: 9,
 };
 
 export default PaginationBase;

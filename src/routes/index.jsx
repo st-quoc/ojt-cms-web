@@ -3,7 +3,7 @@ import { AdminLayout } from '../pages/admin';
 import { HomePage } from '../pages/web/HomePage';
 import { LoginPage } from '../pages/login';
 import { ProductDetailPage } from '../pages/web/ProductDetail';
-import { ProductsListPage } from '../pages/web/ProductsList';
+import { ProductsListPage } from '../pages/web/ProductsListPage';
 import { CartPage } from '../pages/web/Cart';
 import { Dashboard } from '../pages/admin/Dashboard';
 import { Account } from '../pages/web/Account';

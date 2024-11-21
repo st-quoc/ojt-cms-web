@@ -215,30 +215,6 @@ export const Products = [
       BrandStyle: 'Adidas Hunter',
     },
   },
-  {
-    id: 19,
-    image:
-      'https://product.hstatic.net/1000341630/product/thunder_bird6507_6_d952334c020a487597adbd77c0b0bdd5_master.jpg',
-    name: 'Antique Radio',
-    price1: 170.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Adidas',
-      BrandStyle: 'Adidas Hunter',
-    },
-  },
-  {
-    id: 20,
-    image:
-      'https://product.hstatic.net/1000341630/product/thunder_bird6507_6_d952334c020a487597adbd77c0b0bdd5_master.jpg',
-    name: 'Antique Radio',
-    price1: 170.0,
-    price2: 122.0,
-    brand: {
-      BrandName: 'Adidas',
-      BrandStyle: 'Adidas Hunter',
-    },
-  },
 ];
 
 export default Products;
