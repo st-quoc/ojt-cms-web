@@ -88,7 +88,7 @@ export const Header = ({ cartQuantity }) => {
           <a href="#search" className="hover:text-gray-600">
             <SearchIcon />
           </a>
-          <a href="#account" className="hover:text-gray-600">
+          <a href="/account" className="hover:text-gray-600">
             <PersonIcon />
           </a>
           <a href="/cart" className="relative hover:text-gray-600">
