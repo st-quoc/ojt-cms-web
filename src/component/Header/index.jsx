@@ -47,10 +47,10 @@ export const Header = ({ cartQuantity }) => {
             HOME
           </a>
           <a
-            href="#bestseller"
+            href="products"
             className="hover:text-gray-600 text-black text-sm md:text-base"
           >
-            BEST-SELLER
+            SHOP
           </a>
           <a
             href="#trending"
@@ -77,7 +77,7 @@ export const Header = ({ cartQuantity }) => {
             MORE
           </a>
           <a
-            href="Blogs"
+            href="blogs"
             className="hover:text-gray-600 text-black text-sm md:text-base pb-2"
           >
             BLOGS
@@ -88,7 +88,7 @@ export const Header = ({ cartQuantity }) => {
           <a href="#search" className="hover:text-gray-600">
             <SearchIcon />
           </a>
-          <a href="#account" className="hover:text-gray-600">
+          <a href="/account" className="hover:text-gray-600">
             <PersonIcon />
           </a>
           <a href="/cart" className="relative hover:text-gray-600">

@@ -5,7 +5,6 @@ import 'slick-carousel/slick/slick-theme.css';
 import { Box, Typography, Button, Divider } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import 'swiper/css';
-
 const data = {
   product: {
     id: '1',
@@ -55,16 +54,13 @@ const data = {
     category: 'Sneakers',
   },
 };
-
 export const Product = () => {
   const [selectedColor, setSelectedColor] = useState('red');
   const [selectedSize, setSelectedSize] = useState(null);
-
   const handleColorClick = color => {
     setSelectedColor(color);
     setSelectedSize(null);
   };
-
   const handleSizeClick = size => {
     setSelectedSize(size);
   };
