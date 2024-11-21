@@ -15,7 +15,11 @@ export const Router = () => {
   return (
     <Routes>
       <Route path="/">
-        <Route index element={<HomePage />} />
+        <Route
+          index
+          element={<HomePage />}
+          errorElement={console.log('error', Error)}
+        />
         <Route element={<CartPage />} path="cart" />
         <Route element={<Checkout />} path="checkout" />
         <Route element={<ProductsListPage />} path="products" />
