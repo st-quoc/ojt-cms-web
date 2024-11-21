@@ -6,7 +6,8 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import { Header } from '../../../component/Header';
 import { Category } from '../../../component/Category';
-import { Product } from '../../../component/Product';
+import { ProductGrid } from '../../../component/ProductGrid';
+import { ProductList } from '../../../component/ProductList';
 import PaginationBase from '../../../component/Pagination';
 import { Sort } from '../../../component/Sort';
 import { Show } from '../../../component/Show';
@@ -77,22 +78,14 @@ export const ProductsListPage = () => {
               <Box className="flex space-x-2">
                 <Button
                   onClick={() => handleViewToggle('grid')}
-                  className={`px-3 py-2 rounded-md ${
-                    viewMode === 'grid'
-                      ? 'bg-orange-500 text-white'
-                      : 'bg-gray-200 text-black'
-                  } hover:bg-orange-400`}
+                  className={`px-3 py-2 rounded-md ${viewMode === 'grid' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-black'}`}
                   variant="outlined"
                 >
                   <GridViewIcon />
                 </Button>
                 <Button
                   onClick={() => handleViewToggle('list')}
-                  className={`px-3 py-2 rounded-md ${
-                    viewMode === 'list'
-                      ? 'bg-orange-500 text-white'
-                      : 'bg-gray-200 text-black'
-                  } hover:bg-orange-400`}
+                  className={`px-3 py-2 rounded-md ${viewMode === 'list' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-black'}`}
                   variant="outlined"
                 >
                   <FormatListBulletedIcon />
@@ -108,7 +101,11 @@ export const ProductsListPage = () => {
               </Box>
             </Box>
 
-            <Product products={currentItems} viewMode={viewMode} />
+            {viewMode === 'grid' ? (
+              <ProductGrid products={currentItems} />
+            ) : (
+              <ProductList products={currentItems} />
+            )}
 
             <PaginationBase
               totalItems={totalItems}
