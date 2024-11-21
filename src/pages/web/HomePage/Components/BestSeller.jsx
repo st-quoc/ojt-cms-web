@@ -30,7 +30,7 @@ const products = [
 export const BestSeller = () => {
   return (
     <section id="bestseller" className="py-16 bg-white text-center">
-      <Title title="MOST VINTAGE CATEGORY" />
+      <Title title="MOST  CATEGORY" />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 px-4 md:px-8 max-w-6xl mx-auto">
         {products.map(product => (
