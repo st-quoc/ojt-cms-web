@@ -53,24 +53,6 @@ export const Header = ({ cartQuantity }) => {
             SHOP
           </a>
           <a
-            href="#trending"
-            className="hover:text-gray-600 text-black text-sm md:text-base"
-          >
-            TRENDING
-          </a>
-          <a
-            href="#amphora"
-            className="hover:text-gray-600 text-black text-sm md:text-base"
-          >
-            SPORT
-          </a>
-          <a
-            href="#room"
-            className="hover:text-gray-600 text-black text-sm md:text-base"
-          >
-            SNEAKER
-          </a>
-          <a
             href="#more"
             className="hover:text-gray-600 text-black text-sm md:text-base"
           >
