@@ -28,10 +28,8 @@ const categories = mockProduct.reduce((acc, product) => {
   return acc;
 }, []);
 
-export const Category = () => {
+export const Category = ({ setSelectedSubCategory, selectedBrandStyle }) => {
   const [expandedCategories, setExpandedCategories] = useState({});
-  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
-
   const handleCategoryToggle = categoryName => {
     setExpandedCategories(prev => ({
       ...prev,
@@ -40,13 +38,13 @@ export const Category = () => {
   };
 
   const handleSubCategoryClick = subCategoryName => {
-    setSelectedSubCategory(prev =>
-      prev === subCategoryName ? null : subCategoryName,
+    setSelectedSubCategory(
+      selectedBrandStyle === subCategoryName ? null : subCategoryName,
     );
   };
 
   return (
-    <Box className="flex md:flex-row gap-4 w-[15%]">
+    <Box className="w-full max-w-[15%]">
       <Box>
         <Typography variant="h6" gutterBottom>
           Categories
@@ -87,7 +85,7 @@ export const Category = () => {
                       sx={{
                         pl: 4,
                         backgroundColor:
-                          selectedSubCategory === subCategory.name
+                          selectedBrandStyle === subCategory.name
                             ? '#f5f5f5'
                             : 'transparent',
                         '&:hover': { backgroundColor: '#f5f5f5' },
@@ -98,7 +96,7 @@ export const Category = () => {
                         primary={`${subCategory.name} (${subCategory.count})`}
                         primaryTypographyProps={{
                           className:
-                            selectedSubCategory === subCategory.name
+                            selectedBrandStyle === subCategory.name
                               ? 'font-semibold'
                               : 'text-gray-500',
                         }}
@@ -114,3 +112,5 @@ export const Category = () => {
     </Box>
   );
 };
+
+export default Category;

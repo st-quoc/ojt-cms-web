@@ -17,7 +17,7 @@ export const ProductsListPage = () => {
   const [itemsPerPage, setItemsPerPage] = useState(9);
   const [viewMode, setViewMode] = useState('grid');
   const [sortBy, setSortBy] = useState('default');
-  const [selectedSubCategory] = useState(null);
+  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
 
   const handleSortChange = event => setSortBy(event.target.value);
   const handleItemsPerPageChange = event => {
@@ -55,7 +55,10 @@ export const ProductsListPage = () => {
       <Header />
       <Container maxWidth="xl" className="py-8">
         <Box className="flex flex-col md:flex-row gap-4 mx-auto">
-          <Category />
+          <Category
+            setSelectedSubCategory={setSelectedSubCategory}
+            selectedBrandStyle={selectedSubCategory}
+          />
           <main className="w-full">
             <Box className="bg-gray-100 p-10 rounded-lg mb-6 flex items-center justify-center">
               <Box className="text-center">
@@ -74,14 +77,22 @@ export const ProductsListPage = () => {
               <Box className="flex space-x-2">
                 <Button
                   onClick={() => handleViewToggle('grid')}
-                  className={`px-3 py-2 rounded-md ${viewMode === 'grid' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-black'} hover:bg-orange-400`}
+                  className={`px-3 py-2 rounded-md ${
+                    viewMode === 'grid'
+                      ? 'bg-orange-500 text-white'
+                      : 'bg-gray-200 text-black'
+                  } hover:bg-orange-400`}
                   variant="outlined"
                 >
                   <GridViewIcon />
                 </Button>
                 <Button
                   onClick={() => handleViewToggle('list')}
-                  className={`px-3 py-2 rounded-md ${viewMode === 'list' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-black'} hover:bg-orange-400`}
+                  className={`px-3 py-2 rounded-md ${
+                    viewMode === 'list'
+                      ? 'bg-orange-500 text-white'
+                      : 'bg-gray-200 text-black'
+                  } hover:bg-orange-400`}
                   variant="outlined"
                 >
                   <FormatListBulletedIcon />

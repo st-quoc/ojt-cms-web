@@ -1,4 +1,4 @@
-const ProductList = ({ products, addToCart }) => {
+export const ProductList = ({ products, addToCart }) => {
   return (
     <div className="space-y-4">
       {products.map(product => (
