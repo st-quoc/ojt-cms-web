@@ -9,11 +9,16 @@ import {
   Avatar,
 } from '@mui/material';
 
-export const ProductList = ({ products, addToCart }) => {
+export const ProductList = ({ products }) => {
   const navigate = useNavigate();
 
   const handleProductDetailClick = productId => {
     navigate(`/product/${productId}`);
+  };
+
+  const handleCartClick = e => {
+    e.stopPropagation();
+    navigate(`/cart`);
   };
 
   if (!products) {
@@ -21,7 +26,10 @@ export const ProductList = ({ products, addToCart }) => {
   }
 
   return (
-    <List className="space-y-4">
+    <List
+      onClick={handleProductDetailClick}
+      className="space-y-4 cursor-pointer"
+    >
       {products.map(product => (
         <ListItem
           key={product.id}
@@ -58,16 +66,9 @@ export const ProductList = ({ products, addToCart }) => {
             <Button
               variant="outlined"
               className="rounded-lg border-2 border-slate-300 bg-zinc-200 hover:bg-zinc-700 hover:text-gray-100 transition"
-              onClick={() => addToCart(product.id)}
+              onClick={e => handleCartClick(e, product.id)}
             >
               Add to Cart
-            </Button>
-            <Button
-              variant="contained"
-              className="rounded-lg bg-blue-500 text-white hover:bg-blue-700 transition"
-              onClick={() => handleProductDetailClick(product.id)}
-            >
-              View Details
             </Button>
           </div>
         </ListItem>

@@ -8,11 +8,16 @@ import {
   Typography,
 } from '@mui/material';
 
-export const ProductGrid = ({ products, addToCart }) => {
+export const ProductGrid = ({ products }) => {
   const navigate = useNavigate();
 
   const handleProductDetailClick = productId => {
     navigate(`/product/${productId}`);
+  };
+
+  const handleCartClick = e => {
+    e.stopPropagation();
+    navigate(`/cart`);
   };
 
   if (!products) {
@@ -23,7 +28,10 @@ export const ProductGrid = ({ products, addToCart }) => {
     <Grid container spacing={4} className="px-4 py-6">
       {products.map(product => (
         <Grid item xs={12} sm={6} md={4} key={product.id}>
-          <Card className="bg-gray-50 border rounded-lg shadow-md hover:shadow-lg transform transition duration-300 hover:scale-105">
+          <Card
+            onClick={() => handleProductDetailClick(product.id)}
+            className="bg-gray-50 border rounded-lg shadow-md hover:shadow-lg transform transition duration-300 hover:scale-105 cursor-pointer"
+          >
             <CardMedia
               component="img"
               alt={product.name}
@@ -49,18 +57,9 @@ export const ProductGrid = ({ products, addToCart }) => {
                   variant="outlined"
                   fullWidth
                   className="border-2 border-slate-300 bg-zinc-200 hover:bg-zinc-700 hover:text-gray-100 transition"
-                  onClick={() => addToCart(product.id)}
+                  onClick={e => handleCartClick(e, product.id)}
                 >
                   Add to Cart
-                </Button>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  color="primary"
-                  className="bg-blue-500 hover:bg-blue-700 transition"
-                  onClick={() => handleProductDetailClick(product.id)}
-                >
-                  View Details
                 </Button>
               </div>
             </CardContent>
