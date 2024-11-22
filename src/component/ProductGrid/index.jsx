@@ -1,48 +1,73 @@
 import { useNavigate } from 'react-router-dom';
+import {
+  Grid,
+  Button,
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+} from '@mui/material';
 
 export const ProductGrid = ({ products, addToCart }) => {
   const navigate = useNavigate();
 
-  const handleProductDetailClick = () => {
-    navigate(`/product/${products.id}`);
+  const handleProductDetailClick = productId => {
+    navigate(`/product/${productId}`);
   };
 
   if (!products) {
     return <div>Loading...</div>;
   }
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+    <Grid container spacing={4} className="px-4 py-6">
       {products.map(product => (
-        <div
-          key={product.id}
-          className="p-6 bg-gray-50 border rounded-lg transform transition duration-300 hover:scale-105 shadow-md hover:shadow-lg"
-        >
-          <img
-            src={product.image}
-            alt={product.name}
-            className="mx-auto mb-4 w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 object-cover"
-          />
-          <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-center">
-            {product.name}
-          </h3>
-          <p className="text-gray-500 text-sm md:text-lg text-center">
-            ${product.price1.toFixed(2)} - ${product.price2.toFixed(2)}
-          </p>
-          <button
-            onClick={() => addToCart(product.id)}
-            className="mt-4 px-4 py-2 w-full rounded-lg border-2 border-slate-300 bg-zinc-200 hover:bg-zinc-700 hover:text-gray-100 transition"
-          >
-            Add to Cart
-          </button>
-          <button
-            onClick={handleProductDetailClick}
-            className="mt-4 px-4 py-2 w-full rounded-lg border-2 border-slate-300 bg-blue-500  hover:bg-blue-700 transition"
-          >
-            View Details
-          </button>
-        </div>
+        <Grid item xs={12} sm={6} md={4} key={product.id}>
+          <Card className="bg-gray-50 border rounded-lg shadow-md hover:shadow-lg transform transition duration-300 hover:scale-105">
+            <CardMedia
+              component="img"
+              alt={product.name}
+              image={product.image}
+              className="w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 mx-auto object-cover"
+            />
+            <CardContent className="text-center">
+              <Typography
+                variant="h6"
+                className="text-lg sm:text-xl md:text-2xl font-semibold"
+              >
+                {product.name}
+              </Typography>
+              <Typography
+                variant="body2"
+                color="textSecondary"
+                className="text-gray-500 text-sm md:text-lg"
+              >
+                ${product.price1.toFixed(2)} - ${product.price2.toFixed(2)}
+              </Typography>
+              <div className="mt-4 space-y-2">
+                <Button
+                  variant="outlined"
+                  fullWidth
+                  className="border-2 border-slate-300 bg-zinc-200 hover:bg-zinc-700 hover:text-gray-100 transition"
+                  onClick={() => addToCart(product.id)}
+                >
+                  Add to Cart
+                </Button>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  color="primary"
+                  className="bg-blue-500 hover:bg-blue-700 transition"
+                  onClick={() => handleProductDetailClick(product.id)}
+                >
+                  View Details
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </Grid>
       ))}
-    </div>
+    </Grid>
   );
 };
 
