@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { CloudinaryContext } from 'cloudinary-react';
-import PropTypes from 'prop-types';
-import { message } from 'antd';
+import { toast } from 'react-toastify';
 
 const CloudinarySingleUploader = ({ image, setImage }) => {
   const [loading, setLoading] = useState(false);
@@ -25,7 +24,7 @@ const CloudinarySingleUploader = ({ image, setImage }) => {
       setImage(data.secure_url);
     } catch (error) {
       console.log('ᥫᩣ🚀  error  🚀ᥫᩣ ', error);
-      message.error('Error uploading image!');
+      toast.error('Error uploading image!');
     } finally {
       setLoading(false);
     }
@@ -56,8 +55,3 @@ const CloudinarySingleUploader = ({ image, setImage }) => {
 };
 
 export default CloudinarySingleUploader;
-
-CloudinarySingleUploader.propTypes = {
-  image: PropTypes.string,
-  setImage: PropTypes.func,
-};
