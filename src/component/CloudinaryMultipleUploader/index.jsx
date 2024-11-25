@@ -1,12 +1,28 @@
-import { message } from 'antd';
+import { Box, Button, IconButton, Tooltip } from '@mui/material';
 import { CloudinaryContext } from 'cloudinary-react';
-import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { toast } from 'react-toastify';
+import DeleteIcon from '@mui/icons-material/Delete';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { styled } from '@mui/material/styles';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
-import './upload.scss';
+const VisuallyHiddenInput = styled('input')({
+  clip: 'rect(0 0 0 0)',
+  clipPath: 'inset(50%)',
+  height: 1,
+  overflow: 'hidden',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  whiteSpace: 'nowrap',
+  width: 1,
+});
 
-const CloudinaryMultipleUploader = ({ images, setImages }) => {
+const CloudinaryMultipleUploader = ({ images = [], onChange }) => {
+  const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
 
   const handleImageUpload = async e => {
     setLoading(true);
@@ -32,49 +48,140 @@ const CloudinaryMultipleUploader = ({ images, setImages }) => {
         }),
       );
 
-      setImages(prevImages => [...prevImages, ...uploadedImages]);
+      onChange([...images, ...uploadedImages]);
     } catch (error) {
-      console.log('ᥫᩣ🚀  error  🚀ᥫᩣ ', error);
-      message.error('Error uploading image!');
+      console.error('Error uploading image:', error);
+      toast.error('Error uploading image!');
     } finally {
       setLoading(false);
     }
   };
 
   const handleImageDelete = index => {
-    const updatedImages = [...images];
-    updatedImages.splice(index, 1);
-    setImages(updatedImages);
+    const updatedImages = images.filter((_, i) => i !== index);
+    onChange(updatedImages);
+  };
+
+  const handleImagePreview = imageUrl => {
+    setPreviewImage(imageUrl);
+  };
+
+  const handleClosePreview = () => {
+    setPreviewImage(null);
+  };
+
+  const resetFileInput = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = null;
+    }
   };
 
   return (
-    <div>
-      <input multiple type="file" onChange={handleImageUpload} />
+    <Box>
+      <Button
+        component="label"
+        role={undefined}
+        variant="contained"
+        tabIndex={-1}
+        startIcon={<CloudUploadIcon />}
+      >
+        Upload files
+        <VisuallyHiddenInput
+          type="file"
+          onChange={handleImageUpload}
+          multiple
+          ref={fileInputRef}
+          onClick={resetFileInput}
+        />
+      </Button>
+
       {loading && <p>Loading...</p>}
+
+      {previewImage && (
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 9999,
+          }}
+        >
+          <Box sx={{ position: 'relative' }}>
+            <img
+              src={previewImage}
+              alt="Preview"
+              style={{ maxWidth: '90%', maxHeight: '80vh' }}
+            />
+            <IconButton
+              onClick={handleClosePreview}
+              sx={{ position: 'absolute', top: 10, right: 10, color: 'white' }}
+            >
+              X
+            </IconButton>
+          </Box>
+        </Box>
+      )}
+
       {0 < images?.length && (
         <CloudinaryContext
           style={{ display: 'flex', maxWidth: '100%', gap: 15, marginTop: 15 }}
         >
           {images.map((imageUrl, index) => (
-            <div className="upload" key={index}>
-              <img alt="" className="upload__img" src={imageUrl} />
-              <div
-                className="delete_button"
-                onClick={() => handleImageDelete(index)}
+            <Box
+              key={index}
+              sx={{
+                position: 'relative',
+                '&:hover .action-buttons': {
+                  opacity: 1,
+                },
+              }}
+            >
+              <img
+                alt=""
+                src={imageUrl}
+                className="w-[150px] h-[150px] object-cover rounded-lg"
+              />
+              <Box
+                className="action-buttons"
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  display: 'flex',
+                  gap: 1,
+                  opacity: 0,
+                  transition: 'opacity 0.3s ease-in-out',
+                }}
               >
-                Delete
-              </div>
-            </div>
+                <Tooltip title="Preview">
+                  <IconButton
+                    onClick={() => handleImagePreview(imageUrl)}
+                    color="primary"
+                  >
+                    <VisibilityIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete">
+                  <IconButton
+                    onClick={() => handleImageDelete(index)}
+                    color="error"
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
+              </Box>
+            </Box>
           ))}
         </CloudinaryContext>
       )}
-    </div>
+    </Box>
   );
 };
 
 export default CloudinaryMultipleUploader;
-
-CloudinaryMultipleUploader.propTypes = {
-  images: PropTypes.array,
-  setImages: PropTypes.func,
-};
