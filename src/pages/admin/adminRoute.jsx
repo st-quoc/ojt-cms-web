@@ -7,11 +7,18 @@ import DescriptionIcon from '@mui/icons-material/Description';
 import Chip from '@mui/material/Chip';
 import LayersIcon from '@mui/icons-material/Layers';
 import BarChart from '../../component/Chart/BarChart';
+import { ContentLayout } from './ContentLayout';
+import { ProductsList } from './Products/list';
+import { CreateProduct } from './Products/create';
 
 export const getPageContent = pathname => {
   switch (pathname) {
     case '/admin/dashboard':
-      return <BarChart />;
+      return (
+        <ContentLayout>
+          <BarChart />
+        </ContentLayout>
+      );
 
     case '/admin/orders':
       return <Typography>Here are the Orders</Typography>;
@@ -20,10 +27,10 @@ export const getPageContent = pathname => {
       return <Typography>List of Blogs</Typography>;
 
     case '/admin/products/create':
-      return <Typography>Create Product</Typography>;
+      return <CreateProduct />;
 
     case '/admin/products/list':
-      return <Typography>List Products</Typography>;
+      return <ProductsList />;
 
     case '/admin/reports/sales':
       return <Typography>Sales Reports</Typography>;
@@ -68,12 +75,12 @@ export const NAVIGATION = [
     children: [
       {
         segment: 'list',
-        title: 'Products list',
+        title: 'List',
         icon: <BookIcon />,
       },
       {
         segment: 'create',
-        title: 'Create new product',
+        title: 'Create',
         icon: <BookIcon />,
       },
     ],
