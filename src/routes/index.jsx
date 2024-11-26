@@ -9,6 +9,7 @@ import { Dashboard } from '../pages/admin/Dashboard';
 import { Account } from '../pages/web/Account';
 import Checkout from '../pages/web/Checkout';
 import { BlogPage } from '../pages/web/BlogPage';
+import { BlogDetail } from '../pages/web/BlogPage/BlogDetail';
 import { RegisterPage } from '../pages/register';
 import { ProductCreateAdmin } from '../pages/admin/Products/create';
 import { ProductsListAdmin } from '../pages/admin/Products/list';
@@ -37,7 +38,10 @@ export const Router = () => {
         <Route element={<ProductDetailPage />} path="product/:productId" />
         <Route element={<Account />} path="account" />
         <Route element={<BlogPage />} path="blogs" />
+        <Route element={<BlogDetail />} path="blog/:blogId" />
+      </Route>
 
+      <Route element={<AdminLayout />} path="admin">
         <Route
           path="history-order"
           element={

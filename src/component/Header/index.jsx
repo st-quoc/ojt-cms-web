@@ -4,11 +4,13 @@ import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { useNavigate } from 'react-router-dom';
 
 export const Header = ({ cartQuantity }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = event => {
@@ -38,49 +40,58 @@ export const Header = ({ cartQuantity }) => {
           ref={menuRef}
           className={`${
             menuOpen ? 'flex' : 'hidden'
-          } flex-col  md:flex md:flex-row space-y-4 text-center border-gray-800 border-solid md:space-y-0 md:space-x-8 absolute md:static top-[90px] left-0 w-full md:w-auto bg-white md:bg-transparent shadow-md md:shadow-none z-40`}
+          } flex-col md:flex md:flex-row space-y-4 text-center border-gray-800 border-solid md:space-y-0 md:space-x-8 absolute md:static top-[90px] left-0 w-full md:w-auto bg-white md:bg-transparent shadow-md md:shadow-none z-40`}
         >
-          <a
-            href="/"
-            className="hover:text-gray-600 text-black text-sm md:text-base"
+          <span
+            onClick={() => navigate('/')}
+            className="hover:text-gray-600 text-black text-sm md:text-base cursor-pointer"
           >
             HOME
-          </a>
-          <a
-            href="products"
-            className="hover:text-gray-600 text-black text-sm md:text-base"
+          </span>
+          <span
+            onClick={() => navigate('/products')}
+            className="hover:text-gray-600 text-black text-sm md:text-base cursor-pointer"
           >
             SHOP
-          </a>
-          <a
-            href="#more"
-            className="hover:text-gray-600 text-black text-sm md:text-base"
+          </span>
+          <span
+            onClick={() => navigate('/#more')}
+            className="hover:text-gray-600 text-black text-sm md:text-base cursor-pointer"
           >
             MORE
-          </a>
-          <a
-            href="blogs"
-            className="hover:text-gray-600 text-black text-sm md:text-base pb-2"
+          </span>
+          <span
+            onClick={() => navigate('/blogs')}
+            className="hover:text-gray-600 text-black text-sm md:text-base cursor-pointer pb-2"
           >
             BLOGS
-          </a>
+          </span>
         </nav>
         <div className="flex items-center space-x-4">
           <span className="hidden lg:block font-bold">CALL US: 123456789</span>
-          <a href="#search" className="hover:text-gray-600">
+          <span
+            onClick={() => navigate('/#search')}
+            className="hover:text-gray-600 cursor-pointer"
+          >
             <SearchIcon />
-          </a>
-          <a href="/account" className="hover:text-gray-600">
+          </span>
+          <span
+            onClick={() => navigate('/account')}
+            className="hover:text-gray-600 cursor-pointer"
+          >
             <PersonIcon />
-          </a>
-          <a href="/cart" className="relative hover:text-gray-600">
+          </span>
+          <span
+            onClick={() => navigate('/cart')}
+            className="relative hover:text-gray-600 cursor-pointer"
+          >
             <ShoppingCartIcon />
             {cartQuantity > 0 && (
               <span className="absolute top-4 right-[-10px] text-xs bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center transform translate-x-1 translate-y-1">
                 {cartQuantity}
               </span>
             )}
-          </a>
+          </span>
           <button
             ref={buttonRef}
             className="block md:hidden text-black focus:outline-none z-50"
@@ -93,4 +104,5 @@ export const Header = ({ cartQuantity }) => {
     </section>
   );
 };
+
 export default Header;
