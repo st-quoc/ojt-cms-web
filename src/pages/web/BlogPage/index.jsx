@@ -1,6 +1,6 @@
 import { Header } from '../../../component/Header';
-import { Banner } from './component/Banner';
-import { BlogList } from './component/BlogList';
+import { Banner } from './ComponentBlog/Banner';
+import { BlogList } from './ComponentBlog/BlogList';
 import Footer from '../../../component/Footer/Footer';
 
 export const BlogPage = () => {

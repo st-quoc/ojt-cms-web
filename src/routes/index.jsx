@@ -10,6 +10,7 @@ import { Account } from '../pages/web/Account';
 // import PrivateRoute from './PrivateRoute';
 import Checkout from '../pages/web/Checkout';
 import { BlogPage } from '../pages/web/BlogPage';
+import { BlogDetail } from '../pages/web/BlogPage/BlogDetail';
 
 export const Router = () => {
   return (
@@ -26,16 +27,10 @@ export const Router = () => {
         <Route element={<ProductDetailPage />} path="product/:productId" />
         <Route element={<Account />} path="account" />
         <Route element={<BlogPage />} path="blogs" />
+        <Route element={<BlogDetail />} path="blog/:blogId" />
       </Route>
 
-      <Route
-        element={
-          // <PrivateRoute>
-          <AdminLayout />
-          // </PrivateRoute>
-        }
-        path="admin"
-      >
+      <Route element={<AdminLayout />} path="admin">
         <Route index element={<Dashboard />} />
       </Route>
 
