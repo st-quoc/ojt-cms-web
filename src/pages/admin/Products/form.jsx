@@ -19,6 +19,8 @@ import { ProductVariantsForm } from './ProductVariantsForm';
 import ModalCreateColor from './modal/color';
 import ModalCreateSize from './modal/size';
 import { rules } from './validator';
+import { API_ROOT } from '../../../constants';
+import axiosClient from '../../../config/axios';
 
 export const ProductForm = ({ onSubmit, defaultValues }) => {
   const {
@@ -28,13 +30,35 @@ export const ProductForm = ({ onSubmit, defaultValues }) => {
     reset,
   } = useForm({ defaultValues });
 
-  const [colorOptions, setColorOptions] = useState(['Red', 'Blue', 'Green']);
-  const [sizeOptions, setSizeOptions] = useState(['S', 'M', 'L']);
-  const [categories] = useState(['men']);
+  const [colorOptions, setColorOptions] = useState([]);
+  const [sizeOptions, setSizeOptions] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [openColorModal, setOpenColorModal] = useState(false);
   const [openSizeModal, setOpenSizeModal] = useState(false);
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const sizeResponse = await axiosClient.get(
+          `${API_ROOT}/admin/size/list`,
+        );
+        setSizeOptions(sizeResponse.data);
+
+        const colorResponse = await axiosClient.get(
+          `${API_ROOT}/admin/color/list`,
+        );
+        setColorOptions(colorResponse.data);
+
+        const categoryResponse = await axiosClient.get(
+          `${API_ROOT}/admin/category/list`,
+        );
+        setCategories(categoryResponse.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
     reset(defaultValues);
   }, [defaultValues, reset]);
 
@@ -97,9 +121,9 @@ export const ProductForm = ({ onSubmit, defaultValues }) => {
                     fullWidth
                     error={!!errors.categories}
                   >
-                    {categories.map(name => (
-                      <MenuItem key={name} value={name}>
-                        {name}
+                    {categories.map(cate => (
+                      <MenuItem key={cate.id} value={cate.id}>
+                        {cate.name}
                       </MenuItem>
                     ))}
                   </Select>
