@@ -19,6 +19,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import { ProductsFilter } from './filter';
 import { AdminPageHeader } from '../../../component/AdminPageHeader';
 import { useNavigate } from 'react-router-dom';
+import { Typography } from '@mui/material';
 
 const columns = [
   { id: 'name', label: 'Name', minWidth: 170 },
@@ -77,19 +78,19 @@ export const ProductsListAdmin = () => {
 
   const handleSelectAll = event => {
     if (event.target.checked) {
-      const newSelected = rows.map(row => row.code);
+      const newSelected = rows.map(row => row.id);
       setSelected(newSelected);
     } else {
       setSelected([]);
     }
   };
 
-  const handleSelectRow = (event, code) => {
-    const selectedIndex = selected.indexOf(code);
+  const handleSelectRow = (event, id) => {
+    const selectedIndex = selected.indexOf(id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = [...selected, code];
+      newSelected = [...selected, id];
     } else if (selectedIndex === 0) {
       newSelected = selected.slice(1);
     } else if (selectedIndex === selected.length - 1) {
@@ -124,6 +125,11 @@ export const ProductsListAdmin = () => {
       <Divider textAlign="center" className="py-4">
         PRODUCTS
       </Divider>
+      {selected.length > 0 && (
+        <Typography variant="body1" gutterBottom>
+          {selected.length} Product is selected
+        </Typography>
+      )}
       <Paper sx={{ width: '100%', overflow: 'hidden' }} elevation={3}>
         <TableContainer>
           <Table stickyHeader aria-label="sticky table">
@@ -151,19 +157,19 @@ export const ProductsListAdmin = () => {
             </TableHead>
             <TableBody>
               {rows.map(row => {
-                const isItemSelected = selected.indexOf(row.code) !== -1;
+                const isItemSelected = selected.indexOf(row.id) !== -1;
                 return (
                   <TableRow
                     hover
                     role="checkbox"
                     tabIndex={-1}
-                    key={row.code}
+                    key={row.id}
                     selected={isItemSelected}
                   >
                     <TableCell padding="checkbox">
                       <Checkbox
                         checked={isItemSelected}
-                        onChange={event => handleSelectRow(event, row.code)}
+                        onChange={event => handleSelectRow(event, row.id)}
                       />
                     </TableCell>
                     {columns.map(column => {
