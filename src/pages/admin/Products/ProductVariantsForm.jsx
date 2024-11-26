@@ -84,8 +84,8 @@ export const ProductVariantsForm = ({
                     }}
                   >
                     {colorOptions?.map((color, i) => (
-                      <MenuItem key={i} value={color}>
-                        {color}
+                      <MenuItem key={i} value={color.id}>
+                        {color.name}
                       </MenuItem>
                     ))}
                   </Select>
@@ -118,8 +118,8 @@ export const ProductVariantsForm = ({
                     }}
                   >
                     {sizeOptions?.map((size, i) => (
-                      <MenuItem key={i} value={size}>
-                        {size}
+                      <MenuItem key={i} value={size.id}>
+                        {size.name}
                       </MenuItem>
                     ))}
                   </Select>

@@ -1,22 +1,27 @@
-import axios from 'axios';
 import { Typography, Divider, Box } from '@mui/material';
 import { AdminPageHeader } from '../../../component/AdminPageHeader';
 import { toast } from 'react-toastify';
 import { ProductForm } from './form';
+import { API_ROOT } from '../../../constants';
+import axiosClient from '../../../config/axios';
 
 export const ProductCreateAdmin = () => {
   const onSubmit = async data => {
+    console.log('🚀  data  🚀', data);
     const productData = {
       name: data.name,
-      sortDesc: data.description,
-      fullDesc: data.fullDescription,
+      sortDesc: data.sortDesc,
+      fullDesc: data.fullDesc,
       categories: data.categories,
       images: data.images,
       variants: data.variants,
     };
 
     try {
-      const response = await axios.post('/api/products', productData);
+      const response = await axiosClient.post(
+        `${API_ROOT}/admin/product/create`,
+        productData,
+      );
       console.log('🚀  Product created successfully', response);
       toast.info('Product created successfully!');
     } catch (error) {
