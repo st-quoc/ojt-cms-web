@@ -25,10 +25,10 @@ export const Sidebar = () => {
       permission: 'VIEW_PRODUCT',
     },
     {
-      text: 'Orders',
+      text: 'Blogs',
       icon: <InboxIcon />,
-      path: 'orders',
-      permission: 'VIEW_ORDERS',
+      path: 'blogs',
+      permission: 'VIEW_BLOGS',
     },
     {
       text: 'Users',

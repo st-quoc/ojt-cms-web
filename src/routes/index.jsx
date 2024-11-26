@@ -14,6 +14,10 @@ import { ProductCreateAdmin } from '../pages/admin/Products/create';
 import { ProductsListAdmin } from '../pages/admin/Products/list';
 import { DetailProductAdmin } from '../pages/admin/Products/detail';
 import { ProductEditAdmin } from '../pages/admin/Products/edit';
+import { BlogListAdmin } from '../pages/admin/Blogs/list';
+import { BlogCreateAdmin } from '../pages/admin/Blogs/create';
+import { BlogDetailAdmin } from '../pages/admin/Blogs/detail';
+import { BlogEditAdmin } from '../pages/admin/Blogs/edit';
 
 const isUserLoggedIn = () => {
   return localStorage.getItem('isLoggedIn') === 'true';
@@ -64,6 +68,11 @@ export const Router = () => {
           path="product/detail/:productID"
         />
         <Route element={<ProductEditAdmin />} path="product/edit/:productID" />
+
+        <Route element={<BlogListAdmin />} path="blogs" />
+        <Route element={<BlogCreateAdmin />} path="blog/create" />
+        <Route element={<BlogDetailAdmin />} path="blog/detail/:blogID" />
+        <Route element={<BlogEditAdmin />} path="blog/edit/:blogID" />
       </Route>
 
       <Route element={<LoginPage />} path="login" />
