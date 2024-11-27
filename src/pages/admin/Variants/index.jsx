@@ -59,11 +59,22 @@ export const VariantsPage = () => {
 
   const [currentEditItem, setCurrentEditItem] = useState(null);
 
+  const [categorySearch, setCategorySearch] = useState('');
+  const [colorSearch, setColorSearch] = useState('');
+  const [sizeSearch, setSizeSearch] = useState('');
+
   useEffect(() => {
-    fetchCategories(categoryPage, categoryRowsPerPage);
-    fetchColors(colorPage, colorRowsPerPage);
-    fetchSizes(sizePage, sizeRowsPerPage);
-  }, []);
+    fetchCategories(categoryPage, categoryRowsPerPage, categorySearch);
+    fetchColors(colorPage, colorRowsPerPage, colorSearch);
+    fetchSizes(sizePage, sizeRowsPerPage, sizeSearch);
+  }, [
+    categoryPage,
+    colorPage,
+    sizePage,
+    categorySearch,
+    colorSearch,
+    sizeSearch,
+  ]);
 
   useEffect(() => {
     const savedTab = localStorage.getItem('v_admin_tab');
@@ -153,6 +164,8 @@ export const VariantsPage = () => {
     onCreate,
     fetchData,
     type,
+    searchValue,
+    setSearchValue,
   ) => (
     <Paper elevation={3} className="flex flex-1">
       <Stack spacing={2} p={2} className="flex-1">
@@ -162,7 +175,11 @@ export const VariantsPage = () => {
               variant="outlined"
               size="small"
               placeholder={`Search ${title}`}
-              onChange={e => fetchData(0, rowsPerPage, e.target.value)}
+              value={searchValue}
+              onChange={e => {
+                setSearchValue(e.target.value);
+                fetchData(0, rowsPerPage, e.target.value);
+              }}
               sx={{ width: '100%' }}
             />
           </Box>
@@ -231,14 +248,14 @@ export const VariantsPage = () => {
           rowsPerPageOptions={[5, 10, 25]}
           onPageChange={(event, newPage) => {
             setPage(newPage);
-            fetchData(newPage, rowsPerPage);
+            fetchData(newPage, rowsPerPage, searchValue);
           }}
           rowsPerPage={rowsPerPage}
           onRowsPerPageChange={event => {
             const newRowsPerPage = parseInt(event.target.value, 10);
             setRowsPerPage(newRowsPerPage);
             setPage(0);
-            fetchData(0, newRowsPerPage);
+            fetchData(0, newRowsPerPage, searchValue);
           }}
         />
       </Stack>
@@ -312,6 +329,8 @@ export const VariantsPage = () => {
           () => setOpenCategoryModal(true),
           fetchCategories,
           'category',
+          categorySearch,
+          setCategorySearch,
         )}
       {currentTab === 1 &&
         renderTable(
@@ -326,6 +345,8 @@ export const VariantsPage = () => {
           () => setOpenColorModal(true),
           fetchColors,
           'color',
+          colorSearch,
+          setColorSearch,
         )}
       {currentTab === 2 &&
         renderTable(
@@ -340,6 +361,8 @@ export const VariantsPage = () => {
           () => setOpenSizeModal(true),
           fetchSizes,
           'size',
+          sizeSearch,
+          setSizeSearch,
         )}
     </Box>
   );

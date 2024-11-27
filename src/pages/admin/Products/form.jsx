@@ -44,12 +44,12 @@ export const ProductForm = ({ isEdit, onSubmit, defaultValues }) => {
         const sizeResponse = await axiosClient.get(
           `${API_ROOT}/admin/size/list`,
         );
-        setSizeOptions(sizeResponse.data);
+        setSizeOptions(sizeResponse.data.sizes);
 
         const colorResponse = await axiosClient.get(
           `${API_ROOT}/admin/color/list`,
         );
-        setColorOptions(colorResponse.data);
+        setColorOptions(colorResponse.data.colors);
 
         const categoryResponse = await axiosClient.get(
           `${API_ROOT}/admin/category/list`,
