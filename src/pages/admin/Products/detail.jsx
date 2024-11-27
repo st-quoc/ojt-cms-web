@@ -192,10 +192,14 @@ export const DetailProductAdmin = () => {
               <strong>Category:</strong>
             </Typography>
             <Stack direction="row">
-              <Chip
-                label={product.categories.join(', ')}
-                className="cursor-pointer"
-              />
+              {product.categories.length > 0 &&
+                product.categories.map((cate, ind) => (
+                  <Chip
+                    key={ind}
+                    label={cate.name}
+                    className="cursor-pointer"
+                  />
+                ))}
             </Stack>
           </Stack>
           <Stack spacing={1}>

@@ -1,13 +1,14 @@
 import { Typography, Divider, Box } from '@mui/material';
 import { AdminPageHeader } from '../../../component/AdminPageHeader';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { ProductForm } from './form';
 import { API_ROOT } from '../../../constants';
 import axiosClient from '../../../config/axios';
-import 'react-toastify/dist/ReactToastify.css';
-import { redirect } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export const ProductCreateAdmin = () => {
+  const navigate = useNavigate();
+
   const onSubmit = async data => {
     const productData = {
       name: data.name,
@@ -19,10 +20,9 @@ export const ProductCreateAdmin = () => {
     };
 
     try {
-      // Gửi request tạo sản phẩm
       await axiosClient.post(`${API_ROOT}/admin/product/create`, productData);
+      navigate('/admin/products');
       toast.success('Product created successfully!');
-      redirect('/admin/products');
     } catch (error) {
       console.error('🚀 Error creating product: ', error);
       toast.error('Error creating product!');
@@ -31,10 +31,6 @@ export const ProductCreateAdmin = () => {
 
   return (
     <Box className="p-4">
-      {/* ToastContainer để hiển thị thông báo */}
-      <ToastContainer position="top-right" autoClose={3000} />
-
-      {/* Tiêu đề trang */}
       <AdminPageHeader
         breadcrumbs={[
           { label: 'Admin', path: '/admin' },
@@ -49,7 +45,6 @@ export const ProductCreateAdmin = () => {
         </Typography>
       </Divider>
 
-      {/* Form sản phẩm */}
       <ProductForm
         onSubmit={onSubmit}
         defaultValues={{

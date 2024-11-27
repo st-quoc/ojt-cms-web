@@ -30,13 +30,8 @@ export const ProductEditAdmin = () => {
         `${API_ROOT}/admin/product/edit/${id}`,
         productData,
       );
-      console.log('🚀 ', res);
-
-      toast.success(`Edited successfully!`);
-
-      setTimeout(() => {
-        navigate('/admin/products');
-      }, 2000);
+      navigate('/admin/products');
+      toast.success(`Product: ${res.data.product.name} edited successfully!`);
     } catch (error) {
       console.log('🚀  error  🚀', error);
       toast.error('Error editting product!' + error);

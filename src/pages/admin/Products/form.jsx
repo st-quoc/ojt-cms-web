@@ -135,17 +135,17 @@ export const ProductForm = ({ isEdit, onSubmit, defaultValues }) => {
                 <Controller
                   name="categories"
                   control={control}
-                  defaultValue={[]}
                   render={({ field }) => (
                     <Select
                       {...field}
                       multiple
+                      value={field.value || []}
                       input={<OutlinedInput label="Categories" />}
                       fullWidth
-                      error={!!errors.categories}
+                      onChange={e => field.onChange(e.target.value)}
                     >
                       {categories.map(cate => (
-                        <MenuItem key={cate.id} value={cate.id}>
+                        <MenuItem key={cate._id} value={cate._id}>
                           {cate.name}
                         </MenuItem>
                       ))}
