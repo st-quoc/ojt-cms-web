@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
-import Checkbox from '@mui/material/Checkbox';
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -10,61 +9,163 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import Stack from '@mui/material/Stack';
 import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AutorenewIcon from '@mui/icons-material/Autorenew';
-import InfoIcon from '@mui/icons-material/Info';
 import { ProductsFilter } from './filter';
 import { AdminPageHeader } from '../../../component/AdminPageHeader';
 import { useNavigate } from 'react-router-dom';
+import {
+  Typography,
+  CircularProgress,
+  Alert,
+  Collapse,
+  Chip,
+  Stack,
+  Tooltip,
+} from '@mui/material';
+import { API_ROOT } from '../../../constants';
+import axiosClient from '../../../config/axios';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
+import InfoIcon from '@mui/icons-material/Info';
 
-const columns = [
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
-  {
-    id: 'population',
-    label: 'Population',
-    minWidth: 170,
-    align: 'right',
-    format: value => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'size',
-    label: 'Size\u00a0(km\u00b2)',
-    minWidth: 170,
-    align: 'right',
-    format: value => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'density',
-    label: 'Density',
-    minWidth: 170,
-    align: 'right',
-    format: value => value.toFixed(2),
-  },
-  { id: 'actions', label: 'Actions', minWidth: 150, align: 'center' },
-];
+function Row(props) {
+  const navigate = useNavigate();
+  const { row, handleDelete } = props;
+  const [open, setOpen] = useState(false);
 
-function createData(id, name, code, population, size) {
-  const density = population / size;
-  return { name, code, population, size, density };
+  return (
+    <>
+      <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+        <TableCell>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+        <TableCell align="left">
+          <img
+            src={row.images[0]}
+            alt={row.images[0]}
+            className="w-[50px] h-[50px] object-cover"
+          />
+        </TableCell>
+        <TableCell component="th" scope="row">
+          {row.name}
+        </TableCell>
+        <TableCell align="left">
+          {row.categories?.map((cate, index) => (
+            <Chip key={index} label={cate} />
+          ))}
+        </TableCell>
+        <TableCell align="left">{row.protein}</TableCell>
+        <TableCell align="left">{row.protein}</TableCell>
+        <TableCell align="center">
+          <Stack direction="row" spacing={1} className="justify-center">
+            <Tooltip title="Delete">
+              <IconButton>
+                <DeleteIcon onClick={() => handleDelete(row.id)} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Detail">
+              <IconButton
+                onClick={() => navigate(`/admin/product/detail/${row.id}`)}
+              >
+                <InfoIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Change status">
+              <IconButton>
+                <AutorenewIcon />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={open} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <Typography variant="h6" gutterBottom component="div">
+                <strong>Variants</strong>
+              </Typography>
+              <Table size="small" aria-label="purchases">
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="left">
+                      <strong>Color</strong>
+                    </TableCell>
+                    <TableCell align="left">
+                      <strong>Size</strong>
+                    </TableCell>
+                    <TableCell align="left">
+                      <strong>Stock</strong>
+                    </TableCell>
+                    <TableCell align="left">
+                      <strong>Price</strong>
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {row.variants.map((variant, index) => (
+                    <TableRow key={index}>
+                      <TableCell component="th" scope="row">
+                        {variant.color}
+                      </TableCell>
+                      <TableCell>{variant.size}</TableCell>
+                      <TableCell align="left">{variant.stock}</TableCell>
+                      <TableCell align="left">{variant.price}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </>
+  );
 }
-
-const rows = [
-  createData(1, 'India', 'IN', 1324171354, 3287263),
-  createData(2, 'China', 'CN', 1403500365, 9596961),
-  createData(3, 'Italy', 'IT', 60483973, 301340),
-  createData(4, 'United States', 'US', 327167434, 9833520),
-  createData(5, 'Canada', 'CA', 37602103, 9984670),
-];
 
 export const ProductsListAdmin = () => {
   const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [selected, setSelected] = useState([]);
+  const [totalProducts, setTotalProducts] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await axiosClient.get(
+          `${API_ROOT}/admin/product/list`,
+          {
+            params: {
+              page: page + 1,
+              limit: rowsPerPage,
+            },
+          },
+        );
+        setProducts(response.data.products);
+        setTotalProducts(response.data.totalProducts);
+      } catch (error) {
+        setError('Error fetching products. Please try again later.');
+        console.error('Error fetching products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [page, rowsPerPage]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -75,33 +176,14 @@ export const ProductsListAdmin = () => {
     setPage(0);
   };
 
-  const handleSelectAll = event => {
-    if (event.target.checked) {
-      const newSelected = rows.map(row => row.code);
-      setSelected(newSelected);
-    } else {
-      setSelected([]);
+  const handleDelete = async productId => {
+    try {
+      await axiosClient.delete(`${API_ROOT}/admin/product/delete/${productId}`);
+      setProducts(products.filter(product => product._id !== productId));
+    } catch (error) {
+      setError('Error deleting product. Please try again later.');
+      console.error('Error deleting product', error);
     }
-  };
-
-  const handleSelectRow = (event, code) => {
-    const selectedIndex = selected.indexOf(code);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = [...selected, code];
-    } else if (selectedIndex === 0) {
-      newSelected = selected.slice(1);
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = selected.slice(0, -1);
-    } else {
-      newSelected = [
-        ...selected.slice(0, selectedIndex),
-        ...selected.slice(selectedIndex + 1),
-      ];
-    }
-
-    setSelected(newSelected);
   };
 
   return (
@@ -124,106 +206,82 @@ export const ProductsListAdmin = () => {
       <Divider textAlign="center" className="py-4">
         PRODUCTS
       </Divider>
-      <Paper sx={{ width: '100%', overflow: 'hidden' }} elevation={3}>
-        <TableContainer>
-          <Table stickyHeader aria-label="sticky table">
-            <TableHead>
-              <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    indeterminate={
-                      selected.length > 0 && selected.length < rows.length
-                    }
-                    checked={selected.length === rows.length}
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
-                {columns.map(column => (
-                  <TableCell
-                    key={column.id}
-                    align={column.align}
-                    style={{ minWidth: column.minWidth }}
-                  >
-                    {column.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map(row => {
-                const isItemSelected = selected.indexOf(row.code) !== -1;
-                return (
-                  <TableRow
-                    hover
-                    role="checkbox"
-                    tabIndex={-1}
-                    key={row.code}
-                    selected={isItemSelected}
-                  >
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={isItemSelected}
-                        onChange={event => handleSelectRow(event, row.code)}
-                      />
-                    </TableCell>
-                    {columns.map(column => {
-                      if (column.id === 'actions') {
-                        return (
-                          <TableCell key={column.id} align="right">
-                            <Stack
-                              direction="row"
-                              spacing={1}
-                              className="justify-center"
-                            >
-                              <Tooltip title="Delete">
-                                <IconButton>
-                                  <DeleteIcon />
-                                </IconButton>
-                              </Tooltip>
-                              <Tooltip title="Detail">
-                                <IconButton
-                                  onClick={() =>
-                                    navigate(`/admin/product/detail/${row.id}`)
-                                  }
-                                >
-                                  <InfoIcon />
-                                </IconButton>
-                              </Tooltip>
-                              <Tooltip title="Change status">
-                                <IconButton>
-                                  <AutorenewIcon />
-                                </IconButton>
-                              </Tooltip>
-                            </Stack>
-                          </TableCell>
-                        );
-                      }
 
-                      const value = row[column.id];
-                      return (
-                        <TableCell key={column.id} align={column.align}>
-                          {column.format && typeof value === 'number'
-                            ? column.format(value)
-                            : value}
-                        </TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[10, 25, 100]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
+      {loading ? (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="200px"
+        >
+          <CircularProgress />
+        </Box>
+      ) : error ? (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="200px"
+        >
+          <Alert severity="error">{error}</Alert>
+        </Box>
+      ) : (
+        <>
+          {products.length === 0 ? (
+            <Typography variant="h6" color="textSecondary" align="center">
+              No products available.
+            </Typography>
+          ) : (
+            <Paper sx={{ width: '100%', overflow: 'hidden' }} elevation={3}>
+              <TableContainer component={Paper}>
+                <Table aria-label="collapsible table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell />
+                      <TableCell>
+                        <strong>Images</strong>
+                      </TableCell>
+                      <TableCell align="left">
+                        <strong>Name</strong>
+                      </TableCell>
+                      <TableCell align="left">
+                        <strong>Categories</strong>
+                      </TableCell>
+                      <TableCell align="left">
+                        <strong>Total Quantity Sold</strong>
+                      </TableCell>
+                      <TableCell align="left">
+                        <strong>Total Quantity In Stock</strong>
+                      </TableCell>
+                      <TableCell align="center">
+                        <strong>Actions</strong>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {products.map(row => (
+                      <Row
+                        key={row.name}
+                        row={row}
+                        handleDelete={handleDelete}
+                      />
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TablePagination
+                rowsPerPageOptions={[10, 25, 100]}
+                component="div"
+                count={totalProducts}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Paper>
+          )}
+        </>
+      )}
     </Box>
   );
 };

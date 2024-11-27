@@ -13,6 +13,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { useEffect, useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { Outlet } from 'react-router-dom';
+import { useMediaQuery } from '@mui/material';
 
 const drawerWidth = 240;
 
@@ -58,7 +59,7 @@ const AppBar = styled(MuiAppBar, {
       props: ({ open }) => open,
       style: {
         marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
+        width: `calc(100vw - ${drawerWidth}px)`,
         transition: theme.transitions.create(['width', 'margin'], {
           easing: theme.transitions.easing.sharp,
           duration: theme.transitions.duration.enteringScreen,
@@ -95,8 +96,8 @@ const Drawer = styled(MuiDrawer, {
 
 export const AdminLayout = () => {
   const theme = useTheme();
-
-  const [open, setOpen] = useState(true);
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [open, setOpen] = useState(!isMobile);
 
   const handleDrawerOpen = () => {
     localStorage.setItem('openedSibar', true);
@@ -113,8 +114,16 @@ export const AdminLayout = () => {
     setOpen(opened);
   }, []);
 
+  useEffect(() => {
+    if (isMobile) {
+      setOpen(false);
+    } else {
+      setOpen(true);
+    }
+  }, [isMobile]);
+
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', width: '100vw' }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar>
@@ -150,8 +159,14 @@ export const AdminLayout = () => {
         <Divider />
         <Sidebar />
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1 }}>
-        <DrawerHeader />
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          width: `calc(100vw - ${drawerWidth}px)`,
+          marginTop: '64px',
+        }}
+      >
         <Outlet />
       </Box>
     </Box>

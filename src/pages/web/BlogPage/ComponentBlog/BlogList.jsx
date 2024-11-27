@@ -5,7 +5,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
 import { useNavigate } from 'react-router-dom';
 
-export const blog = [
+const blogs = [
   {
     id: 1,
     date: '01 July 2024',
@@ -67,7 +67,32 @@ export const blog = [
       'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
     image: 'https://m.media-amazon.com/images/I/41PuKqHnDqL._AC_UY1000_.jpg',
   },
+  {
+    id: 8,
+    date: '01 July 2024',
+    title: 'Nam Nec Rhoncus Est',
+    description:
+      'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
+    image: 'https://m.media-amazon.com/images/I/41PuKqHnDqL._AC_UY1000_.jpg',
+  },
+  {
+    id: 9,
+    date: '01 July 2024',
+    title: 'Nam Nec Rhoncus Est',
+    description:
+      'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
+    image: 'https://m.media-amazon.com/images/I/41PuKqHnDqL._AC_UY1000_.jpg',
+  },
+  {
+    id: 10,
+    date: '01 July 2024',
+    title: 'Nam Nec Rhoncus Est',
+    description:
+      'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.',
+    image: 'https://m.media-amazon.com/images/I/41PuKqHnDqL._AC_UY1000_.jpg',
+  },
 ];
+
 export const BlogList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -85,12 +110,19 @@ export const BlogList = () => {
     setIsModalOpen(false);
   };
 
-  const filteredBlog = blog.filter(item =>
-    item.date.toLowerCase().includes(searchDate.toLowerCase()),
+  const filteredBlog = (blogs || []).filter(
+    item =>
+      item.date.toLowerCase().includes(searchDate.toLowerCase()) ||
+      item.title.toLowerCase().includes(searchDate.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchDate.toLowerCase()),
   );
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleBlogDetailClick = post => {
+    navigate(`/blog/${post.id}`, { state: { post } });
   };
 
   useEffect(() => {
@@ -108,7 +140,7 @@ export const BlogList = () => {
 
   return (
     <div>
-      <div className="p-4 bg-white shadow-md rounded-md max-w-xs ml-4 mt-4">
+      <div className="p-4 bg-white shadow-md rounded-md max-w-md ml-4 mt-4">
         <div className="flex items-center space-x-2">
           <input
             type="text"
@@ -125,8 +157,8 @@ export const BlogList = () => {
 
       <div className="bg-gray-100 py-10">
         <div className="bg-gray-100 py-10">
-          <div className="max-w-4xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
               {filteredBlog.map(item => (
                 <div
                   key={item.id}
@@ -148,9 +180,8 @@ export const BlogList = () => {
                     <h2 className="text-2xl font-bold mt-2 mb-4 group-hover:text-blue-500 transition-colors duration-300">
                       {item.title}
                     </h2>
-                    <p className="text-gray-600">{item.description}</p>
                     <button
-                      onClick={() => navigate(`/blog/${item.id}`)}
+                      onClick={() => handleBlogDetailClick(item)}
                       className="mt-4 text-blue-500 hover:underline"
                     >
                       READ MORE

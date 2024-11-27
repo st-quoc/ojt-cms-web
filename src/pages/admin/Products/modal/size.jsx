@@ -1,14 +1,31 @@
-import { useState } from 'react';
 import { Modal, Box, Typography, TextField, Button } from '@mui/material';
+import { useForm, Controller } from 'react-hook-form';
+import { toast } from 'react-toastify';
+import axiosClient from '../../../../config/axios';
+import { API_ROOT } from '../../../../constants';
 
 const ModalCreateSize = ({ open, onClose, onCreate }) => {
-  const [sizeName, setSizeName] = useState('');
+  const { handleSubmit, control, reset } = useForm({
+    defaultValues: {
+      sizeName: '',
+    },
+  });
 
-  const handleCreate = () => {
-    if (sizeName.trim()) {
-      onCreate(sizeName.trim());
-      setSizeName('');
+  const handleCreate = async data => {
+    try {
+      const res = await axiosClient.post(`${API_ROOT}/admin/size/create`, {
+        name: data.sizeName.trim(),
+      });
+
+      const newSize = res.data;
+      toast.success('Size created successfully!');
+
+      onCreate(newSize);
+      reset();
       onClose();
+    } catch (error) {
+      console.log('🚀  error  🚀', error);
+      toast.error('Failed to create size!');
     }
   };
 
@@ -30,21 +47,28 @@ const ModalCreateSize = ({ open, onClose, onCreate }) => {
         <Typography variant="h6" sx={{ mb: 2 }}>
           Create New Size
         </Typography>
-        <TextField
-          label="Size Name"
-          value={sizeName}
-          onChange={e => setSizeName(e.target.value)}
-          fullWidth
-          sx={{ mb: 2 }}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          onClick={handleCreate}
-        >
-          Create Size
-        </Button>
+
+        <form onSubmit={handleSubmit(handleCreate)}>
+          <Controller
+            name="sizeName"
+            control={control}
+            rules={{ required: 'Size name is required' }}
+            render={({ field, fieldState }) => (
+              <TextField
+                {...field}
+                label="Size Name"
+                fullWidth
+                sx={{ mb: 2 }}
+                error={!!fieldState.error}
+                helperText={fieldState.error?.message}
+              />
+            )}
+          />
+
+          <Button type="submit" variant="contained" color="primary" fullWidth>
+            Create Size
+          </Button>
+        </form>
       </Box>
     </Modal>
   );

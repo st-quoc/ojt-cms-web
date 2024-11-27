@@ -22,13 +22,13 @@ export const Sidebar = () => {
       text: 'Product',
       icon: <MailIcon />,
       path: 'products',
-      permission: 'VIEW_PRODUCT',
+      permission: 'view_product',
     },
     {
-      text: 'Orders',
+      text: 'Blogs',
       icon: <InboxIcon />,
-      path: 'orders',
-      permission: 'VIEW_ORDERS',
+      path: 'blogs',
+      permission: 'view_blog',
     },
     {
       text: 'Users',
