@@ -4,8 +4,11 @@ import { toast } from 'react-toastify';
 import { ProductForm } from './form';
 import { API_ROOT } from '../../../constants';
 import axiosClient from '../../../config/axios';
+import { useNavigate } from 'react-router-dom';
 
 export const ProductCreateAdmin = () => {
+  const navigate = useNavigate();
+
   const onSubmit = async data => {
     const productData = {
       name: data.name,
@@ -18,6 +21,7 @@ export const ProductCreateAdmin = () => {
 
     try {
       await axiosClient.post(`${API_ROOT}/admin/product/create`, productData);
+      navigate('/admin/products');
       toast.info('Product created successfully!');
     } catch (error) {
       console.log('🚀  error  🚀', error);

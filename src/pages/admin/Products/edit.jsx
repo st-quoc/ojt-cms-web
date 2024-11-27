@@ -5,10 +5,11 @@ import { ProductForm } from './form';
 import axiosClient from '../../../config/axios';
 import { API_ROOT } from '../../../constants';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export const ProductEditAdmin = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,8 +29,8 @@ export const ProductEditAdmin = () => {
         `${API_ROOT}/admin/product/edit/${id}`,
         productData,
       );
-
-      toast.info(`Product: ${res.name} edited successfully!`);
+      navigate('/admin/products');
+      toast.info(`Product: ${res.data.product.name} edited successfully!`);
     } catch (error) {
       console.log('🚀  error  🚀', error);
       toast.error('Error editting product!');
@@ -41,7 +42,12 @@ export const ProductEditAdmin = () => {
       const response = await axiosClient.get(
         `${API_ROOT}/admin/product/detail/${id}`,
       );
-      setProduct(response.data.product);
+      const product = response.data.product;
+      const formattedProduct = {
+        ...product,
+        categories: product.categories.map(c => c._id),
+      };
+      setProduct(formattedProduct);
       setLoading(false);
     } catch (err) {
       console.log('🚀  err  🚀', err);

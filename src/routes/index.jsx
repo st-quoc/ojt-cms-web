@@ -26,7 +26,7 @@ const AdminLayoutProtectedRoute = ({ children }) => {
   const role = userInfo?.role;
 
   if (!['admin', 'manager'].includes(role)) {
-    return <Navigate to="/no-access" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return children;
