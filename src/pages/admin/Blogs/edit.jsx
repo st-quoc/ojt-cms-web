@@ -16,8 +16,7 @@ export const BlogEditAdmin = () => {
     };
 
     try {
-      const response = await axios.post('/api/blogs', blogData);
-      console.log('🚀  Blog created successfully', response);
+      await axios.post('/api/blogs', blogData);
       toast.info('Blog created successfully!');
     } catch (error) {
       console.log('🚀  error  🚀', error);

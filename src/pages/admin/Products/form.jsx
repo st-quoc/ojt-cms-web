@@ -16,13 +16,14 @@ import { useForm, Controller } from 'react-hook-form';
 import { Editor } from '../../../component/Editor';
 import CloudinaryMultipleUploader from '../../../component/CloudinaryMultipleUploader';
 import { ProductVariantsForm } from './ProductVariantsForm';
-import ModalCreateColor from './modal/color';
-import ModalCreateSize from './modal/size';
 import { rules } from './validator';
 import { API_ROOT } from '../../../constants';
 import axiosClient from '../../../config/axios';
+import ModalCreateCategory from './modal/category';
+import ModalCreateColor from './modal/color';
+import ModalCreateSize from './modal/size';
 
-export const ProductForm = ({ onSubmit, defaultValues }) => {
+export const ProductForm = ({ isEdit, onSubmit, defaultValues }) => {
   const {
     control,
     handleSubmit,
@@ -35,6 +36,7 @@ export const ProductForm = ({ onSubmit, defaultValues }) => {
   const [categories, setCategories] = useState([]);
   const [openColorModal, setOpenColorModal] = useState(false);
   const [openSizeModal, setOpenSizeModal] = useState(false);
+  const [openCategoryModal, setOpenCategoryModal] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,6 +64,10 @@ export const ProductForm = ({ onSubmit, defaultValues }) => {
     reset(defaultValues);
   }, [defaultValues, reset]);
 
+  const handleAddCategory = category => {
+    setCategories(prev => [...prev, category]);
+  };
+
   const handleAddColor = newColor => {
     setColorOptions(prev => [...prev, newColor]);
   };
@@ -81,6 +87,11 @@ export const ProductForm = ({ onSubmit, defaultValues }) => {
         open={openSizeModal}
         onClose={() => setOpenSizeModal(false)}
         onCreate={handleAddSize}
+      />
+      <ModalCreateCategory
+        open={openCategoryModal}
+        onClose={() => setOpenCategoryModal(false)}
+        onCreate={handleAddCategory}
       />
       <form
         onSubmit={e => {
@@ -107,34 +118,47 @@ export const ProductForm = ({ onSubmit, defaultValues }) => {
                 />
               )}
             />
-            <FormControl fullWidth>
-              <InputLabel>Categories</InputLabel>
-              <Controller
-                name="categories"
-                control={control}
-                defaultValue={[]}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    multiple
-                    input={<OutlinedInput label="Categories" />}
-                    fullWidth
-                    error={!!errors.categories}
-                  >
-                    {categories.map(cate => (
-                      <MenuItem key={cate.id} value={cate.id}>
-                        {cate.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
+
+            <Stack spacing={1}>
+              <Box className="flex justify-end">
+                <Button
+                  variant="outlined"
+                  size="small"
+                  className="w-fit"
+                  onClick={() => setOpenCategoryModal(true)}
+                >
+                  New Category
+                </Button>
+              </Box>
+              <FormControl fullWidth>
+                <InputLabel>Categories</InputLabel>
+                <Controller
+                  name="categories"
+                  control={control}
+                  defaultValue={[]}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      multiple
+                      input={<OutlinedInput label="Categories" />}
+                      fullWidth
+                      error={!!errors.categories}
+                    >
+                      {categories.map(cate => (
+                        <MenuItem key={cate.id} value={cate.id}>
+                          {cate.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  )}
+                />
+                {errors.categories && (
+                  <Typography color="error" variant="caption">
+                    {errors.categories?.message}
+                  </Typography>
                 )}
-              />
-              {errors.categories && (
-                <Typography color="error" variant="caption">
-                  {errors.categories?.message}
-                </Typography>
-              )}
-            </FormControl>
+              </FormControl>
+            </Stack>
           </Stack>
         </Paper>
 
@@ -224,7 +248,7 @@ export const ProductForm = ({ onSubmit, defaultValues }) => {
         <Stack spacing={2} direction="row">
           <Box>
             <Button type="submit" variant="contained" color="primary">
-              Create
+              {isEdit ? 'Save' : 'Create'}
             </Button>
           </Box>
           <Box>

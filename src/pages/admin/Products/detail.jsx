@@ -10,44 +10,60 @@ import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import { Fragment } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { AdminPageHeader } from '../../../component/AdminPageHeader';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { API_ROOT } from '../../../constants';
+import axiosClient from '../../../config/axios';
 
 export const DetailProductAdmin = () => {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchProductDetail = async () => {
+    try {
+      const response = await axiosClient.get(
+        `${API_ROOT}/admin/product/detail/${id}`,
+      );
+      setProduct(response.data.product);
+      setLoading(false);
+    } catch (err) {
+      console.log('🚀  err  🚀', err);
+      setError('Failed to load product details');
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProductDetail();
+  }, [id]);
+
+  if (loading) {
+    return <Typography variant="h6">Loading...</Typography>;
+  }
+
+  if (error) {
+    return (
+      <Typography variant="h6" color="error">
+        {error}
+      </Typography>
+    );
+  }
 
   const handleEditProduct = () => {
     navigate(`/admin/product/edit/${product.id}`, { state: { product } });
-  };
-  const product = {
-    id: 1,
-    name: 'Running Shoes',
-    images: [
-      'https://i5.walmartimages.com/asr/0a34ef4c-d1f5-4627-832f-e4125701d399.14cbe143d89f81352a894ddb0ef5d96a.jpeg',
-      'https://giayxshop.vn/wp-content/uploads/2021/12/z5524261544284_e371fd8c4b6f4a28836f0e84ad1ab3b3-600x600.jpg',
-      'https://giayxshop.vn/wp-content/uploads/2021/12/z5524261544284_e371fd8c4b6f4a28836f0e84ad1ab3b3-600x600.jpg',
-      'https://giayxshop.vn/wp-content/uploads/2021/12/z5524261544284_e371fd8c4b6f4a28836f0e84ad1ab3b3-600x600.jpg',
-    ],
-    sortDesc: 'Comfortable and durable running shoes.',
-    description:
-      'These running shoes are designed for comfort, support, and durability. Perfect for athletes or casual runners.',
-    categories: ['men'],
-    variants: [
-      { size: 'S', color: 'Red', stock: 3, price: 3000 },
-      { size: 'S', color: 'Blue', stock: 1, price: 2500 },
-      { size: 'M', color: 'Red', stock: 5, price: 3200 },
-      { size: 'M', color: 'Blue', stock: 2, price: 2800 },
-    ],
   };
 
   const groupByColor = variants => {
     return variants.reduce((acc, variant) => {
       const { color } = variant;
-      if (!acc[color]) {
-        acc[color] = [];
+      if (!acc[color.name]) {
+        acc[color.name] = [];
       }
-      acc[color].push(variant);
+      acc[color.name].push(variant);
       return acc;
     }, {});
   };
@@ -60,7 +76,7 @@ export const DetailProductAdmin = () => {
         breadcrumbs={[
           { label: 'Admin', path: '/admin' },
           { label: 'Products', path: '/admin/products' },
-          { label: product.name, path: `/admin/product/detail/${product.id}` },
+          { label: product.name, path: `/admin/product/detail/${id}` },
         ]}
         buttons={[
           {
@@ -127,9 +143,9 @@ export const DetailProductAdmin = () => {
                   {groupedByColor[color].map((variant, idx) => (
                     <TableRow key={idx}>
                       <TableCell></TableCell>
-                      <TableCell>{variant.size}</TableCell>
+                      <TableCell>{variant.size.name}</TableCell>
                       <TableCell>{variant.stock}</TableCell>
-                      <TableCell>${variant.price.toFixed(2)}</TableCell>
+                      <TableCell>${variant.price}</TableCell>
                     </TableRow>
                   ))}
                 </Fragment>
@@ -146,7 +162,10 @@ export const DetailProductAdmin = () => {
               <strong>Category:</strong>
             </Typography>
             <Stack direction="row">
-              <Chip label="Giày Nam" className="cursor-pointer" />
+              <Chip
+                label={product.categories.join(', ')}
+                className="cursor-pointer"
+              />
             </Stack>
           </Stack>
           <Stack spacing={1}>

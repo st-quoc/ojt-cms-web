@@ -7,7 +7,6 @@ import axiosClient from '../../../config/axios';
 
 export const ProductCreateAdmin = () => {
   const onSubmit = async data => {
-    console.log('🚀  data  🚀', data);
     const productData = {
       name: data.name,
       sortDesc: data.sortDesc,
@@ -18,11 +17,7 @@ export const ProductCreateAdmin = () => {
     };
 
     try {
-      const response = await axiosClient.post(
-        `${API_ROOT}/admin/product/create`,
-        productData,
-      );
-      console.log('🚀  Product created successfully', response);
+      await axiosClient.post(`${API_ROOT}/admin/product/create`, productData);
       toast.info('Product created successfully!');
     } catch (error) {
       console.log('🚀  error  🚀', error);
