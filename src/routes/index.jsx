@@ -2,7 +2,6 @@ import { Route, Routes, Navigate } from 'react-router-dom';
 import { HomePage } from '../pages/web/HomePage';
 import { LoginPage } from '../pages/login';
 import { ProductDetailPage } from '../pages/web/ProductDetail';
-import { ProductsListPage } from '../pages/web/ProductsListPage';
 import { CartPage } from '../pages/web/Cart';
 import { Account } from '../pages/web/Account';
 import Checkout from '../pages/web/Checkout';
@@ -20,6 +19,7 @@ import { BlogDetailAdmin } from '../pages/admin/Blogs/detail';
 import { BlogEditAdmin } from '../pages/admin/Blogs/edit';
 import { AdminLayout } from '../pages/admin';
 import { Dashboard } from '../pages/admin/Dashboard';
+import ProductsListPage from '../pages/web/ProductsListPage';
 
 const AdminLayoutProtectedRoute = ({ children }) => {
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
