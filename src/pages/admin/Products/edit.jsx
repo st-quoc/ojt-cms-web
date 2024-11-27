@@ -1,15 +1,13 @@
 import { Typography, Divider, Box } from '@mui/material';
 import { AdminPageHeader } from '../../../component/AdminPageHeader';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from 'react-toastify';
 import { ProductForm } from './form';
 import axiosClient from '../../../config/axios';
 import { API_ROOT } from '../../../constants';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 export const ProductEditAdmin = () => {
-  const navigate = useNavigate();
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -30,16 +28,11 @@ export const ProductEditAdmin = () => {
         `${API_ROOT}/admin/product/edit/${id}`,
         productData,
       );
-      console.log('🚀 ', res);
 
-      toast.success(`Edited successfully!`);
-
-      setTimeout(() => {
-        navigate('/admin/products');
-      }, 2000);
+      toast.info(`Product: ${res.name} edited successfully!`);
     } catch (error) {
       console.log('🚀  error  🚀', error);
-      toast.error('Error editting product!' + error);
+      toast.error('Error editting product!');
     }
   };
 
@@ -80,7 +73,6 @@ export const ProductEditAdmin = () => {
 
   return (
     <Box className="p-4">
-      <ToastContainer position="top-right" autoClose={5000} />
       <AdminPageHeader
         breadcrumbs={[
           { label: 'Admin', path: '/admin' },
