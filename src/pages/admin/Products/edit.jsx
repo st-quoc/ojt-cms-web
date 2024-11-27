@@ -6,8 +6,7 @@ import { ProductForm } from './form';
 import axiosClient from '../../../config/axios';
 import { API_ROOT } from '../../../constants';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export const ProductEditAdmin = () => {
   const navigate = useNavigate();
@@ -49,7 +48,12 @@ export const ProductEditAdmin = () => {
       const response = await axiosClient.get(
         `${API_ROOT}/admin/product/detail/${id}`,
       );
-      setProduct(response.data.product);
+      const product = response.data.product;
+      const formattedProduct = {
+        ...product,
+        categories: product.categories.map(c => c._id),
+      };
+      setProduct(formattedProduct);
       setLoading(false);
     } catch (err) {
       console.log('🚀  err  🚀', err);
