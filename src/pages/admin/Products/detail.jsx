@@ -1,4 +1,4 @@
-import Box from '@mui/material/Box';
+import { Box, Modal } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import TableRow from '@mui/material/TableRow';
@@ -22,6 +22,18 @@ export const DetailProductAdmin = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+
+  const handleOpen = image => {
+    setPreviewImage(image);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setPreviewImage('');
+  };
 
   const fetchProductDetail = async () => {
     try {
@@ -99,14 +111,32 @@ export const DetailProductAdmin = () => {
         </Typography>
         <Box className="flex flex-wrap gap-4">
           {product.images.map((image, index) => (
-            <Box item key={index} size={3}>
+            <Box
+              key={index}
+              className="w-[150px] h-[150px] overflow-hidden rounded-lg border"
+              onClick={() => handleOpen(image)}
+            >
               <img
                 src={image}
                 alt={`Product Image ${index + 1}`}
-                className="w-[150px]"
+                className="w-full h-full object-cover cursor-pointer"
               />
             </Box>
           ))}
+
+          {/* Modal for Image Preview */}
+          <Modal open={open} onClose={handleClose}>
+            <Box
+              className="flex items-center justify-center h-screen bg-black bg-opacity-50"
+              onClick={handleClose}
+            >
+              <img
+                src={previewImage}
+                alt="Preview"
+                className="max-w-full max-h-full rounded-lg"
+              />
+            </Box>
+          </Modal>
         </Box>
       </Paper>
 

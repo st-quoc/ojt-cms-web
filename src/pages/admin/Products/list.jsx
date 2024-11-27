@@ -18,6 +18,11 @@ import {
   CircularProgress,
   Alert,
   Collapse,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
   Chip,
   Stack,
   Tooltip,
@@ -29,10 +34,11 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import InfoIcon from '@mui/icons-material/Info';
+import EditIcon from '@mui/icons-material/Edit';
 
 function Row(props) {
   const navigate = useNavigate();
-  const { row, handleDelete } = props;
+  const { row, handleOpenDialog } = props;
   const [open, setOpen] = useState(false);
 
   return (
@@ -67,8 +73,15 @@ function Row(props) {
         <TableCell align="center">
           <Stack direction="row" spacing={1} className="justify-center">
             <Tooltip title="Delete">
-              <IconButton>
-                <DeleteIcon onClick={() => handleDelete(row.id)} />
+              <IconButton onClick={() => handleOpenDialog(row.id)}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Edit">
+              <IconButton
+                onClick={() => navigate(`/admin/product/edit/${row.id}`)}
+              >
+                <EditIcon />
               </IconButton>
             </Tooltip>
             <Tooltip title="Detail">
@@ -111,16 +124,16 @@ function Row(props) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.variants.map((variant, index) => (
-                    <TableRow key={index}>
-                      <TableCell component="th" scope="row">
-                        {variant.color}
-                      </TableCell>
-                      <TableCell>{variant.size}</TableCell>
-                      <TableCell align="left">{variant.stock}</TableCell>
-                      <TableCell align="left">{variant.price}</TableCell>
-                    </TableRow>
-                  ))}
+                  {row.variants &&
+                    row.variants.length > 0 &&
+                    row.variants.map((variant, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{variant.color}</TableCell>
+                        <TableCell>{variant.size}</TableCell>
+                        <TableCell>{variant.stock}</TableCell>
+                        <TableCell>{variant.price}</TableCell>
+                      </TableRow>
+                    ))}
                 </TableBody>
               </Table>
             </Box>
@@ -139,6 +152,8 @@ export const ProductsListAdmin = () => {
   const [totalProducts, setTotalProducts] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [productToDelete, setProductToDelete] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -176,13 +191,43 @@ export const ProductsListAdmin = () => {
     setPage(0);
   };
 
-  const handleDelete = async productId => {
-    try {
-      await axiosClient.delete(`${API_ROOT}/admin/product/delete/${productId}`);
-      setProducts(products.filter(product => product._id !== productId));
-    } catch (error) {
-      setError('Error deleting product. Please try again later.');
-      console.error('Error deleting product', error);
+  const handleOpenDialog = productId => {
+    setProductToDelete(productId);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setProductToDelete(null);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (productToDelete) {
+      try {
+        // Delete the product
+        await axiosClient.delete(
+          `${API_ROOT}/admin/product/delete/${productToDelete}`,
+        );
+
+        // Fetch the updated product list after deletion
+        const response = await axiosClient.get(
+          `${API_ROOT}/admin/product/list`,
+          {
+            params: {
+              page: page + 1,
+              limit: rowsPerPage,
+            },
+          },
+        );
+        setProducts(response.data.products);
+        setTotalProducts(response.data.totalProducts);
+
+        // Close the dialog
+        handleCloseDialog();
+      } catch (error) {
+        setError('Error deleting product. Please try again later.');
+        console.error('Error deleting product', error);
+      }
     }
   };
 
@@ -247,12 +292,6 @@ export const ProductsListAdmin = () => {
                       <TableCell align="left">
                         <strong>Categories</strong>
                       </TableCell>
-                      <TableCell align="left">
-                        <strong>Total Quantity Sold</strong>
-                      </TableCell>
-                      <TableCell align="left">
-                        <strong>Total Quantity In Stock</strong>
-                      </TableCell>
                       <TableCell align="center">
                         <strong>Actions</strong>
                       </TableCell>
@@ -261,9 +300,9 @@ export const ProductsListAdmin = () => {
                   <TableBody>
                     {products.map(row => (
                       <Row
-                        key={row.name}
+                        key={row._id}
                         row={row}
-                        handleDelete={handleDelete}
+                        handleOpenDialog={handleOpenDialog}
                       />
                     ))}
                   </TableBody>
@@ -282,6 +321,29 @@ export const ProductsListAdmin = () => {
           )}
         </>
       )}
+
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1" color="textSecondary">
+            Are you sure you want to delete this product? This action cannot be
+            undone.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color="primary" autoFocus>
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
