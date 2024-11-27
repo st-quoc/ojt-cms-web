@@ -55,10 +55,10 @@ export const Header = ({ cartQuantity }) => {
             SHOP
           </span>
           <span
-            onClick={() => navigate('/#more')}
+            onClick={() => navigate('/AboutUs')}
             className="hover:text-gray-600 text-black text-sm md:text-base cursor-pointer"
           >
-            MORE
+            ABOUT US
           </span>
           <span
             onClick={() => navigate('/blogs')}
