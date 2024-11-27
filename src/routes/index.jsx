@@ -2,7 +2,6 @@ import { Route, Routes, Navigate } from 'react-router-dom';
 import { HomePage } from '../pages/web/HomePage';
 import { LoginPage } from '../pages/login';
 import { ProductDetailPage } from '../pages/web/ProductDetail';
-import { ProductsListPage } from '../pages/web/ProductsListPage';
 import { CartPage } from '../pages/web/Cart';
 import { Account } from '../pages/web/Account';
 import Checkout from '../pages/web/Checkout';
@@ -21,13 +20,15 @@ import { BlogEditAdmin } from '../pages/admin/Blogs/edit';
 import { AdminLayout } from '../pages/admin';
 import { Dashboard } from '../pages/admin/Dashboard';
 import { AboutUs } from '../pages/web/AboutUs';
+import ProductsListPage from '../pages/web/ProductsListPage';
+import { VariantsPage } from '../pages/admin/Variants';
 
 const AdminLayoutProtectedRoute = ({ children }) => {
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
   const role = userInfo?.role;
 
   if (!['admin', 'manager'].includes(role)) {
-    return <Navigate to="/no-access" replace />;
+    return <Navigate to="/login" replace />;
   }
 
   return children;
@@ -96,7 +97,7 @@ export const Router = () => {
               <DetailProductAdmin />
             </ProtectedRoute>
           }
-          path="product/detail/:productID"
+          path="product/detail/:id"
         />
         <Route
           element={
@@ -104,7 +105,7 @@ export const Router = () => {
               <ProductEditAdmin />
             </ProtectedRoute>
           }
-          path="product/edit/:productID"
+          path="product/edit/:id"
         />
 
         <Route
@@ -131,6 +132,15 @@ export const Router = () => {
             </ProtectedRoute>
           }
           path="blog/edit/:blogID"
+        />
+
+        <Route
+          element={
+            <ProtectedRoute requiredPermissions={['view_variants']}>
+              <VariantsPage />
+            </ProtectedRoute>
+          }
+          path="variants"
         />
       </Route>
 

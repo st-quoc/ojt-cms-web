@@ -76,15 +76,18 @@ export const ProductVariantsForm = ({
                 render={({ field }) => (
                   <Select
                     {...field}
-                    value={variant.color}
+                    value={variant.color ? variant.color._id : ''}
                     input={<OutlinedInput label="Color" />}
                     onChange={e => {
-                      handleVariantChange(index, 'color', e.target.value);
-                      field.onChange(e);
+                      const selectedColor = colorOptions.find(
+                        color => color._id === e.target.value,
+                      );
+                      handleVariantChange(index, 'color', selectedColor);
+                      field.onChange(selectedColor._id);
                     }}
                   >
                     {colorOptions?.map((color, i) => (
-                      <MenuItem key={i} value={color.id}>
+                      <MenuItem key={i} value={color._id}>
                         {color.name}
                       </MenuItem>
                     ))}
@@ -110,15 +113,18 @@ export const ProductVariantsForm = ({
                   <InputLabel>Size</InputLabel>
                   <Select
                     {...field}
-                    value={variant.size}
+                    value={variant.size ? variant.size._id : ''}
                     input={<OutlinedInput label="Size" />}
                     onChange={e => {
-                      handleVariantChange(index, 'size', e.target.value);
-                      field.onChange(e);
+                      const selectedSize = sizeOptions.find(
+                        s => s._id === e.target.value,
+                      );
+                      handleVariantChange(index, 'size', selectedSize);
+                      field.onChange(selectedSize._id);
                     }}
                   >
                     {sizeOptions?.map((size, i) => (
-                      <MenuItem key={i} value={size.id}>
+                      <MenuItem key={i} value={size._id}>
                         {size.name}
                       </MenuItem>
                     ))}

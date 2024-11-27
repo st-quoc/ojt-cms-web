@@ -4,10 +4,12 @@ import { toast } from 'react-toastify';
 import { ProductForm } from './form';
 import { API_ROOT } from '../../../constants';
 import axiosClient from '../../../config/axios';
+import { useNavigate } from 'react-router-dom';
 
 export const ProductCreateAdmin = () => {
+  const navigate = useNavigate();
+
   const onSubmit = async data => {
-    console.log('🚀  data  🚀', data);
     const productData = {
       name: data.name,
       sortDesc: data.sortDesc,
@@ -18,14 +20,11 @@ export const ProductCreateAdmin = () => {
     };
 
     try {
-      const response = await axiosClient.post(
-        `${API_ROOT}/admin/product/create`,
-        productData,
-      );
-      console.log('🚀  Product created successfully', response);
-      toast.info('Product created successfully!');
+      await axiosClient.post(`${API_ROOT}/admin/product/create`, productData);
+      navigate('/admin/products');
+      toast.success('Product created successfully!');
     } catch (error) {
-      console.log('🚀  error  🚀', error);
+      console.error('🚀 Error creating product: ', error);
       toast.error('Error creating product!');
     }
   };
@@ -39,6 +38,7 @@ export const ProductCreateAdmin = () => {
           { label: 'Create new product', path: `/admin/product/create` },
         ]}
       />
+
       <Divider textAlign="center" className="py-4">
         <Typography variant="h4" gutterBottom>
           Create new product
