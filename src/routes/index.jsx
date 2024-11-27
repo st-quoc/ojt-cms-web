@@ -20,6 +20,7 @@ import { BlogEditAdmin } from '../pages/admin/Blogs/edit';
 import { AdminLayout } from '../pages/admin';
 import { Dashboard } from '../pages/admin/Dashboard';
 import ProductsListPage from '../pages/web/ProductsListPage';
+import { VariantsPage } from '../pages/admin/Variants';
 
 const AdminLayoutProtectedRoute = ({ children }) => {
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
@@ -129,6 +130,15 @@ export const Router = () => {
             </ProtectedRoute>
           }
           path="blog/edit/:blogID"
+        />
+
+        <Route
+          element={
+            <ProtectedRoute requiredPermissions={['view_variants']}>
+              <VariantsPage />
+            </ProtectedRoute>
+          }
+          path="variants"
         />
       </Route>
 

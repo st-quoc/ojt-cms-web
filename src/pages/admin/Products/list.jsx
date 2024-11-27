@@ -56,7 +56,7 @@ function Row(props) {
         <TableCell align="left">
           <img
             src={row.images[0]}
-            alt={row.images[0]}
+            alt={row.name}
             className="w-[50px] h-[50px] object-cover"
           />
         </TableCell>
@@ -204,12 +204,10 @@ export const ProductsListAdmin = () => {
   const handleConfirmDelete = async () => {
     if (productToDelete) {
       try {
-        // Delete the product
         await axiosClient.delete(
           `${API_ROOT}/admin/product/delete/${productToDelete}`,
         );
 
-        // Fetch the updated product list after deletion
         const response = await axiosClient.get(
           `${API_ROOT}/admin/product/list`,
           {
@@ -222,7 +220,6 @@ export const ProductsListAdmin = () => {
         setProducts(response.data.products);
         setTotalProducts(response.data.totalProducts);
 
-        // Close the dialog
         handleCloseDialog();
       } catch (error) {
         setError('Error deleting product. Please try again later.');

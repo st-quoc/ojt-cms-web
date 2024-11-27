@@ -9,11 +9,12 @@ import {
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import axiosClient from '../../../../config/axios';
-import { API_ROOT } from '../../../../constants';
-import CloudinarySingleUploader from '../../../../component/CloudinarySingleUploader';
+import { API_ROOT } from '../../constants';
+import CloudinarySingleUploader from '../CloudinarySingleUploader';
+import axiosClient from '../../config/axios';
+import { useEffect } from 'react';
 
-const ModalCreateCategory = ({ open, onClose, onCreate }) => {
+const ModalCreateCategory = ({ open, onClose, onCreate, initialValues }) => {
   const {
     handleSubmit,
     control,
@@ -22,32 +23,46 @@ const ModalCreateCategory = ({ open, onClose, onCreate }) => {
   } = useForm({
     defaultValues: {
       name: '',
-      image: '',
-      desc: '',
+      thumbnail: '',
+      description: '',
     },
   });
 
+  useEffect(() => {
+    if (open && initialValues) {
+      reset(initialValues);
+    }
+  }, [open, initialValues, reset]);
+
   const onSubmit = async data => {
     try {
-      const response = await axiosClient.post(
-        `${API_ROOT}/admin/category/create`,
-        {
+      let response;
+      if (initialValues) {
+        response = await axiosClient.put(
+          `${API_ROOT}/admin/category/update/${initialValues._id}`,
+          {
+            name: data.name.trim(),
+            description: data.description.trim(),
+            thumbnail: data.thumbnail.trim(),
+          },
+        );
+        toast.success('Category updated successfully!');
+      } else {
+        response = await axiosClient.post(`${API_ROOT}/admin/category/create`, {
           name: data.name.trim(),
-          desc: data.desc.trim(),
-          image: data.image.trim(),
-        },
-      );
+          description: data.description.trim(),
+          thumbnail: data.thumbnail.trim(),
+        });
+        toast.success('Category created successfully!');
+      }
 
-      const newCategory = response.data;
-      toast.success('Category created successfully!');
-
-      onCreate(newCategory);
-
+      const updatedCategory = response.data;
+      onCreate(updatedCategory);
       reset();
       onClose();
     } catch (error) {
-      console.error('Error creating category:', error);
-      toast.error('Failed to create category!');
+      console.error('Error saving category:', error);
+      toast.error('Failed to save category!');
     }
   };
 
@@ -67,7 +82,7 @@ const ModalCreateCategory = ({ open, onClose, onCreate }) => {
         }}
       >
         <Typography variant="h6" sx={{ mb: 3 }}>
-          Create New Category
+          {initialValues ? 'Edit Category' : 'Create New Category'}
         </Typography>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Controller
@@ -87,7 +102,7 @@ const ModalCreateCategory = ({ open, onClose, onCreate }) => {
           />
 
           <Controller
-            name="desc"
+            name="description"
             control={control}
             rules={{ required: 'Description is required' }}
             render={({ field, fieldState }) => (
@@ -106,9 +121,9 @@ const ModalCreateCategory = ({ open, onClose, onCreate }) => {
 
           <Box sx={{ mb: 2 }}>
             <Controller
-              name="image"
+              name="thumbnail"
               control={control}
-              rules={{ required: 'Image URL is required' }}
+              rules={{ required: 'Thumbnail URL is required' }}
               render={({ field }) => (
                 <CloudinarySingleUploader
                   image={field.value}
@@ -116,16 +131,16 @@ const ModalCreateCategory = ({ open, onClose, onCreate }) => {
                 />
               )}
             />
-            {errors.image && (
+            {errors.thumbnail && (
               <Typography color="error" variant="caption">
-                {errors.image?.message}
+                {errors.thumbnail?.message}
               </Typography>
             )}
           </Box>
           <Divider sx={{ my: 2 }} />
           <Stack direction={'row'} spacing={2}>
             <Button variant="contained" color="primary" type="submit">
-              Create
+              {initialValues ? 'Update' : 'Create'}
             </Button>
             <Button
               variant="outlined"
