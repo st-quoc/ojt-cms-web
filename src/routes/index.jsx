@@ -94,7 +94,7 @@ export const Router = () => {
               <DetailProductAdmin />
             </ProtectedRoute>
           }
-          path="product/detail/:productID"
+          path="product/detail/:id"
         />
         <Route
           element={
@@ -102,7 +102,7 @@ export const Router = () => {
               <ProductEditAdmin />
             </ProtectedRoute>
           }
-          path="product/edit/:productID"
+          path="product/edit/:id"
         />
 
         <Route
