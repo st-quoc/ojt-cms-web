@@ -20,6 +20,7 @@ import { BlogDetailAdmin } from '../pages/admin/Blogs/detail';
 import { BlogEditAdmin } from '../pages/admin/Blogs/edit';
 import { AdminLayout } from '../pages/admin';
 import { Dashboard } from '../pages/admin/Dashboard';
+import { AboutUs } from '../pages/web/AboutUs';
 
 const AdminLayoutProtectedRoute = ({ children }) => {
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
@@ -59,6 +60,7 @@ export const Router = () => {
         <Route element={<Account />} path="account" />
         <Route element={<BlogPage />} path="blogs" />
         <Route element={<BlogDetail />} path="blog/:blogId" />
+        <Route element={<AboutUs />} path="AboutUs" />
       </Route>
 
       <Route
