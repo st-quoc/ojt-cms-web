@@ -9,10 +9,6 @@ const PaginationBase = ({
 }) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
-  // const startItem = totalItems > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0;
-  // const endItem =
-  //   totalItems > 0 ? Math.min(currentPage * itemsPerPage, totalItems) : 0;
-
   return (
     <Box className="py-10">
       <Pagination

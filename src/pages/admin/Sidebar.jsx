@@ -31,6 +31,12 @@ export const Sidebar = () => {
       permission: 'view_blog',
     },
     {
+      text: 'Variants',
+      icon: <InboxIcon />,
+      path: 'variants',
+      permission: 'view_variants',
+    },
+    {
       text: 'Users',
       icon: <MailIcon />,
       path: 'users',

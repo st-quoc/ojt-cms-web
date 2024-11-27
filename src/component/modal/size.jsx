@@ -1,31 +1,47 @@
 import { Modal, Box, Typography, TextField, Button } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import axiosClient from '../../../../config/axios';
-import { API_ROOT } from '../../../../constants';
+import axiosClient from '../../config/axios';
+import { API_ROOT } from '../../constants';
+import { useEffect } from 'react';
 
-const ModalCreateSize = ({ open, onClose, onCreate }) => {
+const ModalCreateSize = ({ open, onClose, onCreate, initialValues }) => {
   const { handleSubmit, control, reset } = useForm({
     defaultValues: {
       sizeName: '',
     },
   });
 
-  const handleCreate = async data => {
+  useEffect(() => {
+    if (open && initialValues) {
+      reset({ sizeName: initialValues.name });
+    }
+  }, [open, initialValues, reset]);
+
+  const handleCreateOrEdit = async data => {
     try {
-      const res = await axiosClient.post(`${API_ROOT}/admin/size/create`, {
-        name: data.sizeName.trim(),
-      });
+      let response;
+      if (initialValues) {
+        response = await axiosClient.put(
+          `${API_ROOT}/admin/size/update/${initialValues._id}`,
+          {
+            name: data.sizeName.trim(),
+          },
+        );
+        toast.success('Size updated successfully!');
+      } else {
+        response = await axiosClient.post(`${API_ROOT}/admin/size/create`, {
+          name: data.sizeName.trim(),
+        });
+        toast.success('Size created successfully!');
+      }
 
-      const newSize = res.data;
-      toast.success('Size created successfully!');
-
+      const newSize = response.data;
       onCreate(newSize);
       reset();
       onClose();
-    } catch (error) {
-      console.log('🚀  error  🚀', error);
-      toast.error('Failed to create size!');
+    } catch {
+      toast.error('Failed to save size!');
     }
   };
 
@@ -45,10 +61,10 @@ const ModalCreateSize = ({ open, onClose, onCreate }) => {
         }}
       >
         <Typography variant="h6" sx={{ mb: 2 }}>
-          Create New Size
+          {initialValues ? 'Edit Size' : 'Create New Size'}
         </Typography>
 
-        <form onSubmit={handleSubmit(handleCreate)}>
+        <form onSubmit={handleSubmit(handleCreateOrEdit)}>
           <Controller
             name="sizeName"
             control={control}
@@ -66,7 +82,7 @@ const ModalCreateSize = ({ open, onClose, onCreate }) => {
           />
 
           <Button type="submit" variant="contained" color="primary" fullWidth>
-            Create Size
+            {initialValues ? 'Update Size' : 'Create Size'}
           </Button>
         </form>
       </Box>

@@ -1,33 +1,47 @@
 import { Modal, Box, Typography, TextField, Button } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import axiosClient from '../../../../config/axios';
-import { API_ROOT } from '../../../../constants';
+import axiosClient from '../../config/axios';
+import { API_ROOT } from '../../constants';
+import { useEffect } from 'react';
 
-const ModalCreateColor = ({ open, onClose, onCreate }) => {
+const ModalCreateColor = ({ open, onClose, onCreate, initialValues }) => {
   const { handleSubmit, control, reset } = useForm({
     defaultValues: {
       colorName: '',
     },
   });
 
-  const handleCreate = async data => {
-    try {
-      const response = await axiosClient.post(
-        `${API_ROOT}/admin/color/create`,
-        {
-          name: data.colorName.trim(),
-        },
-      );
-      const newColor = response.data;
-      toast.success('Color created successfully!');
+  useEffect(() => {
+    if (open && initialValues) {
+      reset({ colorName: initialValues.name });
+    }
+  }, [open, initialValues, reset]);
 
+  const handleCreateOrEdit = async data => {
+    try {
+      let response;
+      if (initialValues) {
+        response = await axiosClient.put(
+          `${API_ROOT}/admin/color/update/${initialValues._id}`,
+          {
+            name: data.colorName.trim(),
+          },
+        );
+        toast.success('Color updated successfully!');
+      } else {
+        response = await axiosClient.post(`${API_ROOT}/admin/color/create`, {
+          name: data.colorName.trim(),
+        });
+        toast.success('Color created successfully!');
+      }
+
+      const newColor = response.data;
       onCreate(newColor);
       reset();
       onClose();
-    } catch (error) {
-      console.log('🚀  error  🚀', error);
-      toast.error('Failed to create color!');
+    } catch {
+      toast.error('Failed to save color!');
     }
   };
 
@@ -47,10 +61,10 @@ const ModalCreateColor = ({ open, onClose, onCreate }) => {
         }}
       >
         <Typography variant="h6" sx={{ mb: 2 }}>
-          Create New Color
+          {initialValues ? 'Edit Color' : 'Create New Color'}
         </Typography>
 
-        <form onSubmit={handleSubmit(handleCreate)}>
+        <form onSubmit={handleSubmit(handleCreateOrEdit)}>
           <Controller
             name="colorName"
             control={control}
@@ -68,7 +82,7 @@ const ModalCreateColor = ({ open, onClose, onCreate }) => {
           />
 
           <Button type="submit" variant="contained" color="primary" fullWidth>
-            Create Color
+            {initialValues ? 'Update Color' : 'Create Color'}
           </Button>
         </form>
       </Box>

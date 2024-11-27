@@ -14,8 +14,8 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <AuthProvider>
         <ThemeProvider theme={theme}>
-          <CssBaseline />
           <ToastContainer />
+          <CssBaseline />
           <App />
         </ThemeProvider>
       </AuthProvider>

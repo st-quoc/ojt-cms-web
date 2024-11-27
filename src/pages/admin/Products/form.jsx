@@ -19,9 +19,9 @@ import { ProductVariantsForm } from './ProductVariantsForm';
 import { rules } from './validator';
 import { API_ROOT } from '../../../constants';
 import axiosClient from '../../../config/axios';
-import ModalCreateCategory from './modal/category';
-import ModalCreateColor from './modal/color';
-import ModalCreateSize from './modal/size';
+import ModalCreateSize from '../../../component/modal/size';
+import ModalCreateColor from '../../../component/modal/color';
+import ModalCreateCategory from '../../../component/modal/category';
 
 export const ProductForm = ({ isEdit, onSubmit, defaultValues }) => {
   const {
@@ -54,7 +54,7 @@ export const ProductForm = ({ isEdit, onSubmit, defaultValues }) => {
         const categoryResponse = await axiosClient.get(
           `${API_ROOT}/admin/category/list`,
         );
-        setCategories(categoryResponse.data);
+        setCategories(categoryResponse.data.categories);
       } catch (error) {
         console.error('Error fetching data:', error);
       }

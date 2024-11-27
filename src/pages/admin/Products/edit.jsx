@@ -1,6 +1,6 @@
 import { Typography, Divider, Box } from '@mui/material';
 import { AdminPageHeader } from '../../../component/AdminPageHeader';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ProductForm } from './form';
 import axiosClient from '../../../config/axios';
@@ -75,7 +75,6 @@ export const ProductEditAdmin = () => {
 
   return (
     <Box className="p-4">
-      <ToastContainer position="top-right" autoClose={5000} />
       <AdminPageHeader
         breadcrumbs={[
           { label: 'Admin', path: '/admin' },
