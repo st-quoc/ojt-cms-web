@@ -25,8 +25,9 @@ export const ProductCard = ({ product }) => {
     )?.price || 'N/A',
   );
 
-  const [setLoading] = useState(false);
-  const [setError] = useState(null);
+  const [, setLoading] = useState(false);
+
+  const [, setError] = useState(null);
 
   const handleColorChange = e => {
     const color = e.target.value;
