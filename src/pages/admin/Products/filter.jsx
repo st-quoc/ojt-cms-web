@@ -16,7 +16,6 @@ import axiosClient from '../../../config/axios';
 import { API_ROOT } from '../../../constants';
 
 export const ProductsFilter = ({ filters, setFilters }) => {
-  console.log('🚀  filters  🚀', filters);
   const [anchorEl, setAnchorEl] = useState(null);
   const [tempFilters, setTempFilters] = useState(filters);
 
@@ -216,6 +215,22 @@ export const ProductsFilter = ({ filters, setFilters }) => {
     return chips;
   };
 
+  const defaultFilters = {
+    search: '',
+    category: [],
+    priceMin: 0,
+    priceMax: 999999999,
+    color: [],
+    size: [],
+    stockCondition: '>',
+    stockValue: 0,
+  };
+
+  const resetFilters = () => {
+    setTempFilters(defaultFilters);
+    setFilters(defaultFilters);
+  };
+
   return (
     <>
       <Stack direction="row" spacing={2} alignItems="center">
@@ -347,7 +362,7 @@ export const ProductsFilter = ({ filters, setFilters }) => {
           </Stack>
 
           <Stack direction="row" spacing={2} mt={2}>
-            <Button variant="outlined" onClick={() => setTempFilters(filters)}>
+            <Button variant="outlined" onClick={resetFilters}>
               Clear
             </Button>
             <Button variant="contained" onClick={applyFilters}>
