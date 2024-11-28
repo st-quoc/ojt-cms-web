@@ -185,6 +185,7 @@ export const ProductsListAdmin = () => {
         );
         setProducts(response.data.products);
         setTotalProducts(response.data.totalProducts);
+        setPage(0);
       } catch (error) {
         setError('Error fetching products. Please try again later.');
         console.error('Error fetching products:', error);
@@ -195,11 +196,6 @@ export const ProductsListAdmin = () => {
 
     fetchProducts();
   }, [page, rowsPerPage, filters]);
-
-  const handleFiltersChange = newFilters => {
-    setFilters(newFilters);
-    setPage(0);
-  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -260,7 +256,7 @@ export const ProductsListAdmin = () => {
       ...filters,
       search: event.target.value,
     });
-    setPage(0); // Reset về trang đầu khi tìm kiếm
+    setPage(0);
   };
 
   return (
@@ -281,11 +277,7 @@ export const ProductsListAdmin = () => {
       />
       <Paper elevation={3} className="p-3">
         <Stack direction={'row'} justifyContent="space-between">
-          <ProductsFilter
-            filters={filters}
-            handleFiltersChange={handleFiltersChange}
-            setFilters={setFilters}
-          />
+          <ProductsFilter filters={filters} setFilters={setFilters} />
           <Box>
             <FormControl sx={{ m: 0, width: '25ch' }} variant="outlined">
               <InputLabel size="small">Search product...</InputLabel>
