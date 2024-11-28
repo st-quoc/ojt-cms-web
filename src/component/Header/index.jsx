@@ -5,36 +5,19 @@ import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router-dom';
+import { useCart } from '../../context/CartContext';
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
   const navigate = useNavigate();
-  const [cartQuantity, setCartQuantity] = useState(0);
+  const { cartItems } = useCart();
 
-  useEffect(() => {
-    const userInfo = localStorage.getItem('userInfo');
-    const userId = userInfo ? JSON.parse(userInfo).id : null;
-    if (userId) {
-      const fetchCart = async () => {
-        try {
-          const response = await fetch(
-            `http://localhost:8017/v1/cart/${userId}`,
-          );
-          if (response.ok) {
-            const data = await response.json();
-            setCartQuantity(data.items.length || 0);
-          } else {
-            console.error('Failed to fetch cart data');
-          }
-        } catch (error) {
-          console.error('Error fetching cart data:', error);
-        }
-      };
-      fetchCart();
-    }
-  }, []);
+  const cartQuantity = cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0,
+  );
 
   useEffect(() => {
     const handleClickOutside = event => {
@@ -128,4 +111,5 @@ export const Header = () => {
     </section>
   );
 };
+
 export default Header;
