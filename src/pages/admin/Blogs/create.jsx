@@ -1,5 +1,7 @@
 import axios from 'axios';
-import { Typography, Divider, Box } from '@mui/material';
+import { Typography } from '@mui/material';
+import { Box } from '@mui/material';
+import { Divider } from '@mui/material';
 import { AdminPageHeader } from '../../../component/AdminPageHeader';
 import { toast } from 'react-toastify';
 import { BlogForm } from './form';
@@ -9,18 +11,16 @@ export const BlogCreateAdmin = () => {
     const blogData = {
       title: data.title,
       thumbnail: data.thumbnail,
-      sortDesc: data.description,
-      fullDesc: data.fullDesc,
-      categories: data.categories,
-      status: data.status,
+      categories: data.categories || [],
+      status: data.status || 'Draft',
     };
 
     try {
-      await axios.post('/api/blogs', blogData);
-      toast.info('Blog created successfully!');
+      await axios.post(`/api/blogs`, blogData);
+      toast.success('Blog created successfully!');
     } catch (error) {
-      console.log('🚀  error  🚀', error);
-      toast.error('Error creating Blog!');
+      console.error('Error creating blog:', error);
+      toast.error('Failed to create blog!');
     }
   };
 
@@ -28,14 +28,14 @@ export const BlogCreateAdmin = () => {
     <Box className="p-4">
       <AdminPageHeader
         breadcrumbs={[
-          { label: 'Admin', path: '/admin' },
-          { label: 'Blogs', path: '/admin/blogs' },
-          { label: 'Create new blog', path: `/admin/blog/create` },
+          { label: 'Admin', path: `/admin` },
+          { label: 'Blogs', path: `/admin/blogs` },
+          { label: 'Create New Blog', path: `/admin/blogs/create` },
         ]}
       />
       <Divider textAlign="center" className="py-4">
         <Typography variant="h4" gutterBottom>
-          Create new blog
+          Create New Blog
         </Typography>
       </Divider>
 
@@ -43,12 +43,13 @@ export const BlogCreateAdmin = () => {
         onSubmit={onSubmit}
         defaultValues={{
           title: '',
-          thumbnail: [],
-          sortDesc: '',
-          fullDesc: '',
-          status: '',
+          thumbnail: '',
+          categories: [],
+          status: 'Draft',
         }}
       />
     </Box>
   );
 };
+
+export default BlogCreateAdmin;
