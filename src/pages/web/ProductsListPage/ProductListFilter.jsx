@@ -13,9 +13,9 @@ import {
   TextField,
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import axiosClient from '../../../config/axios';
 import { API_ROOT } from '../../../constants';
 import ClearIcon from '@mui/icons-material/Clear';
+import axios from 'axios';
 
 export const ProductsListFilter = ({ filters, setFilters }) => {
   const [tempFilters, setTempFilters] = useState(filters);
@@ -59,20 +59,16 @@ export const ProductsListFilter = ({ filters, setFilters }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const sizeResponse = await axiosClient.get(
-          `${API_ROOT}/admin/size/list`,
-        );
-        setSizes(sizeResponse.data.sizes);
+        const sizeResponse = await axios.get(`${API_ROOT}/user/size/list`);
+        setSizes(sizeResponse.data);
 
-        const colorResponse = await axiosClient.get(
-          `${API_ROOT}/admin/color/list`,
-        );
-        setColors(colorResponse.data.colors);
+        const colorResponse = await axios.get(`${API_ROOT}/user/color/list`);
+        setColors(colorResponse.data);
 
-        const categoryResponse = await axiosClient.get(
-          `${API_ROOT}/admin/category/list`,
+        const categoryResponse = await axios.get(
+          `${API_ROOT}/user/category/list`,
         );
-        setCategories(categoryResponse.data.categories);
+        setCategories(categoryResponse.data);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
