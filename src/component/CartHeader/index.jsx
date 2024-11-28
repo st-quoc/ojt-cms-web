@@ -6,35 +6,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router-dom';
 
-export const Header = () => {
+export const CartHeader = ({ cartQuantity }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
   const navigate = useNavigate();
-  const [cartQuantity, setCartQuantity] = useState(0);
-
-  useEffect(() => {
-    const userInfo = localStorage.getItem('userInfo');
-    const userId = userInfo ? JSON.parse(userInfo).id : null;
-    if (userId) {
-      const fetchCart = async () => {
-        try {
-          const response = await fetch(
-            `http://localhost:8017/v1/cart/${userId}`,
-          );
-          if (response.ok) {
-            const data = await response.json();
-            setCartQuantity(data.items.length || 0);
-          } else {
-            console.error('Failed to fetch cart data');
-          }
-        } catch (error) {
-          console.error('Error fetching cart data:', error);
-        }
-      };
-      fetchCart();
-    }
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = event => {
@@ -79,10 +55,10 @@ export const Header = () => {
             SHOP
           </span>
           <span
-            onClick={() => navigate('/AboutUs')}
+            onClick={() => navigate('/#more')}
             className="hover:text-gray-600 text-black text-sm md:text-base cursor-pointer"
           >
-            ABOUT US
+            MORE
           </span>
           <span
             onClick={() => navigate('/blogs')}
@@ -128,4 +104,5 @@ export const Header = () => {
     </section>
   );
 };
-export default Header;
+
+export default CartHeader;

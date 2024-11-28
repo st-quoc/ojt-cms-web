@@ -1,17 +1,22 @@
 import { Stack, IconButton } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { API_ROOT } from '../../constants';
 import { useState } from 'react';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 export const ProductCard = ({ product }) => {
   const uniqueColors = [
     ...new Set(product.variants.map(variant => variant.color)),
   ];
+  const colorIds = product.variants.map(variant => variant.sizeId);
 
   const [selectedColor, setSelectedColor] = useState(uniqueColors[0]);
   const availableSizes = product.variants
     .filter(variant => variant.color === selectedColor)
     .map(variant => variant.size);
   const [selectedSize, setSelectedSize] = useState(availableSizes[0] || null);
+  const [variantId, setVariantId] = useState(null);
 
   const [price, setPrice] = useState(
     product.variants.find(
@@ -19,6 +24,10 @@ export const ProductCard = ({ product }) => {
         variant.color === selectedColor && variant.size === availableSizes[0],
     )?.price || 'N/A',
   );
+
+  const [, setLoading] = useState(false);
+
+  const [, setError] = useState(null);
 
   const handleColorChange = e => {
     const color = e.target.value;
@@ -30,26 +39,70 @@ export const ProductCard = ({ product }) => {
 
     setSelectedSize(sizes[0] || null);
 
-    updatePrice(color, sizes[0]);
+    updateVariant(color, sizes[0]);
   };
 
   const handleSizeChange = e => {
     const size = e.target.value;
     setSelectedSize(size);
-    updatePrice(selectedColor, size);
+    updateVariant(selectedColor, size);
   };
 
-  const updatePrice = (color, size) => {
+  const updateVariant = (color, size) => {
     const selectedVariant = product.variants.find(
       variant => variant.color === color && variant.size === size,
     );
+
     setPrice(selectedVariant?.price || 'N/A');
+    setVariantId(selectedVariant?.id || null);
+  };
+
+  const userInfo = localStorage.getItem('userInfo');
+  const userId = userInfo ? JSON.parse(userInfo).id : null;
+
+  const addToCart = async () => {
+    if (price === 'N/A') return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const colorIndex = uniqueColors.indexOf(selectedColor);
+      const selectedColorId = colorIds[colorIndex];
+
+      const sizeIndex = product.variants.find(
+        variant =>
+          variant.size === selectedSize && variant.color === selectedColor,
+      );
+      const selectedSizeId = sizeIndex ? sizeIndex.sizeId : null;
+
+      const payload = {
+        userId: userId,
+        productId: product.id,
+        variantId: variantId,
+        quantity: 1,
+        name: product.name,
+        price,
+        size: selectedSizeId,
+        color: selectedColorId,
+      };
+
+      await axios.post(`${API_ROOT}/cart/add`, payload);
+
+      toast.success('Product added successfully!');
+    } catch (err) {
+      setError('Failed to add product to cart.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="max-w-sm mx-auto bg-white shadow-lg rounded-lg overflow-hidden border group duration-500 relative transition-transform transform hover:scale-105">
       <IconButton
         aria-label="Add to Cart"
+        onClick={addToCart}
         sx={{
           position: 'absolute',
           top: '0.5rem',
