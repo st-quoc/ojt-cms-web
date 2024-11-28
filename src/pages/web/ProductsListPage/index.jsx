@@ -13,6 +13,7 @@ import { Show } from '../../../component/Show';
 import { API_ROOT } from '../../../constants';
 import { Stack } from '@mui/material';
 import { ProductsListFilter } from './ProductListFilter';
+import { Loader } from '../../../component/Loader';
 
 export const ProductsListPage = () => {
   const [products, setProducts] = useState([]);
@@ -26,13 +27,13 @@ export const ProductsListPage = () => {
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
     search: '',
-    category: '',
-    priceMin: '',
-    priceMax: '',
-    color: '',
-    size: '',
+    category: [],
+    priceMin: 0,
+    priceMax: 999999999,
+    color: [],
+    size: [],
     stockCondition: '>',
-    stockValue: '',
+    stockValue: 0,
   });
 
   const fetchProducts = async filters => {
@@ -60,11 +61,6 @@ export const ProductsListPage = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleFilterApply = newFilters => {
-    setFilters(newFilters);
-    fetchProducts(newFilters);
   };
 
   useEffect(() => {
@@ -100,7 +96,7 @@ export const ProductsListPage = () => {
             </Box>
           </Box>
           <Stack direction={'row'} spacing={2}>
-            <ProductsListFilter onFilterApply={handleFilterApply} />
+            <ProductsListFilter filters={filters} setFilters={setFilters} />
             <Stack spacing={3} flex={1}>
               <Box className="flex justify-between items-center bg-gray-100 p-4 rounded-lg mb-4">
                 <Box className="flex space-x-2">
@@ -120,18 +116,17 @@ export const ProductsListPage = () => {
                   </Button>
                 </Box>
 
-                <Box className="">
-                  {/* Sorting and Items per Page */}
+                <Stack direction={'row'} spacing={3}>
                   <Sort sortBy={sortBy} handleSortChange={handleSortChange} />
                   <Show
                     itemsPerPage={itemsPerPage}
                     handleItemsPerPageChange={handleItemsPerPageChange}
                   />
-                </Box>
+                </Stack>
               </Box>
               <Box>
                 {loading ? (
-                  <Box className="text-center py-10">Loading...</Box>
+                  <Loader />
                 ) : (
                   <ProductListContainer
                     products={products}
