@@ -19,7 +19,7 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 });
 
-const CloudinaryMultipleUploader = ({ images = [], onChange }) => {
+export const CloudinaryMultipleUploader = ({ images = [], onChange }) => {
   const fileInputRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);

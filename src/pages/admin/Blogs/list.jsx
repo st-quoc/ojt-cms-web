@@ -13,44 +13,44 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import { visuallyHidden } from '@mui/utils';
-import { useMemo, useState } from 'react';
-import { Button, Divider, Stack } from '@mui/material';
+import { useMemo, useState, useEffect } from 'react';
+import { Button, Divider, Stack, Modal, TextField } from '@mui/material';
+import { useForm, Controller } from 'react-hook-form';
 import { AdminPageHeader } from '../../../component/AdminPageHeader';
+import { CloudinaryMultipleUploader } from '../../../component/CloudinaryMultipleUploader';
+import axios from 'axios';
+import { API_ROOT } from '../../../constants';
+import { toast } from 'react-toastify'; // Import react-toastify
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS for Toast
 
-function createData(id, name, calories, fat, carbs, protein) {
-  return {
-    id,
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-  };
-}
+// Initialize Toastify
 
-const rows = [
-  createData(1, 'Cupcake', 305, 3.7, 67, 4.3),
-  createData(2, 'Donut', 452, 25.0, 51, 4.9),
-  createData(3, 'Eclair', 262, 16.0, 24, 6.0),
-  createData(4, 'Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData(5, 'Gingerbread', 356, 16.0, 49, 3.9),
-  createData(6, 'Honeycomb', 408, 3.2, 87, 6.5),
-  createData(7, 'Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData(8, 'Jelly Bean', 375, 0.0, 94, 0.0),
-  createData(9, 'KitKat', 518, 26.0, 65, 7.0),
-  createData(10, 'Lollipop', 392, 0.2, 98, 0.0),
-  createData(11, 'Marshmallow', 318, 0, 81, 2.0),
-  createData(12, 'Nougat', 360, 19.0, 9, 37.0),
-  createData(13, 'Oreo', 437, 18.0, 63, 4.0),
+const headCells = [
+  {
+    id: 'thumbnail',
+    numeric: false,
+    disablePadding: false,
+    label: 'Thumbnail',
+  },
+  { id: 'title', numeric: false, disablePadding: false, label: 'Title' },
+  {
+    id: 'description',
+    numeric: false,
+    disablePadding: false,
+    label: 'Description',
+  },
+  { id: 'status', numeric: false, disablePadding: false, label: 'Status' },
+  {
+    id: 'createdAt',
+    numeric: false,
+    disablePadding: false,
+    label: 'Date Created',
+  },
 ];
 
 function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
+  if (b[orderBy] < a[orderBy]) return -1;
+  if (b[orderBy] > a[orderBy]) return 1;
   return 0;
 }
 
@@ -59,45 +59,6 @@ function getComparator(order, orderBy) {
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
-
-const headCells = [
-  {
-    id: 'thumbnail',
-    numeric: false,
-    disablePadding: true,
-    label: 'Thumbnail',
-  },
-  {
-    id: 'title',
-    numeric: false,
-    disablePadding: false,
-    label: 'Title',
-  },
-  {
-    id: 'sortDesc',
-    numeric: false,
-    disablePadding: false,
-    label: 'Sort Description',
-  },
-  {
-    id: 'author',
-    numeric: false,
-    disablePadding: false,
-    label: 'Author',
-  },
-  {
-    id: 'status',
-    numeric: false,
-    disablePadding: false,
-    label: 'Status',
-  },
-  {
-    id: 'dateCreated',
-    numeric: false,
-    disablePadding: false,
-    label: 'Date created',
-  },
-];
 
 const EnhancedTableHead = props => {
   const {
@@ -121,9 +82,7 @@ const EnhancedTableHead = props => {
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
+            inputProps={{ 'aria-label': 'select all blogs' }}
           />
         </TableCell>
         {headCells.map(headCell => (
@@ -153,7 +112,8 @@ const EnhancedTableHead = props => {
 };
 
 const EnhancedTableToolbar = props => {
-  const { numSelected } = props;
+  const { numSelected, onAddNewBlog } = props;
+
   return (
     <Toolbar
       sx={[
@@ -195,7 +155,12 @@ const EnhancedTableToolbar = props => {
           <Button size="small">Export</Button>
         </Stack>
       ) : (
-        <Button size="small" variant="contained" className="w-[250px]">
+        <Button
+          size="small"
+          variant="contained"
+          className="w-[250px]"
+          onClick={onAddNewBlog}
+        >
           Add new blog
         </Button>
       )}
@@ -205,10 +170,28 @@ const EnhancedTableToolbar = props => {
 
 export const BlogListAdmin = () => {
   const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('calories');
+  const [orderBy, setOrderBy] = useState('title');
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [blogs, setBlogs] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const { handleSubmit, control, reset } = useForm();
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const response = await axios.get(`${API_ROOT}/admin/blog/list`);
+        if (response.data.success) {
+          setBlogs(response.data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching blogs:', error);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -218,30 +201,11 @@ export const BlogListAdmin = () => {
 
   const handleSelectAllClick = event => {
     if (event.target.checked) {
-      const newSelected = rows.map(n => n.id);
+      const newSelected = blogs.map(n => n._id);
       setSelected(newSelected);
       return;
     }
     setSelected([]);
-  };
-
-  const handleClick = (event, id) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
-
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -253,15 +217,48 @@ export const BlogListAdmin = () => {
     setPage(0);
   };
 
+  const handleAddNewBlog = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    reset();
+  };
+
+  const onSubmit = async data => {
+    try {
+      const payload = {
+        title: data.title,
+        description: data.description,
+        images: data.images,
+      };
+
+      const response = await axios.post(
+        `${API_ROOT}/admin/blog/create`,
+        payload,
+      );
+
+      if (response.data.success) {
+        toast.success('Blog created successfully!');
+        setBlogs(prevBlogs => [...prevBlogs, response.data.blog]);
+      }
+      handleCloseModal();
+    } catch (error) {
+      toast.error('Error creating blog');
+      console.error('Error creating blog:', error);
+    }
+  };
+
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - blogs.length) : 0;
 
   const visibleRows = useMemo(
     () =>
-      [...rows]
+      [...blogs]
         .sort(getComparator(order, orderBy))
         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage],
+    [order, orderBy, page, rowsPerPage, blogs],
   );
 
   return (
@@ -274,7 +271,10 @@ export const BlogListAdmin = () => {
       />
       <Divider textAlign="center" />
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar
+          numSelected={selected.length}
+          onAddNewBlog={handleAddNewBlog}
+        />
         <TableContainer>
           <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
             <EnhancedTableHead
@@ -283,11 +283,11 @@ export const BlogListAdmin = () => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={blogs.length}
             />
             <TableBody>
               {visibleRows.map((row, index) => {
-                const isItemSelected = selected.includes(row.id);
+                const isItemSelected = selected.includes(row._id);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
@@ -296,54 +296,44 @@ export const BlogListAdmin = () => {
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
-                    key={row.id}
+                    key={row._id}
                     selected={isItemSelected}
-                    sx={{ cursor: 'pointer' }}
                   >
                     <TableCell padding="checkbox">
                       <Checkbox
                         color="primary"
                         checked={isItemSelected}
-                        onChange={event => handleClick(event, row.id)}
+                        onChange={event => handleSelectAllClick(event, row._id)}
                         inputProps={{
                           'aria-labelledby': labelId,
                         }}
                       />
                     </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                    >
-                      {row.name}
+                    <TableCell>
+                      {row.images?.[0] ? (
+                        <img
+                          src={row.images[0]}
+                          alt="Thumbnail"
+                          style={{ width: 50, height: 50, objectFit: 'cover' }}
+                        />
+                      ) : (
+                        'No Image'
+                      )}
                     </TableCell>
-                    <TableCell align="right">{row.calories}</TableCell>
-                    <TableCell align="right">{row.fat}</TableCell>
-                    <TableCell align="right">{row.carbs}</TableCell>
-                    <TableCell align="right">{row.protein}</TableCell>
-                    <TableCell align="left">
-                      <Stack direction="row" spacing={1}>
-                        <Button variant="outlined" color="primary">
-                          Detail
-                        </Button>
-                        <Button variant="outlined" color="secondary">
-                          Edit
-                        </Button>
-                        <Button variant="outlined" color="error">
-                          Delete
-                        </Button>
-                      </Stack>
+
+                    <TableCell component="th" id={labelId} scope="row">
+                      {row.title}
+                    </TableCell>
+                    <TableCell>{row.description}</TableCell>
+                    <TableCell>{row.status}</TableCell>
+                    <TableCell>
+                      {new Date(row.createdAt).toLocaleDateString()}
                     </TableCell>
                   </TableRow>
                 );
               })}
               {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: 53 * emptyRows,
-                  }}
-                >
+                <TableRow style={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />
                 </TableRow>
               )}
@@ -353,13 +343,67 @@ export const BlogListAdmin = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={blogs.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
+
+      <Modal open={openModal} onClose={handleCloseModal}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 400,
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
+            Create New Blog
+          </Typography>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Stack spacing={2}>
+              <Controller
+                name="title"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField {...field} label="Title" fullWidth />
+                )}
+              />
+              <Controller
+                name="description"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <TextField {...field} label="Description" fullWidth />
+                )}
+              />
+              <Controller
+                name="images"
+                control={control}
+                defaultValue={[]}
+                render={({ field }) => (
+                  <CloudinaryMultipleUploader
+                    images={field.value || []}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+
+              <Button type="submit" variant="contained" fullWidth>
+                Create Blog
+              </Button>
+            </Stack>
+          </form>
+        </Box>
+      </Modal>
     </Box>
   );
 };
