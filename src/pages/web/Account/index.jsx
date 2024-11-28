@@ -65,7 +65,6 @@ export const Account = () => {
           </List>
         </Grid>
 
-        {/* Nội dung chính */}
         <Grid item xs>
           {selectedSection === 'profile' && <Profile />}
           {selectedSection === 'history' && <PurchaseHistory />}

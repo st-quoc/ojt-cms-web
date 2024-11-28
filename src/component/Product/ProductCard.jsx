@@ -1,38 +1,40 @@
-import { Stack } from '@mui/material';
+import { Stack, IconButton } from '@mui/material';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { API_ROOT } from '../../constants';
 import { useState } from 'react';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 
 export const ProductCard = ({ product }) => {
   const uniqueColors = [
-    ...new Set(product.variants.map(variant => variant.color.name)),
+    ...new Set(product.variants.map(variant => variant.color)),
   ];
-  const colorIds = product.variants.map(variant => variant.color._id);
+  const colorIds = product.variants.map(variant => variant.sizeId);
 
   const [selectedColor, setSelectedColor] = useState(uniqueColors[0]);
   const availableSizes = product.variants
-    .filter(variant => variant.color.name === selectedColor)
-    .map(variant => variant.size.name);
+    .filter(variant => variant.color === selectedColor)
+    .map(variant => variant.size);
   const [selectedSize, setSelectedSize] = useState(availableSizes[0] || null);
-  const [variantId, setVariantId] = useState(null); // Track the variant ID
+  const [variantId, setVariantId] = useState(null);
 
   const [price, setPrice] = useState(
     product.variants.find(
       variant =>
-        variant.color.name === selectedColor &&
-        variant.size.name === availableSizes[0],
+        variant.color === selectedColor && variant.size === availableSizes[0],
     )?.price || 'N/A',
   );
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [setLoading] = useState(false);
+  const [setError] = useState(null);
 
   const handleColorChange = e => {
     const color = e.target.value;
     setSelectedColor(color);
 
     const sizes = product.variants
-      .filter(variant => variant.color.name === color)
-      .map(variant => variant.size.name);
+      .filter(variant => variant.color === color)
+      .map(variant => variant.size);
 
     setSelectedSize(sizes[0] || null);
 
@@ -47,7 +49,7 @@ export const ProductCard = ({ product }) => {
 
   const updateVariant = (color, size) => {
     const selectedVariant = product.variants.find(
-      variant => variant.color.name === color && variant.size.name === size,
+      variant => variant.color === color && variant.size === size,
     );
 
     setPrice(selectedVariant?.price || 'N/A');
@@ -64,54 +66,56 @@ export const ProductCard = ({ product }) => {
     setError(null);
 
     try {
-      // Find the index of the selected color
       const colorIndex = uniqueColors.indexOf(selectedColor);
       const selectedColorId = colorIds[colorIndex];
 
       const sizeIndex = product.variants.find(
         variant =>
-          variant.size.name === selectedSize &&
-          variant.color.name === selectedColor,
+          variant.size === selectedSize && variant.color === selectedColor,
       );
-      const selectedSizeId = sizeIndex ? sizeIndex.size._id : null;
+      const selectedSizeId = sizeIndex ? sizeIndex.sizeId : null;
 
-      const response = await fetch('http://localhost:8017/v1/cart/add', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: userId,
-          productId: product.id,
-          variantId: variantId,
-          quantity: 1,
-          name: product.name,
-          price,
-          size: selectedSizeId,
-          color: selectedColorId, // Add the selected colorId
-        }),
-      });
+      const payload = {
+        userId: userId,
+        productId: product.id,
+        variantId: variantId,
+        quantity: 1,
+        name: product.name,
+        price,
+        size: selectedSizeId,
+        color: selectedColorId,
+      };
 
-      const data = await response.json();
-      if (response.ok) {
-        alert('Product added to cart!');
-        //set time out to reload the page
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
-        toast.success('Product created successfully!');
-      } else {
-        setError(data.error || 'Something went wrong.');
-      }
+      await axios.post(`${API_ROOT}/cart/add`, payload);
+
+      toast.success('Product added successfully!');
     } catch (err) {
-      setError('Failed to add product to cart.', err);
+      setError('Failed to add product to cart.');
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-sm mx-auto bg-white shadow-lg rounded-lg overflow-hidden border group relative transition-transform transform hover:scale-105">
+    <div className="max-w-sm mx-auto bg-white shadow-lg rounded-lg overflow-hidden border group duration-500 relative transition-transform transform hover:scale-105">
+      <IconButton
+        aria-label="Add to Cart"
+        onClick={addToCart}
+        sx={{
+          position: 'absolute',
+          top: '0.5rem',
+          right: '0.5rem',
+          transition: 'all 0.3s',
+          color: price === 'N/A' ? 'gray' : 'orange',
+          '&:hover': {
+            color: price !== 'N/A' ? 'darkorange' : 'gray',
+          },
+        }}
+        disabled={price === 'N/A'}
+      >
+        <ShoppingCartIcon />
+      </IconButton>
       <div className="bg-gray-200">
         <img
           src={product.images[0]}
@@ -121,17 +125,19 @@ export const ProductCard = ({ product }) => {
       </div>
 
       <div className="p-4">
-        <h2 className="text-md font-bold text-gray-800 mb-2">{product.name}</h2>
+        <h2 className="text-md font-bold text-gray-800 mb-2 line-clamp-2">
+          {product.name}
+        </h2>
 
         <Stack spacing={2} direction={'row'}>
           <div className="w-[50%]">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1 ">
               <strong>Color</strong>
             </label>
             <select
               value={selectedColor}
               onChange={handleColorChange}
-              className="w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
+              className="w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 bg-blue-300"
             >
               {uniqueColors.map(color => (
                 <option key={color} value={color}>
@@ -149,7 +155,7 @@ export const ProductCard = ({ product }) => {
               <select
                 value={selectedSize}
                 onChange={handleSizeChange}
-                className="w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500"
+                className="w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 bg-blue-300"
               >
                 {availableSizes.map(size => (
                   <option key={size} value={size}>
@@ -171,20 +177,6 @@ export const ProductCard = ({ product }) => {
             {price !== 'N/A' ? `$${price}` : 'Not Available'}
           </span>
         </div>
-
-        <button
-          onClick={addToCart}
-          className={`absolute bottom-4 left-1/2 transform -translate-x-1/2 w-full py-2 px-4 rounded-md transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 ${
-            price === 'N/A' || loading
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-orange-500 text-white hover:bg-orange-600'
-          }`}
-          disabled={price === 'N/A' || loading}
-        >
-          {loading ? 'Adding...' : 'Add to Cart'}
-        </button>
-
-        {error && <div className="text-red-500 text-sm mt-2">{error}</div>}
       </div>
     </div>
   );

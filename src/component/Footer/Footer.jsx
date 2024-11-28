@@ -6,20 +6,52 @@ export const Footer = () => {
           <div>
             <h3 className="font-bold mb-4">Information</h3>
             <ul className="space-y-2">
-              <li>Terms & Condition</li>
-              <li>Privacy Policy</li>
-              <li>About Us</li>
-              <li>Contact Us</li>
+              <li>
+                <a href="/terms" className="hover:underline text-gray-300">
+                  Terms & Condition
+                </a>
+              </li>
+              <li>
+                <a href="/privacy" className="hover:underline text-gray-300">
+                  Privacy Policy
+                </a>
+              </li>
+              <li>
+                <a href="/about" className="hover:underline text-gray-300">
+                  About Us
+                </a>
+              </li>
+              <li>
+                <a href="/contact" className="hover:underline text-gray-300">
+                  Contact Us
+                </a>
+              </li>
             </ul>
           </div>
 
           <div className="hidden sm:block">
-            <h3 className="font-bold mb-4">My Account</h3>
+            <h3 className="font-bold mb-4">My Account </h3>
             <ul className="space-y-2">
-              <li>My Account</li>
-              <li>Order History</li>
-              <li>Wish List</li>
-              <li>News</li>
+              <li>
+                <a href="/account" className="hover:underline text-gray-300">
+                  Profile
+                </a>
+              </li>
+              <li>
+                <a href="/account" className="hover:underline text-gray-300">
+                  Order History
+                </a>
+              </li>
+              <li>
+                <a href="/cart" className="hover:underline text-gray-300">
+                  My Cart
+                </a>
+              </li>
+              <li>
+                <a href="/blogs" className="hover:underline text-gray-300">
+                  Blogs
+                </a>
+              </li>
             </ul>
           </div>
 

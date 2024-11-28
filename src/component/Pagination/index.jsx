@@ -1,5 +1,4 @@
 import { Box, Pagination } from '@mui/material';
-import PropTypes from 'prop-types';
 
 const PaginationBase = ({
   totalItems = 0,
@@ -22,19 +21,6 @@ const PaginationBase = ({
       />
     </Box>
   );
-};
-
-PaginationBase.propTypes = {
-  totalItems: PropTypes.number,
-  currentPage: PropTypes.number,
-  itemsPerPage: PropTypes.number,
-  handlePageChange: PropTypes.func.isRequired,
-};
-
-PaginationBase.defaultProps = {
-  totalItems: 0,
-  currentPage: 1,
-  itemsPerPage: 9,
 };
 
 export default PaginationBase;

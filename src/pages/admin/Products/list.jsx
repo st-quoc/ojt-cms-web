@@ -26,6 +26,10 @@ import {
   Chip,
   Stack,
   Tooltip,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  InputAdornment,
 } from '@mui/material';
 import { API_ROOT } from '../../../constants';
 import axiosClient from '../../../config/axios';
@@ -35,6 +39,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import InfoIcon from '@mui/icons-material/Info';
 import EditIcon from '@mui/icons-material/Edit';
+import ClearIcon from '@mui/icons-material/Clear';
 
 function Row(props) {
   const navigate = useNavigate();
@@ -68,8 +73,6 @@ function Row(props) {
             <Chip key={index} label={cate} />
           ))}
         </TableCell>
-        <TableCell align="left">{row.protein}</TableCell>
-        <TableCell align="left">{row.protein}</TableCell>
         <TableCell align="center">
           <Stack direction="row" spacing={1} className="justify-center">
             <Tooltip title="Delete">
@@ -154,6 +157,16 @@ export const ProductsListAdmin = () => {
   const [error, setError] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
+  const [filters, setFilters] = useState({
+    search: '',
+    category: [],
+    priceMin: 0,
+    priceMax: 999999999,
+    color: [],
+    size: [],
+    stockCondition: '>',
+    stockValue: 0,
+  });
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -166,11 +179,13 @@ export const ProductsListAdmin = () => {
             params: {
               page: page + 1,
               limit: rowsPerPage,
+              ...filters,
             },
           },
         );
         setProducts(response.data.products);
         setTotalProducts(response.data.totalProducts);
+        setPage(0);
       } catch (error) {
         setError('Error fetching products. Please try again later.');
         console.error('Error fetching products:', error);
@@ -180,7 +195,7 @@ export const ProductsListAdmin = () => {
     };
 
     fetchProducts();
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, filters]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -228,6 +243,22 @@ export const ProductsListAdmin = () => {
     }
   };
 
+  const clearSearch = () => {
+    setFilters({
+      ...filters,
+      search: '',
+    });
+    setPage(0);
+  };
+
+  const handleSearchChange = event => {
+    setFilters({
+      ...filters,
+      search: event.target.value,
+    });
+    setPage(0);
+  };
+
   return (
     <Box className="p-4">
       <AdminPageHeader
@@ -244,7 +275,34 @@ export const ProductsListAdmin = () => {
           },
         ]}
       />
-      <ProductsFilter />
+      <Paper elevation={3} className="p-3">
+        <Stack direction={'row'} justifyContent="space-between">
+          <ProductsFilter filters={filters} setFilters={setFilters} />
+          <Box>
+            <FormControl sx={{ m: 0, width: '25ch' }} variant="outlined">
+              <InputLabel size="small">Search product...</InputLabel>
+              <OutlinedInput
+                size="small"
+                type="text"
+                label="Search product..."
+                value={filters.search}
+                onChange={handleSearchChange}
+                endAdornment={
+                  filters.search && (
+                    <InputAdornment
+                      position="end"
+                      onClick={clearSearch}
+                      className="cursor-pointer"
+                    >
+                      <ClearIcon />
+                    </InputAdornment>
+                  )
+                }
+              />
+            </FormControl>
+          </Box>
+        </Stack>
+      </Paper>
       <Divider textAlign="center" className="py-4">
         PRODUCTS
       </Divider>

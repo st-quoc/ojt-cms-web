@@ -64,13 +64,6 @@ export const CartPage = () => {
       for (const item of cartItems) {
         const colorResponse = await fetch(
           `http://localhost:8017/v1/user/color/${item.color}`,
-          {
-            method: 'GET',
-            headers: {
-              Authorization: `Bearer ${Token}`,
-              'Content-Type': 'application/json',
-            },
-          },
         );
         const colorData = await colorResponse.json();
         if (colorResponse.ok) {
@@ -79,13 +72,6 @@ export const CartPage = () => {
 
         const sizeResponse = await fetch(
           `http://localhost:8017/v1/user/size/${item.size}`,
-          {
-            method: 'GET',
-            headers: {
-              Authorization: `Bearer ${Token}`,
-              'Content-Type': 'application/json',
-            },
-          },
         );
         const sizeData = await sizeResponse.json();
         if (sizeResponse.ok) {
