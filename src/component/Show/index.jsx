@@ -7,9 +7,9 @@ export const Show = ({ itemsPerPage, handleItemsPerPageChange }) => {
         value={itemsPerPage}
         onChange={handleItemsPerPageChange}
       >
-        <option value={9}>9</option>
-        <option value={15}>15</option>
-        <option value={18}>18</option>
+        <option value={12}>12</option>
+        <option value={20}>20</option>
+        <option value={40}>40</option>
       </select>
     </div>
   );

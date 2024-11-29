@@ -19,11 +19,10 @@ export const ProductsListPage = () => {
   const [products, setProducts] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
   const [viewMode, setViewMode] = useState(
     localStorage.getItem('viewMode') ?? 'grid',
   );
-  const [sortBy, setSortBy] = useState('default');
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
     search: '',
@@ -34,6 +33,7 @@ export const ProductsListPage = () => {
     size: [],
     stockCondition: '>',
     stockValue: 0,
+    sortBy: 'default',
   });
 
   const fetchProducts = async filters => {
@@ -51,11 +51,12 @@ export const ProductsListPage = () => {
           size: filters.size,
           stockCondition: filters.stockCondition,
           stockValue: filters.stockValue,
+          sortBy: filters.sortBy,
         },
       });
-      const { products, pagination } = response.data;
+      const { products, totalProducts } = response.data;
       setProducts(products);
-      setTotalItems(pagination.totalProducts);
+      setTotalItems(totalProducts);
     } catch (error) {
       console.error('Error fetching products:', error);
     } finally {
@@ -67,12 +68,13 @@ export const ProductsListPage = () => {
     fetchProducts(filters);
   }, [currentPage, itemsPerPage, filters]);
 
-  const handleSortChange = event => setSortBy(event.target.value);
   const handleItemsPerPageChange = event => {
     setItemsPerPage(Number(event.target.value));
     setCurrentPage(1);
   };
+
   const handlePageChange = (_, pageNumber) => setCurrentPage(pageNumber);
+
   const handleViewToggle = mode => {
     localStorage.setItem('viewMode', mode);
     setViewMode(mode);
@@ -117,7 +119,7 @@ export const ProductsListPage = () => {
                 </Box>
 
                 <Stack direction={'row'} spacing={3}>
-                  <Sort sortBy={sortBy} handleSortChange={handleSortChange} />
+                  <Sort filters={filters} setFilters={setFilters} />
                   <Show
                     itemsPerPage={itemsPerPage}
                     handleItemsPerPageChange={handleItemsPerPageChange}

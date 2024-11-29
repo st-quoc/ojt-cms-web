@@ -1,10 +1,17 @@
-export const Sort = ({ sortBy, handleSortChange }) => {
+export const Sort = ({ filters, setFilters }) => {
+  const handleSortChange = event => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      sortBy: event.target.value,
+    }));
+  };
+
   return (
     <div className="flex items-center space-x-1">
       <span>Sort By</span>
       <select
         className="border rounded px-2 py-1 cursor-pointer"
-        value={sortBy}
+        value={filters.sortBy}
         onChange={handleSortChange}
       >
         <option value="default">Default</option>
@@ -15,4 +22,3 @@ export const Sort = ({ sortBy, handleSortChange }) => {
     </div>
   );
 };
-export default Sort;

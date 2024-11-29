@@ -20,9 +20,9 @@ export const ProductListContainer = ({ products, viewMode }) => {
     >
       {products.map(product =>
         viewMode === 'list' ? (
-          <ProductListItem product={product} key={product._id} />
+          <ProductListItem product={product} key={product.id} />
         ) : (
-          <ProductCard product={product} key={product._id} />
+          <ProductCard product={product} key={product.id} />
         ),
       )}
     </div>
