@@ -115,8 +115,9 @@ const ProductCarousel = () => {
       alignItems="center"
       textAlign="center"
       justifyContent="center"
-      width={{ xs: '90%', sm: '85%', md: '80%' }}
+      width="100%"
       margin="0 auto"
+      maxWidth="1440px"
     >
       <Typography variant="h4" fontWeight="500" mb={4}>
         RECOMMENDATIONS FOR YOU

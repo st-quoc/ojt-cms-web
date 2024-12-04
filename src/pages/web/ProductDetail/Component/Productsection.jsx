@@ -72,11 +72,22 @@ export const Product = () => {
     slidesToScroll: 1,
   };
   return (
-    <Box sx={{ px: 1, py: 2 }}>
-      <Grid container spacing={4} justifyContent="center">
-        <Grid item xs={12} md={6}>
-          <Box display="flex" alignItems="center" justifyContent="center">
-            <Slider {...settings} style={{ width: '450px', height: 'auto' }}>
+    <Box
+      sx={{ px: 1, py: 6 }}
+      width="100%"
+      maxWidth="1440px"
+      margin="0 auto"
+      padding="0px 52px"
+    >
+      <Grid container gap={4} justifyContent="center" width="100%">
+        <Grid item xs={12} md={6} width="63%" height="600px">
+          <Box
+            display="flex"
+            alignItems="center"
+            width="100%"
+            justifyContent="center"
+          >
+            <Slider {...settings} style={{ width: '100%', height: 'auto' }}>
               {data.product.images.map((image, index) => (
                 <Box key={index}>
                   <Box
@@ -87,8 +98,7 @@ export const Product = () => {
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover',
-                      maxWidth: '450px',
-                      maxHeight: '450px',
+                      maxHeight: '550px',
                     }}
                   />
                 </Box>
@@ -101,11 +111,12 @@ export const Product = () => {
           item
           xs={12}
           md={6}
-          width="400px"
+          width="34%"
           display="flex"
           flexDirection="column"
           alignItems="flex-start"
           justifyContent="center"
+          pl={1}
         >
           <Typography variant="h5" fontWeight="bold">
             {data.product.brand}
@@ -126,13 +137,13 @@ export const Product = () => {
                 const colorName = Object.keys(colorObj)[0];
                 return (
                   <Box
-                    px={2}
                     key={index}
                     onClick={() => handleColorClick(colorName)}
                     sx={{
-                      bgcolor: 'grey.200',
-                      height: '40px',
-                      borderRadius: 1,
+                      bgcolor: colorName.toLowerCase(),
+                      height: '50px',
+                      width: '50px',
+                      borderRadius: 2,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
@@ -140,14 +151,9 @@ export const Product = () => {
                       border:
                         selectedColor === colorName
                           ? '2px solid black'
-                          : 'none',
-                      width: 'max-content',
+                          : '1px solid grey',
                     }}
-                  >
-                    <Typography textTransform="capitalize">
-                      {colorName}
-                    </Typography>
-                  </Box>
+                  />
                 );
               })}
             </Box>
@@ -181,11 +187,12 @@ export const Product = () => {
                           borderColor: 'black',
                           color:
                             selectedSize === sizeObj.size ? 'white' : 'black',
+                          bgcolor:
+                            selectedSize === sizeObj.size
+                              ? 'black'
+                              : 'transparent',
                           '&:hover': {
-                            bgcolor:
-                              selectedSize === sizeObj.size
-                                ? 'black'
-                                : 'grey.800',
+                            bgcolor: 'black',
                             color: 'white',
                           },
                         }}
@@ -206,9 +213,13 @@ export const Product = () => {
               py: 2,
               px: 4,
               width: '100%',
+              border: '2px solid black',
+              fontWeight: 'bold',
+              fontSize: '1.2rem',
               mb: 6,
               '&:hover': {
-                bgcolor: 'grey.800',
+                bgcolor: 'white',
+                color: 'black',
               },
             }}
           >
@@ -219,94 +230,100 @@ export const Product = () => {
         </Grid>
       </Grid>
 
-      <Box
-        display="flex"
-        textAlign="center"
-        justifyContent="space-between"
-        width="80%"
-        mx="auto"
-        px={2}
-      >
-        <Box
+      <Grid container gap={4} justifyContent="center" width="100%">
+        <Grid
+          item
+          xs={12}
+          md={7}
           display="flex"
-          flexDirection="column"
-          alignItems="center"
-          width="65%"
-          mr={2}
+          flexDirection="row"
+          alignItems="flex-start"
+          width="100%"
         >
-          <Typography variant="h6" fontWeight="bold" mb={1} textAlign="left">
-            DETAILS
-          </Typography>
-          <Divider
-            sx={{
-              borderColor: 'black',
-              borderWidth: '1.5px',
-              mb: 2,
-              width: '100%',
-            }}
-          />
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ textAlign: 'justify' }}
+          <Grid
+            item
+            xs={6}
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            width="65%"
+            pr={3}
           >
-            {data.product.details}
-          </Typography>
-        </Box>
-
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          width="35%"
-          ml={2}
-        >
-          <Typography variant="h6" fontWeight="bold" mb={1} textAlign="left">
-            FACTS
-          </Typography>
-          <Divider
-            sx={{
-              borderColor: 'black',
-              borderWidth: '1.5px',
-              mb: 2,
-              width: '100%',
-            }}
-          />
-
-          {[
-            { label: 'Brand:', value: data.product.brand },
-            { label: 'Manufacturer ID:', value: data.product.id },
-            { label: 'Color:', value: selectedColor },
-            { label: 'Category:', value: data.product.category },
-            { label: 'Release Date:', value: data.product.releaseDate },
-          ].map((fact, index) => (
-            <Box
-              display="flex"
-              width="100%"
-              mb={1}
-              key={index}
-              alignItems="flex-start"
+            <Typography variant="h6" fontWeight="bold" textAlign="left">
+              DETAILS
+            </Typography>
+            <Divider
+              sx={{
+                borderColor: 'black',
+                borderWidth: '1.5px',
+                mb: 2,
+                width: '100%',
+              }}
+            />
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ textAlign: 'justify' }}
             >
+              {data.product.details}
+            </Typography>
+          </Grid>
+
+          <Grid
+            item
+            xs={6}
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            width="35%"
+            pl={2}
+          >
+            <Typography variant="h6" fontWeight="bold" textAlign="left">
+              FACTS
+            </Typography>
+            <Divider
+              sx={{
+                borderColor: 'black',
+                borderWidth: '1.5px',
+                mb: 2,
+                width: '100%',
+              }}
+            />
+            {[
+              { label: 'Brand:', value: data.product.brand },
+              { label: 'Manufacturer ID:', value: data.product.id },
+              { label: 'Color:', value: selectedColor },
+              { label: 'Category:', value: data.product.category },
+              { label: 'Release Date:', value: data.product.releaseDate },
+            ].map((fact, index) => (
               <Box
-                sx={{
-                  minWidth: '180px',
-                  marginRight: '20px',
-                  textAlign: 'left',
-                }}
+                display="flex"
+                width="100%"
+                mb={1}
+                key={index}
+                alignItems="flex-start"
               >
-                <Typography variant="body2" fontWeight="bold">
-                  {fact.label}
-                </Typography>
+                <Box
+                  sx={{
+                    minWidth: '180px',
+                    marginRight: '20px',
+                    textAlign: 'left',
+                  }}
+                >
+                  <Typography variant="body2" fontWeight="bold">
+                    {fact.label}
+                  </Typography>
+                </Box>
+                <Box sx={{ textAlign: 'left' }}>
+                  <Typography variant="body2" color="text.secondary">
+                    {fact.value}
+                  </Typography>
+                </Box>
               </Box>
-              <Box sx={{ textAlign: 'left' }}>
-                <Typography variant="body2" color="text.secondary">
-                  {fact.value}
-                </Typography>
-              </Box>
-            </Box>
-          ))}
-        </Box>
-      </Box>
+            ))}
+          </Grid>
+        </Grid>
+      </Grid>
     </Box>
   );
 };
