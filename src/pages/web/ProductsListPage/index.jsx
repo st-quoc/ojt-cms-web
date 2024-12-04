@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import GridViewIcon from '@mui/icons-material/GridView';
-import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -21,9 +19,6 @@ export const ProductsListPage = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
-  const [viewMode, setViewMode] = useState(
-    localStorage.getItem('viewMode') ?? 'grid',
-  );
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
     search: '',
@@ -76,11 +71,6 @@ export const ProductsListPage = () => {
 
   const handlePageChange = (_, pageNumber) => setCurrentPage(pageNumber);
 
-  const handleViewToggle = mode => {
-    localStorage.setItem('viewMode', mode);
-    setViewMode(mode);
-  };
-
   return (
     <Box>
       <Header />
@@ -102,22 +92,7 @@ export const ProductsListPage = () => {
             <ProductsListFilter filters={filters} setFilters={setFilters} />
             <Stack spacing={3} flex={1}>
               <Box className="flex justify-between items-center bg-gray-100 p-4 rounded-lg mb-4">
-                <Box className="flex space-x-2">
-                  <Button
-                    onClick={() => handleViewToggle('grid')}
-                    className={`px-3 py-2 rounded-md ${viewMode === 'grid' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-black'}`}
-                    variant="outlined"
-                  >
-                    <GridViewIcon />
-                  </Button>
-                  <Button
-                    onClick={() => handleViewToggle('list')}
-                    className={`px-3 py-2 rounded-md ${viewMode === 'list' ? 'bg-orange-500 text-white' : 'bg-gray-200 text-black'}`}
-                    variant="outlined"
-                  >
-                    <FormatListBulletedIcon />
-                  </Button>
-                </Box>
+                <Box className="flex space-x-2"></Box>
 
                 <Stack direction={'row'} spacing={3}>
                   <Sort filters={filters} setFilters={setFilters} />
@@ -131,10 +106,7 @@ export const ProductsListPage = () => {
                 {loading ? (
                   <Loader />
                 ) : (
-                  <ProductListContainer
-                    products={products}
-                    viewMode={viewMode}
-                  />
+                  <ProductListContainer products={products} />
                 )}
               </Box>
 

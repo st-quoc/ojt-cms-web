@@ -12,12 +12,8 @@ export const Header = () => {
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
   const navigate = useNavigate();
-  const { cartItems } = useCart();
-
-  const cartQuantity = cartItems.reduce(
-    (total, item) => total + item.quantity,
-    0,
-  );
+  const { getTotalQuantity } = useCart();
+  const cartQuantity = getTotalQuantity();
 
   useEffect(() => {
     const handleClickOutside = event => {
