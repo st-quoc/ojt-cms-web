@@ -1,14 +1,4 @@
 import { useState } from 'react';
-import {
-  Card,
-  CardContent,
-  Typography,
-  Avatar,
-  Button,
-  TextField,
-  Grid,
-} from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
 
 export const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -36,63 +26,81 @@ export const Profile = () => {
   };
 
   return (
-    <Card sx={{ maxWidth: 600, margin: '20px auto', padding: 2 }}>
-      <CardContent>
-        <Grid container spacing={2} alignItems="center" justifyContent="center">
-          <Grid item>
-            <Avatar sx={{ width: 80, height: 80 }}>A</Avatar>
-          </Grid>
-          <Grid item>
-            <Typography variant="h5">{profile.name}</Typography>
-            <Typography variant="subtitle1">{profile.email}</Typography>
-          </Grid>
-        </Grid>
-        <Typography variant="h6" sx={{ marginTop: 3 }}>
-          Thông tin cá nhân
-        </Typography>
-        <Grid container spacing={2} sx={{ marginTop: 1 }}>
+    <div className="max-w-4xl mx-auto mt-8 p-6 sm:p-8 bg-white rounded-2xl shadow-lg relative">
+      {/* Avatar và thông tin cơ bản */}
+      <div className="flex flex-col items-center md:flex-row md:items-start md:space-x-6">
+        <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden shadow-md mb-4 md:mb-0">
+          <img
+            src="https://via.placeholder.com/150"
+            alt="Avatar"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="text-center md:text-left">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
+            {profile.name}
+          </h1>
+          <p className="text-gray-500">{profile.email}</p>
+          {!isEditing && (
+            <button
+              className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-full shadow-md hover:bg-blue-700 transition duration-300"
+              onClick={handleEdit}
+            >
+              Edit information
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Form thông tin cá nhân */}
+      <div className="mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {['name', 'email', 'phone', 'address'].map(field => (
-            <Grid item xs={12} key={field}>
-              <TextField
-                label={field.charAt(0).toUpperCase() + field.slice(1)}
+            <div key={field}>
+              <label className="block text-lg font-medium text-gray-600 mb-1">
+                {field === 'name'
+                  ? 'Full Name'
+                  : field === 'email'
+                    ? 'Email'
+                    : field === 'phone'
+                      ? 'Phone Number'
+                      : 'Address'}
+              </label>
+              <input
+                type="text"
                 name={field}
                 value={formData[field]}
                 onChange={handleChange}
-                fullWidth
                 disabled={!isEditing}
+                className={`w-full px-4 py-3 rounded-lg border ${
+                  isEditing
+                    ? 'border-blue-500 focus:outline-none focus:ring focus:ring-blue-200'
+                    : 'border-gray-300 bg-gray-100 text-gray-500'
+                }`}
               />
-            </Grid>
+            </div>
           ))}
-        </Grid>
-        {isEditing ? (
-          <Grid container spacing={2} sx={{ marginTop: 2 }}>
-            <Grid item>
-              <Button variant="contained" color="primary" onClick={handleSave}>
-                Lưu
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={handleCancel}
-              >
-                Hủy
-              </Button>
-            </Grid>
-          </Grid>
-        ) : (
-          <Button
-            variant="contained"
-            startIcon={<EditIcon />}
-            sx={{ marginTop: 2 }}
-            onClick={handleEdit}
+        </div>
+      </div>
+
+      {/* Nút lưu và hủy */}
+      {isEditing && (
+        <div className="flex justify-center mt-8 space-x-4">
+          <button
+            className="bg-green-500 text-white px-6 py-2 rounded-full shadow-md hover:bg-green-600 transition duration-300"
+            onClick={handleSave}
           >
-            Chỉnh sửa
-          </Button>
-        )}
-      </CardContent>
-    </Card>
+            Save
+          </button>
+          <button
+            className="bg-red-500 text-white px-6 py-2 rounded-full shadow-md hover:bg-red-600 transition duration-300"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+        </div>
+      )}
+    </div>
   );
 };
 

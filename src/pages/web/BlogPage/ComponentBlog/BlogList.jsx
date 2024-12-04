@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
-import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import CloseIcon from '@mui/icons-material/Close';
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
 import { useNavigate } from 'react-router-dom';
@@ -97,7 +96,6 @@ export const BlogList = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [searchDate, setSearchDate] = useState('');
-  const [isScrollTopVisible, setIsScrollTopVisible] = useState(false);
   const navigate = useNavigate();
 
   const openModal = image => {
@@ -117,26 +115,9 @@ export const BlogList = () => {
       item.description.toLowerCase().includes(searchDate.toLowerCase()),
   );
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   const handleBlogDetailClick = post => {
     navigate(`/blog/${post.id}`, { state: { post } });
   };
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 300) {
-        setIsScrollTopVisible(true);
-      } else {
-        setIsScrollTopVisible(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   return (
     <div>
@@ -193,15 +174,6 @@ export const BlogList = () => {
           </div>
         </div>
       </div>
-
-      {isScrollTopVisible && (
-        <button
-          onClick={scrollToTop}
-          className="fixed bottom-8 right-8 bg-blue-500 text-white p-3 rounded-full shadow-md hover:bg-blue-600 transition duration-300 z-50"
-        >
-          <ArrowUpwardIcon />
-        </button>
-      )}
 
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
