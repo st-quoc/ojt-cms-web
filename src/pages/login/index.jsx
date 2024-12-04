@@ -53,11 +53,7 @@ export const LoginPage = () => {
       localStorage.setItem('refreshToken', res.data.refreshToken);
       localStorage.setItem('userInfo', JSON.stringify(userInfo));
 
-      if (['admin', 'manager'].includes(userInfo.role)) {
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/');
-      }
+      navigate('/');
     } catch (error) {
       toast(
         error.response?.data?.message || 'An error occurred. Please try again.',

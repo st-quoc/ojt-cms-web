@@ -20,9 +20,7 @@ export const ProductCard = ({ product }) => {
     .filter(variant => variant.color._id === selectedColor)
     .map(variant => variant.size);
 
-  const [selectedSize, setSelectedSize] = useState(
-    availableSizes[0]._id || null,
-  );
+  const [selectedSize, setSelectedSize] = useState(availableSizes[0]._id);
 
   const [price, setPrice] = useState(
     product.variants.find(
@@ -117,8 +115,8 @@ export const ProductCard = ({ product }) => {
               onChange={handleColorChange}
               className="w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 bg-blue-300"
             >
-              {uniqueColors.map(color => (
-                <option key={color} value={color._id}>
+              {uniqueColors.map((color, index) => (
+                <option key={index} value={color._id}>
                   {color.name}
                 </option>
               ))}
@@ -136,7 +134,7 @@ export const ProductCard = ({ product }) => {
                 className="w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 bg-blue-300"
               >
                 {availableSizes.map(size => (
-                  <option key={size} value={size._id}>
+                  <option key={size._id} value={size._id}>
                     {size.name}
                   </option>
                 ))}

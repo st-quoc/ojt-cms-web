@@ -12,7 +12,6 @@ import { API_ROOT } from '../../../constants';
 import { Stack } from '@mui/material';
 import { ProductsListFilter } from './ProductListFilter';
 import { Loader } from '../../../component/Loader';
-import { ScrollToTop } from '../../../component/ScrollToTop';
 
 export const ProductsListPage = () => {
   const [products, setProducts] = useState([]);
@@ -120,7 +119,6 @@ export const ProductsListPage = () => {
           </Stack>
         </Box>
       </Container>
-      <ScrollToTop />
     </Box>
   );
 };

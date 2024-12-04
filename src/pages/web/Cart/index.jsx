@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 export const CartPage = () => {
   const navigate = useNavigate();
-  const userId = JSON.parse(localStorage.getItem('userInfo')).id;
+  const userId = JSON.parse(localStorage.getItem('userInfo'))?.id;
   const { cartItems, loading, error } = useCartItems(userId);
 
   const { getTotalQuantity, getTotalPrice } = useCart();

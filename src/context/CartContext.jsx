@@ -13,7 +13,11 @@ export const CartProvider = ({ children }) => {
   const userInfo = localStorage.getItem('userInfo');
   const userId = userInfo ? JSON.parse(userInfo).id : null;
 
+  const clearCart = () => setCartItems([]);
+
   const fetchCart = async () => {
+    const userInfo = localStorage.getItem('userInfo');
+    const userId = userInfo ? JSON.parse(userInfo).id : null;
     if (!userId) return;
 
     setLoading(true);
@@ -124,6 +128,7 @@ export const CartProvider = ({ children }) => {
         getTotalQuantity,
         getTotalPrice,
         fetchCart,
+        clearCart,
       }}
     >
       {children}
