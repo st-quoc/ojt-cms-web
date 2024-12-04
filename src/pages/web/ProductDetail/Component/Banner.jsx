@@ -2,7 +2,7 @@ import { Box, Typography } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import { useNavigate } from 'react-router-dom';
 
-export const Banner = () => {
+export const Banner = ({ name }) => {
   const navigate = useNavigate();
 
   const handleHomeClick = () => {
@@ -54,7 +54,7 @@ export const Banner = () => {
               Shop
             </Typography>
             <Typography sx={{ mx: 1 }}>/</Typography>
-            <Typography color="orange">Nike Airforce 1</Typography>
+            <Typography color="orange">{name}</Typography>
           </Box>
         </Box>
       </Box>
