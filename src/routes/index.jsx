@@ -23,16 +23,16 @@ import { AboutUs } from '../pages/web/AboutUs';
 import ProductsListPage from '../pages/web/ProductsListPage';
 import { VariantsPage } from '../pages/admin/Variants';
 
-const AdminLayoutProtectedRoute = ({ children }) => {
-  const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-  const role = userInfo?.role;
+// const AdminLayoutProtectedRoute = ({ children }) => {
+//   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+//   const role = userInfo?.role;
 
-  if (!['admin', 'manager'].includes(role)) {
-    return <Navigate to="/login" replace />;
-  }
+//   if (!['admin', 'manager'].includes(role)) {
+//     return <Navigate to="/login" replace />;
+//   }
 
-  return children;
-};
+//   return children;
+// };
 
 const ProtectedRoute = ({ children, requiredPermissions }) => {
   const userInfo = JSON.parse(localStorage.getItem('userInfo'));
@@ -64,49 +64,14 @@ export const Router = () => {
         <Route element={<AboutUs />} path="AboutUs" />
       </Route>
 
-      <Route
-        path="admin"
-        element={
-          <AdminLayoutProtectedRoute>
-            <AdminLayout />
-          </AdminLayoutProtectedRoute>
-        }
-      >
+      <Route path="admin" element={<AdminLayout />}>
         <Route index element={<Dashboard />} />
         <Route index element={<Dashboard />} path="dashboard" />
 
-        <Route
-          element={
-            <ProtectedRoute requiredPermissions={['create_product']}>
-              <ProductCreateAdmin />
-            </ProtectedRoute>
-          }
-          path="product/create"
-        />
-        <Route
-          element={
-            <ProtectedRoute requiredPermissions={['view_product']}>
-              <ProductsListAdmin />
-            </ProtectedRoute>
-          }
-          path="products"
-        />
-        <Route
-          element={
-            <ProtectedRoute requiredPermissions={['view_product']}>
-              <DetailProductAdmin />
-            </ProtectedRoute>
-          }
-          path="product/detail/:id"
-        />
-        <Route
-          element={
-            <ProtectedRoute requiredPermissions={['update_product']}>
-              <ProductEditAdmin />
-            </ProtectedRoute>
-          }
-          path="product/edit/:id"
-        />
+        <Route element={<ProductCreateAdmin />} path="product/create" />
+        <Route element={<ProductsListAdmin />} path="products" />
+        <Route element={<DetailProductAdmin />} path="product/detail/:id" />
+        <Route element={<ProductEditAdmin />} path="product/edit/:id" />
 
         <Route
           element={
