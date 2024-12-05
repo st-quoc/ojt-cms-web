@@ -18,3 +18,9 @@ export const filterProducts = (products, selectedSubCategory) => {
       )
     : products;
 };
+
+export const formatCurrencyVND = amount => {
+  if (typeof amount !== 'number') return '0 VND';
+
+  return amount.toLocaleString('vi-VN') + ' VND';
+};

@@ -1,7 +1,6 @@
 import { ProductCard } from '../Product/ProductCard';
-import { ProductListItem } from '../Product/ProductListItem';
 
-export const ProductListContainer = ({ products, viewMode }) => {
+export const ProductListContainer = ({ products }) => {
   if (!products || products.length === 0) {
     return (
       <div className="text-center p-4 text-gray-500">
@@ -13,18 +12,12 @@ export const ProductListContainer = ({ products, viewMode }) => {
   return (
     <div
       className={
-        viewMode === 'list'
-          ? 'space-y-4'
-          : 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'
+        'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'
       }
     >
-      {products.map(product =>
-        viewMode === 'list' ? (
-          <ProductListItem product={product} key={product.id} />
-        ) : (
-          <ProductCard product={product} key={product.id} />
-        ),
-      )}
+      {products.map((product, index) => (
+        <ProductCard product={product} key={index} />
+      ))}
     </div>
   );
 };

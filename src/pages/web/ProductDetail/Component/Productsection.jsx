@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -7,63 +7,57 @@ import Grid from '@mui/material/Grid2';
 import 'swiper/css';
 const data = {
   product: {
-    id: '1',
-    name: 'Nike Airforce 1',
-    brand: 'Nike',
-    details:
-      'The adidas Campus is a true classic when it comes to streetwear. Originally designed for the basketball court, it soon became a favorite of the most diverse subcultures. These Campus 00s play with proportions and give the legendary silhouette a stylish makeover with their college-style colorway. It comes with a high-quality suede upper in grey, black contrasts in the 3 stripes, the logo details and the heel as well as a classic midsole in off-white.',
-    images: [
-      'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/b7d9211c-26e7-431a-ac24-b0540fb3c00f/AIR+FORCE+1+%2707.png',
-      'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/33533fe2-1157-4001-896e-1803b30659c8/AIR+FORCE+1+%2707.png',
-      'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/a0a300da-2e16-4483-ba64-9815cf0598ac/AIR+FORCE+1+%2707.png',
-      'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/82aa97ed-98bf-4b6f-9d0b-31a9f907077b/AIR+FORCE+1+%2707.png',
-      'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/ef92df87-6098-4fa5-bc88-7107492febcf/AIR+FORCE+1+%2707.png',
-      'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/120a31b0-efa7-41c7-9a84-87b1e56ab9c3/AIR+FORCE+1+%2707.png',
-      'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/1c1e5f55-99c2-4522-b398-2352e01ba566/AIR+FORCE+1+%2707.png',
-    ],
-    color: [
-      {
-        red: [
-          { size: '35', quantity: 5 },
-          { size: '36', quantity: 5 },
-          { size: '37', quantity: 5 },
-          { size: '38', quantity: 5 },
-          { size: '39', quantity: 5 },
-          { size: '40', quantity: 5 },
-          { size: '41', quantity: 5 },
-          { size: '42', quantity: 5 },
-        ],
-      },
-      {
-        white: [
-          { size: '38', quantity: 5 },
-          { size: '39', quantity: 5 },
-          { size: '40', quantity: 5 },
-          { size: '41', quantity: 5 },
-          { size: '42', quantity: 5 },
-          { size: '43', quantity: 5 },
-          { size: '44', quantity: 5 },
-          { size: '45', quantity: 5 },
-          { size: '46', quantity: 5 },
-          { size: '47', quantity: 5 },
-        ],
-      },
-    ],
-    price: '200',
     releaseDate: '2023-09-15',
-    category: 'Sneakers',
   },
 };
-export const Product = () => {
-  const [selectedColor, setSelectedColor] = useState('red');
-  const [selectedSize, setSelectedSize] = useState(null);
+export const Product = ({ product }) => {
+  const defaultVariant = product?.variants?.[0] || {};
+  const defaultColor = defaultVariant?.color?.name || '';
+  const defaultSize = defaultVariant?.size?.name || '';
+  const [selectedColor, setSelectedColor] = useState(defaultColor);
+  const [selectedSize, setSelectedSize] = useState(defaultSize);
+  const [price, setPrice] = useState(null);
+  const [listColor, setListColor] = useState([]);
   const handleColorClick = color => {
     setSelectedColor(color);
-    setSelectedSize(null);
+    setPrice(0);
+    const variant = product.variants.find(
+      variant => variant.color.name === selectedColor,
+    );
+    if (variant) {
+      setPrice(variant.price);
+    }
   };
   const handleSizeClick = size => {
     setSelectedSize(size);
+    const variant = product.variants.find(
+      variant =>
+        variant.color.name === selectedColor && variant.size.name === size,
+    );
+    if (variant) {
+      setPrice(variant.price);
+    }
   };
+  useEffect(() => {
+    if (product?.variants) {
+      const uniqueColors = Array.from(
+        new Set(product.variants.map(variant => variant.color.name)),
+      );
+      setListColor(uniqueColors);
+    }
+  }, [product?.variants]);
+  useEffect(() => {
+    setSelectedColor(defaultColor);
+    setSelectedSize(defaultSize);
+    const variant = product?.variants?.find(
+      variant =>
+        variant.color.name === selectedColor &&
+        variant.size.name === selectedSize,
+    );
+    if (variant) {
+      setPrice(variant.price);
+    }
+  }, [product]);
   const settings = {
     dots: true,
     infinite: true,
@@ -71,6 +65,7 @@ export const Product = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
   };
+  const formattedPrice = Number(price)?.toLocaleString('vi-VN');
   return (
     <Box
       sx={{ px: 1, py: 6 }}
@@ -88,7 +83,7 @@ export const Product = () => {
             justifyContent="center"
           >
             <Slider {...settings} style={{ width: '100%', height: 'auto' }}>
-              {data.product.images.map((image, index) => (
+              {product?.images.map((image, index) => (
                 <Box key={index}>
                   <Box
                     component="img"
@@ -119,28 +114,37 @@ export const Product = () => {
           pl={1}
         >
           <Typography variant="h5" fontWeight="bold">
-            {data.product.brand}
+            {product?.categories
+              ?.slice(0, 1)
+              .map(item => item.name)
+              .join(', ') || 'No categories available'}
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" mt={1}>
-            {data.product.name}
+            {product?.name}
           </Typography>
           <Typography variant="h6" fontWeight="bold" mt={2}>
-            {data.product.price} €
+            {formattedPrice} VND
           </Typography>
 
           <Box mb={4}>
             <Typography variant="body2" color="text.secondary" mb={2}>
               COLOR: {selectedColor || 'Select a color'}
             </Typography>
-            <Box display="flex" gap={2}>
-              {data.product.color.map((colorObj, index) => {
-                const colorName = Object.keys(colorObj)[0];
+            <Box display="flex" flexWrap="wrap" gap={2}>
+              {listColor?.map((colorObj, index) => {
+                const colors = colorObj.split('-');
                 return (
                   <Box
                     key={index}
-                    onClick={() => handleColorClick(colorName)}
+                    onClick={() => handleColorClick(colorObj)}
                     sx={{
-                      bgcolor: colorName.toLowerCase(),
+                      ...(colors.length === 2
+                        ? {
+                            background: `linear-gradient(45deg, ${colors[0].toLowerCase()} 50%, ${colors[1].toLowerCase()} 50%)`,
+                          }
+                        : {
+                            bgcolor: colorObj.toLowerCase(),
+                          }),
                       height: '50px',
                       width: '50px',
                       borderRadius: 2,
@@ -149,7 +153,7 @@ export const Product = () => {
                       justifyContent: 'center',
                       cursor: 'pointer',
                       border:
-                        selectedColor === colorName
+                        selectedColor === colorObj
                           ? '2px solid black'
                           : '1px solid grey',
                     }}
@@ -169,38 +173,31 @@ export const Product = () => {
               SIZE
             </Typography>
             <Grid container spacing={1}>
-              {selectedColor &&
-                data.product.color
-                  .find(colorObj => colorObj[selectedColor])
-                  [selectedColor].map(sizeObj => (
-                    <Grid item key={sizeObj.size}>
-                      <Button
-                        onClick={() => handleSizeClick(sizeObj.size)}
-                        variant={
-                          selectedSize === sizeObj.size
-                            ? 'contained'
-                            : 'outlined'
-                        }
-                        sx={{
-                          py: 1,
-                          px: 2,
-                          borderColor: 'black',
-                          color:
-                            selectedSize === sizeObj.size ? 'white' : 'black',
-                          bgcolor:
-                            selectedSize === sizeObj.size
-                              ? 'black'
-                              : 'transparent',
-                          '&:hover': {
-                            bgcolor: 'black',
-                            color: 'white',
-                          },
-                        }}
-                      >
-                        {sizeObj.size}
-                      </Button>
-                    </Grid>
-                  ))}
+              {product?.variants
+                .filter(variant => variant.color.name === selectedColor)
+                .map(variant => variant.size.name)
+                .map(size => (
+                  <Grid item key={size}>
+                    <Button
+                      onClick={() => handleSizeClick(size)}
+                      variant={selectedSize === size ? 'contained' : 'outlined'}
+                      sx={{
+                        py: 1,
+                        px: 2,
+                        borderColor: 'black',
+                        color: selectedSize === size ? 'white' : 'black',
+                        bgcolor:
+                          selectedSize === size ? 'black' : 'transparent',
+                        '&:hover': {
+                          bgcolor: 'black',
+                          color: 'white',
+                        },
+                      }}
+                    >
+                      {size}
+                    </Button>
+                  </Grid>
+                ))}
             </Grid>
           </Box>
 
@@ -264,8 +261,9 @@ export const Product = () => {
               variant="body2"
               color="text.secondary"
               sx={{ textAlign: 'justify' }}
+              dangerouslySetInnerHTML={{ __html: product?.fullDesc }}
             >
-              {data.product.details}
+              {/* {product?.fullDesc} */}
             </Typography>
           </Grid>
 
@@ -290,10 +288,15 @@ export const Product = () => {
               }}
             />
             {[
-              { label: 'Brand:', value: data.product.brand },
+              { label: 'Brand:', value: product?.categories?.[0]?.name },
               { label: 'Manufacturer ID:', value: data.product.id },
-              { label: 'Color:', value: selectedColor },
-              { label: 'Category:', value: data.product.category },
+              {
+                label: 'Category:',
+                value: product?.categories
+                  ?.slice(1)
+                  .map(item => item.name)
+                  .join(', '),
+              },
               { label: 'Release Date:', value: data.product.releaseDate },
             ].map((fact, index) => (
               <Box

@@ -3,25 +3,30 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useCart } from '../../context/CartContext';
+import { formatCurrencyVND } from '../../utils';
 
 export const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
 
   const uniqueColors = [
-    ...new Set(product.variants.map(variant => variant.color)),
+    ...new Map(
+      product.variants.map(variant => [variant.color.name, variant.color]),
+    ).values(),
   ];
 
-  const [selectedColor, setSelectedColor] = useState(uniqueColors[0]);
+  const [selectedColor, setSelectedColor] = useState(uniqueColors[0]._id);
+
   const availableSizes = product.variants
-    .filter(variant => variant.color === selectedColor)
+    .filter(variant => variant.color._id === selectedColor)
     .map(variant => variant.size);
-  const [selectedSize, setSelectedSize] = useState(availableSizes[0] || null);
-  const [variantId, setVariantId] = useState(null);
+
+  const [selectedSize, setSelectedSize] = useState(availableSizes[0]._id);
 
   const [price, setPrice] = useState(
     product.variants.find(
       variant =>
-        variant.color === selectedColor && variant.size === availableSizes[0],
+        variant.color._id === selectedColor &&
+        variant.size._id === availableSizes[0]._id,
     )?.price || 'N/A',
   );
 
@@ -30,12 +35,12 @@ export const ProductCard = ({ product }) => {
     setSelectedColor(color);
 
     const sizes = product.variants
-      .filter(variant => variant.color === color)
+      .filter(variant => variant.color._id === color)
       .map(variant => variant.size);
 
-    setSelectedSize(sizes[0] || null);
+    setSelectedSize(sizes[0]._id || null);
 
-    updateVariant(color, sizes[0]);
+    updateVariant(color, sizes[0]._id);
   };
 
   const handleSizeChange = e => {
@@ -46,11 +51,10 @@ export const ProductCard = ({ product }) => {
 
   const updateVariant = (color, size) => {
     const selectedVariant = product.variants.find(
-      variant => variant.color === color && variant.size === size,
+      variant => variant.color._id === color && variant.size._id === size,
     );
 
     setPrice(selectedVariant?.price || 'N/A');
-    setVariantId(selectedVariant?.id || null);
   };
 
   const handleAddToCart = () => {
@@ -63,9 +67,8 @@ export const ProductCard = ({ product }) => {
       productId: product.id,
       name: product.name,
       price,
-      color: selectedColor,
-      size: selectedSize,
-      variantId,
+      colorId: selectedColor,
+      sizeId: selectedSize,
       quantity: 1,
     });
   };
@@ -112,9 +115,9 @@ export const ProductCard = ({ product }) => {
               onChange={handleColorChange}
               className="w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 bg-blue-300"
             >
-              {uniqueColors.map(color => (
-                <option key={color} value={color}>
-                  {color}
+              {uniqueColors.map((color, index) => (
+                <option key={index} value={color._id}>
+                  {color.name}
                 </option>
               ))}
             </select>
@@ -131,8 +134,8 @@ export const ProductCard = ({ product }) => {
                 className="w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 bg-blue-300"
               >
                 {availableSizes.map(size => (
-                  <option key={size} value={size}>
-                    {size}
+                  <option key={size._id} value={size._id}>
+                    {size.name}
                   </option>
                 ))}
               </select>
@@ -147,7 +150,7 @@ export const ProductCard = ({ product }) => {
         <div className="mt-4">
           <span className="text-gray-500">Price: </span>
           <span className="text-lg font-bold text-orange-500">
-            {price !== 'N/A' ? `$${price}` : 'Not Available'}
+            {price !== 'N/A' ? formatCurrencyVND(price) : 'Not Available'}
           </span>
         </div>
       </div>

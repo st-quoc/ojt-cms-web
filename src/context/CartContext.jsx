@@ -1,6 +1,7 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { API_ROOT } from '../constants';
 
 export const CartContext = createContext();
 
@@ -12,15 +13,17 @@ export const CartProvider = ({ children }) => {
   const userInfo = localStorage.getItem('userInfo');
   const userId = userInfo ? JSON.parse(userInfo).id : null;
 
+  const clearCart = () => setCartItems([]);
+
   const fetchCart = async () => {
+    const userInfo = localStorage.getItem('userInfo');
+    const userId = userInfo ? JSON.parse(userInfo).id : null;
     if (!userId) return;
 
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.get(
-        `http://localhost:8017/v1/cart/${userId}`,
-      );
+      const response = await axios.get(`${API_ROOT}/user/cart/list/${userId}`);
       setCartItems(response.data.items || []);
     } catch (err) {
       setError('Failed to fetch cart');
@@ -43,12 +46,12 @@ export const CartProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post(`http://localhost:8017/v1/cart/add`, {
+      await axios.post(`http://localhost:8017/v1/user/cart/add`, {
         userId,
         ...item,
       });
 
-      setCartItems(response.data.items);
+      fetchCart();
       toast.success('Product added to cart!');
     } catch (err) {
       setError('Failed to add product to cart.');
@@ -58,20 +61,18 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const removeFromCart = async variantId => {
+  const removeFromCart = async (productId, colorId, sizeId) => {
     if (!userId) return;
 
     setLoading(true);
     setError(null);
-    try {
-      const response = await axios.delete(
-        `http://localhost:8017/v1/cart/remove`,
-        {
-          data: { userId, variantId },
-        },
-      );
 
-      setCartItems(response.data.items);
+    try {
+      await axios.delete(`http://localhost:8017/v1/user/cart/remove`, {
+        data: { userId, productId, colorId, sizeId },
+      });
+
+      fetchCart();
       toast.success('Product removed from cart!');
     } catch (err) {
       setError('Failed to remove product from cart.');
@@ -81,19 +82,20 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const updateQuantity = async (variantId, newQuantity) => {
+  const updateQuantity = async (productId, colorId, sizeId, newQuantity) => {
     if (!userId || newQuantity < 1) return;
 
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.put(`http://localhost:8017/v1/cart/update`, {
+      await axios.put(`http://localhost:8017/v1/user/cart/update`, {
         userId,
-        variantId,
+        productId,
+        colorId,
+        sizeId,
         quantity: newQuantity,
       });
-
-      setCartItems(response.data.items);
+      fetchCart();
       toast.success('Cart updated successfully!');
     } catch (err) {
       setError('Failed to update cart.');
@@ -126,6 +128,7 @@ export const CartProvider = ({ children }) => {
         getTotalQuantity,
         getTotalPrice,
         fetchCart,
+        clearCart,
       }}
     >
       {children}
