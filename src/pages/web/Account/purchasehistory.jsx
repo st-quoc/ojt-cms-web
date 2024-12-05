@@ -1,5 +1,3 @@
-import { Card, CardContent, Typography, Divider, Grid } from '@mui/material';
-
 export const PurchaseHistory = () => {
   const purchaseData = [
     { id: 1, product: 'Nike Airforce 1', date: '2024-10-01', amount: '200€' },
@@ -8,23 +6,27 @@ export const PurchaseHistory = () => {
   ];
 
   return (
-    <Card sx={{ maxWidth: 600, margin: '20px auto', padding: 2 }}>
-      <CardContent>
-        <Typography variant="h6">Lịch sử mua hàng</Typography>
-        <Divider sx={{ marginY: 2 }} />
+    <div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
+      <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
+        Purchase History
+      </h2>
+      <div className="space-y-4">
         {purchaseData.map(item => (
-          <Grid container spacing={2} key={item.id} sx={{ marginBottom: 1 }}>
-            <Grid item xs={8}>
-              <Typography>{item.product}</Typography>
-              <Typography variant="caption">Ngày: {item.date}</Typography>
-            </Grid>
-            <Grid item xs={4} textAlign="right">
-              <Typography>{item.amount}</Typography>
-            </Grid>
-          </Grid>
+          <div
+            key={item.id}
+            className="flex items-center justify-between p-6 bg-gray-100 rounded-lg shadow-sm hover:shadow-md transition-transform transform hover:scale-105"
+          >
+            <div>
+              <h3 className="text-xl font-semibold text-gray-800">
+                {item.product}
+              </h3>
+              <p className="text-sm text-gray-600 mt-1">Date: {item.date}</p>
+            </div>
+            <div className="text-lg font-bold text-gray-700">{item.amount}</div>
+          </div>
         ))}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

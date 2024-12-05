@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Header } from '../../../component/Header';
 import Footer from '../../../component/Footer/Footer';
+import { ScrollToTop } from '../../../component/ScrollToTop';
 
 export const AboutUs = () => {
   const [showVideo, setShowVideo] = useState(false);
@@ -20,12 +21,10 @@ export const AboutUs = () => {
             <div>
               <h1 className="text-4xl font-bold mb-2">About Us</h1>
               <p className="max-w-2xl mx-auto text-sm md:text-base">
-                At S-TIER Shoes, we are dedicated to providing the best footwear
-                that combines style, comfort, and quality. From work to sport to
-                special occasions, our curated collections feature premium
-                materials and modern designs to ensure a perfect fit for every
-                step of your journey. Thank you for choosing S-TIER Shoes as
-                your trusted footwear destination!
+                At S-TIER Shoes, we offer stylish, comfortable, and high-quality
+                footwear for every occasion. Our collections use premium
+                materials and modern designs to ensure the perfect fit. Thank
+                you for choosing us as your footwear destination!
               </p>
             </div>
           </div>
@@ -82,6 +81,7 @@ export const AboutUs = () => {
         </section>
       </main>
       <Footer />
+      <ScrollToTop />
     </div>
   );
 };

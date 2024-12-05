@@ -18,7 +18,6 @@ export const BlogDetail = () => {
       setLoading(false);
     } catch (error) {
       console.error('Error fetching blogs:', error.response || error.message);
-      alert(`Failed to fetch blogs: ${error.message}`);
     } finally {
       setLoading(false);
     }
