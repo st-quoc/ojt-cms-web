@@ -9,6 +9,7 @@ export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [toastVisible, setToastVisible] = useState(false);
 
   const userInfo = localStorage.getItem('userInfo');
   const userId = userInfo ? JSON.parse(userInfo).id : null;
@@ -46,13 +47,20 @@ export const CartProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      await axios.post(`http://localhost:8017/v1/user/cart/add`, {
+      await axios.post(`${API_ROOT}/user/cart/add`, {
         userId,
         ...item,
       });
 
       fetchCart();
-      toast.success('Product added to cart!');
+
+      if (!toastVisible) {
+        toast.success('Product added to cart!');
+        setToastVisible(true);
+        setTimeout(() => {
+          setToastVisible(false);
+        }, 5000);
+      }
     } catch (err) {
       setError('Failed to add product to cart.');
       console.error(err);
@@ -62,20 +70,37 @@ export const CartProvider = ({ children }) => {
   };
 
   const removeFromCart = async (productId, colorId, sizeId) => {
-    if (!userId) return;
+    if (!userId) {
+      toast.error('You need to be logged in to remove items from the cart.');
+      return;
+    }
 
     setLoading(true);
     setError(null);
 
     try {
-      await axios.delete(`http://localhost:8017/v1/user/cart/remove`, {
+      await axios.delete(`${API_ROOT}/user/cart/remove`, {
         data: { userId, productId, colorId, sizeId },
       });
 
       fetchCart();
-      toast.success('Product removed from cart!');
+
+      if (!toastVisible) {
+        toast.success('Product removed from cart successfully!');
+        setToastVisible(true);
+        setTimeout(() => {
+          setToastVisible(false);
+        }, 5000);
+      }
     } catch (err) {
       setError('Failed to remove product from cart.');
+      if (!toastVisible) {
+        toast.error('Failed to remove product. Please try again later.');
+        setToastVisible(true);
+        setTimeout(() => {
+          setToastVisible(false);
+        }, 2000);
+      }
       console.error(err);
     } finally {
       setLoading(false);
@@ -83,22 +108,47 @@ export const CartProvider = ({ children }) => {
   };
 
   const updateQuantity = async (productId, colorId, sizeId, newQuantity) => {
-    if (!userId || newQuantity < 1) return;
+    if (!userId) {
+      toast.error('You need to be logged in to update item quantity.');
+      return;
+    }
+
+    if (newQuantity < 1) {
+      toast.error(
+        'Quantity cannot be less than 1. Please remove the item if you no longer need it.',
+      );
+      return;
+    }
 
     setLoading(true);
     setError(null);
     try {
-      await axios.put(`http://localhost:8017/v1/user/cart/update`, {
+      await axios.put(`${API_ROOT}/user/cart/update`, {
         userId,
         productId,
         colorId,
         sizeId,
         quantity: newQuantity,
       });
+
       fetchCart();
-      toast.success('Cart updated successfully!');
+
+      if (!toastVisible) {
+        toast.success(`Cart updated successfully.`);
+        setToastVisible(true);
+        setTimeout(() => {
+          setToastVisible(false);
+        }, 5000);
+      }
     } catch (err) {
       setError('Failed to update cart.');
+      if (!toastVisible) {
+        toast.error('Failed to update quantity. Please try again later.');
+        setToastVisible(true);
+        setTimeout(() => {
+          setToastVisible(false);
+        }, 2000);
+      }
       console.error(err);
     } finally {
       setLoading(false);
@@ -115,7 +165,6 @@ export const CartProvider = ({ children }) => {
       0,
     );
   };
-
   return (
     <CartContext.Provider
       value={{

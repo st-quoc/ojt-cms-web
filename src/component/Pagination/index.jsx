@@ -3,7 +3,7 @@ import { Box, Pagination } from '@mui/material';
 const PaginationBase = ({
   totalItems = 0,
   currentPage = 1,
-  itemsPerPage = 9,
+  itemsPerPage = 8,
   handlePageChange,
 }) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
