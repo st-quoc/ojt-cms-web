@@ -17,7 +17,7 @@ export const ProductsListPage = () => {
   const [products, setProducts] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(12);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
     search: '',

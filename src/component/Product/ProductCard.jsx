@@ -1,9 +1,10 @@
-import { Stack, IconButton } from '@mui/material';
+import { Stack, IconButton, Box } from '@mui/material';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useCart } from '../../context/CartContext';
 import { formatCurrencyVND } from '../../utils';
+import { useNavigate } from 'react-router-dom';
 
 export const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
@@ -31,9 +32,9 @@ export const ProductCard = ({ product }) => {
   );
 
   const handleColorChange = e => {
+    e.stopPropagation();
     const color = e.target.value;
     setSelectedColor(color);
-
     const sizes = product.variants
       .filter(variant => variant.color._id === color)
       .map(variant => variant.size);
@@ -44,6 +45,7 @@ export const ProductCard = ({ product }) => {
   };
 
   const handleSizeChange = e => {
+    e.stopPropagation();
     const size = e.target.value;
     setSelectedSize(size);
     updateVariant(selectedColor, size);
@@ -57,7 +59,18 @@ export const ProductCard = ({ product }) => {
     setPrice(selectedVariant?.price || 'N/A');
   };
 
-  const handleAddToCart = () => {
+  const navigate = useNavigate();
+
+  const handleProductDetailClick = e => {
+    if (e.target.classList.contains('no-detail')) {
+      e.stopPropagation();
+      return;
+    }
+    navigate(`/product/${product.id}`);
+  };
+
+  const handleAddToCart = e => {
+    e.stopPropagation();
     if (price === 'N/A') {
       toast.error('This variant is not available.');
       return;
@@ -74,7 +87,10 @@ export const ProductCard = ({ product }) => {
   };
 
   return (
-    <div className="max-w-sm mx-auto bg-white shadow-lg rounded-lg overflow-hidden border group duration-500 relative transition-transform transform hover:scale-105">
+    <Box
+      onClick={handleProductDetailClick}
+      className="cursor-pointer max-w-sm mx-auto bg-white shadow-lg rounded-lg overflow-hidden border group duration-500 relative transition-transform transform hover:scale-105"
+    >
       <IconButton
         aria-label="Add to Cart"
         onClick={handleAddToCart}
@@ -92,28 +108,29 @@ export const ProductCard = ({ product }) => {
       >
         <ShoppingCartIcon />
       </IconButton>
-      <div className="bg-gray-200">
+      <Box className="bg-gray-200">
         <img
           src={product.images[0]}
           alt={product.name}
           className="h-full w-full object-cover aspect-square"
         />
-      </div>
+      </Box>
 
-      <div className="p-4">
+      <Box className="p-4">
         <h2 className="text-md font-bold text-gray-800 mb-2 line-clamp-2">
           {product.name}
         </h2>
 
         <Stack spacing={2} direction={'row'}>
-          <div className="w-[50%]">
+          <Box className="w-[50%]">
             <label className="block text-sm font-medium text-gray-700 mb-1 ">
               <strong>Color</strong>
             </label>
             <select
               value={selectedColor}
               onChange={handleColorChange}
-              className="w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 bg-blue-300"
+              onClick={e => e.stopPropagation()}
+              className="w-full h-7 border-gray-300 rounded-md shadow-md focus:ring-orange-500 focus:border-orange-500 no-detail"
             >
               {uniqueColors.map((color, index) => (
                 <option key={index} value={color._id}>
@@ -121,9 +138,9 @@ export const ProductCard = ({ product }) => {
                 </option>
               ))}
             </select>
-          </div>
+          </Box>
 
-          <div className="w-[50%]">
+          <Box className="w-[50%]">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               <strong>Size</strong>
             </label>
@@ -131,7 +148,8 @@ export const ProductCard = ({ product }) => {
               <select
                 value={selectedSize}
                 onChange={handleSizeChange}
-                className="w-full border-gray-300 rounded-md shadow-sm focus:ring-orange-500 focus:border-orange-500 bg-blue-300"
+                onClick={e => e.stopPropagation()}
+                className="w-full h-7 border-gray-300 rounded-md shadow-md focus:ring-orange-500 focus:border-orange-500 no-detail"
               >
                 {availableSizes.map(size => (
                   <option key={size._id} value={size._id}>
@@ -140,20 +158,20 @@ export const ProductCard = ({ product }) => {
                 ))}
               </select>
             ) : (
-              <div className="text-sm text-gray-500 italic">
+              <Box className="text-sm text-gray-500 italic">
                 No sizes available for this color.
-              </div>
+              </Box>
             )}
-          </div>
+          </Box>
         </Stack>
 
-        <div className="mt-4">
+        <Box className="mt-4">
           <span className="text-gray-500">Price: </span>
           <span className="text-lg font-bold text-orange-500">
             {price !== 'N/A' ? formatCurrencyVND(price) : 'Not Available'}
           </span>
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 };

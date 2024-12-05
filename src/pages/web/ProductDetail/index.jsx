@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import axiosClient from '../../../config/axios';
 import { API_ROOT } from '../../../constants';
 import { Footer } from '../../../component/Footer/Footer';
+import { Question } from './Component/Question';
 
 const ProductDetailPage = () => {
   const { productId } = useParams();
@@ -38,6 +39,7 @@ const ProductDetailPage = () => {
       <Product product={product} />
       <Suggest />
       <Comment />
+      <Question />
       <Footer />
     </Box>
   );
