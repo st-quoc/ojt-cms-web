@@ -5,15 +5,22 @@ import 'slick-carousel/slick/slick-theme.css';
 import { Box, Typography, Button, Divider } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import 'swiper/css';
+import { useNavigate, useParams } from 'react-router-dom';
+import axiosClient from '../../../../config/axios';
+import { API_ROOT } from '../../../../constants';
+
 const data = {
   product: {
     releaseDate: '2023-09-15',
   },
 };
+
 export const Product = ({ product }) => {
   const defaultVariant = product?.variants?.[0] || {};
   const defaultColor = defaultVariant?.color?.name || '';
   const defaultSize = defaultVariant?.size?.name || '';
+  const navigate = useNavigate();
+  const { productId } = useParams();
   const [selectedColor, setSelectedColor] = useState(defaultColor);
   const [selectedSize, setSelectedSize] = useState(defaultSize);
   const [price, setPrice] = useState(null);
@@ -36,6 +43,32 @@ export const Product = ({ product }) => {
     );
     if (variant) {
       setPrice(variant.price);
+    }
+  };
+  const handleAddToCart = async () => {
+    const variants = product.variants;
+    const findSize = variants.find(item => item.size.name === selectedSize);
+    const storedUserInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+
+    /**
+ *   const { userId, productId, name, price, quantity, sizeId, colorId } =
+      req.body
+ */
+    const data = {
+      name: product?.name,
+      productId,
+      price,
+      quantity: 1,
+      colorId: findSize?.color._id,
+      sizeId: findSize?.size._id,
+      userId: storedUserInfo.id,
+    };
+    try {
+      const res = await axiosClient.post(`${API_ROOT}/user/cart/add`, data);
+      console.log('res', res);
+      navigate('/cart');
+    } catch (err) {
+      console.log('🚀  err  🚀', err);
     }
   };
   useEffect(() => {
@@ -219,6 +252,7 @@ export const Product = ({ product }) => {
                 color: 'black',
               },
             }}
+            onClick={() => handleAddToCart()}
           >
             ADD TO CART
           </Button>
