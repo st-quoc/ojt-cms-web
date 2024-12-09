@@ -7,6 +7,7 @@ import { formatCurrencyVND } from '../../../utils';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { API_ROOT } from '../../../constants';
 
 export const CartPage = () => {
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ export const CartPage = () => {
       const deleteCartItems = async () => {
         try {
           const response = await axios.delete(
-            'http://localhost:8017/v1/user/cart/delete-all',
+            `${API_ROOT}/user/cart/delete-all`,
             { data: { userId } },
           );
           console.log('Cart cleared:', response.data.message);

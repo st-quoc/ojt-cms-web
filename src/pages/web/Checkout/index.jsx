@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { API_ROOT } from '../../../constants';
 
 const totalPrice = JSON.parse(localStorage.getItem('totalPrice'));
 const userId = JSON.parse(localStorage.getItem('userInfo'))?.id;
@@ -24,7 +25,7 @@ export default function Checkout() {
       setIsLoading(true);
 
       const response = await axios.post(
-        'http://localhost:8017/v1/vnpay/create-payment-url',
+        `${API_ROOT}/vnpay/create-payment-url`,
         {
           userId,
           shippingAddress,
