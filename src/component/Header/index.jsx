@@ -164,7 +164,7 @@ export const Header = () => {
             sx={{
               width: '100%',
               height: '100%',
-              background: isScrolled ? '#fff' : 'transparent',
+              background: isScrolled ? '##68a98c' : 'transparent',
               borderRadius: 15,
               boxShadow: isScrolled ? 2 : 0,
             }}

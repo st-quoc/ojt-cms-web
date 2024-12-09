@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import Footer from '../../../../component/Footer/Footer';
 import { Header } from '../../../../component/Header';
 import { Banner } from '../ComponentBlog/Banner';
-import useFetchBlogDetail from '../../../../hook/useFetchBlogDetail';
+import useFetchBlogDetail from '../../../../hooks/useFetchBlogDetail';
 
 export const BlogDetail = () => {
   const { id } = useParams();

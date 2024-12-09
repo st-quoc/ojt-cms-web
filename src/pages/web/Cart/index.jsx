@@ -1,7 +1,7 @@
 import { Alert, CircularProgress } from '@mui/material';
 import Footer from '../../../component/Footer/Footer';
 import Header from '../../../component/Header';
-import useCartItems from '../../../hook/useCartItems';
+import useCartItems from '../../../hooks/useCartItems';
 import CartItem from './CartItem';
 import { useCart } from '../../../context/CartContext';
 import { formatCurrencyVND } from '../../../utils';

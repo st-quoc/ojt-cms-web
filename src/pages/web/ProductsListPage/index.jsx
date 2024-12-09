@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -8,17 +7,15 @@ import { ProductListContainer } from '../../../component/ProductGrid';
 import PaginationBase from '../../../component/Pagination';
 import { Sort } from '../../../component/Sort';
 import { Show } from '../../../component/Show';
-import { API_ROOT } from '../../../constants';
 import { Stack } from '@mui/material';
 import { ProductsListFilter } from './ProductListFilter';
 import { Loader } from '../../../component/Loader';
+import useFetchProducts from '../../../hooks/useFetchProducts';
+import { Navigate } from 'react-router-dom';
 
 export const ProductsListPage = () => {
-  const [products, setProducts] = useState([]);
-  const [totalItems, setTotalItems] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(8);
-  const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
     search: '',
     category: [],
@@ -31,37 +28,11 @@ export const ProductsListPage = () => {
     sortBy: 'default',
   });
 
-  const fetchProducts = async filters => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`${API_ROOT}/user/product/list`, {
-        params: {
-          page: currentPage,
-          limit: itemsPerPage,
-          search: filters.search,
-          category: filters.category,
-          priceMin: filters.priceMin,
-          priceMax: filters.priceMax,
-          color: filters.color,
-          size: filters.size,
-          stockCondition: filters.stockCondition,
-          stockValue: filters.stockValue,
-          sortBy: filters.sortBy,
-        },
-      });
-      const { products, totalProducts } = response.data;
-      setProducts(products);
-      setTotalItems(totalProducts);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProducts(filters);
-  }, [currentPage, itemsPerPage, filters]);
+  const { products, loading, error, totalPages } = useFetchProducts(
+    filters,
+    currentPage,
+    itemsPerPage,
+  );
 
   const handleItemsPerPageChange = event => {
     setItemsPerPage(Number(event.target.value));
@@ -69,6 +40,8 @@ export const ProductsListPage = () => {
   };
 
   const handlePageChange = (_, pageNumber) => setCurrentPage(pageNumber);
+
+  if (error) return <Navigate to={'/404'} />;
 
   return (
     <Box>
@@ -110,7 +83,7 @@ export const ProductsListPage = () => {
               </Box>
 
               <PaginationBase
-                totalItems={totalItems}
+                totalItems={totalPages}
                 currentPage={currentPage}
                 itemsPerPage={itemsPerPage}
                 handlePageChange={handlePageChange}

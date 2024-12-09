@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
-import useFetchBlogs from '../../../../hook/useFetchBlogs';
+import useFetchBlogs from '../../../../hooks/useFetchBlogs';
 import { useNavigate } from 'react-router-dom';
 import PaginationBase from '../../../../component/Pagination';
 import { Loading } from '../../../../component/Loading';
