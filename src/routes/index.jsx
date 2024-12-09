@@ -21,8 +21,8 @@ export const Router = () => {
         <Route element={<ProductDetailPage />} path="product/:productId" />
         <Route element={<Account />} path="account" />
         <Route element={<BlogPage />} path="blogs" />
-        <Route element={<BlogDetail />} path="blog/:blogId" />
-        <Route element={<AboutUs />} path="AboutUs" />
+        <Route element={<BlogDetail />} path="/blog/:id" />
+        <Route element={<AboutUs />} path="about-us" />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

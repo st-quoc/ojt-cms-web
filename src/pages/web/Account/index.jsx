@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import Profile from './profile';
-import PurchaseHistory from './purchaseHistory';
 import Notifications from './notifications';
+// import PurchaseHistory from './purchasehistory';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import HistoryIcon from '@mui/icons-material/History';
+// import HistoryIcon from '@mui/icons-material/History';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 
 export const Account = () => {
@@ -15,7 +15,7 @@ export const Account = () => {
       label: 'Personal Information',
       icon: <AccountCircleIcon />,
     },
-    { key: 'history', label: 'Purchase History', icon: <HistoryIcon /> },
+    // { key: 'history', label: 'Purchase History', icon: <HistoryIcon /> },
     {
       key: 'notifications',
       label: 'Notifications',
@@ -52,7 +52,7 @@ export const Account = () => {
 
         <main className="flex-1 p-4 md:p-10 bg-white rounded-lg shadow-md mx-6 md:mx-0">
           {selectedSection === 'profile' && <Profile />}
-          {selectedSection === 'history' && <PurchaseHistory />}
+          {/* {selectedSection === 'history' && <PurchaseHistory />} */}
           {selectedSection === 'notifications' && <Notifications />}
         </main>
       </div>
