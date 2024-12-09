@@ -1,37 +1,18 @@
-import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Footer from '../../../../component/Footer/Footer';
 import { Header } from '../../../../component/Header';
 import { Banner } from '../ComponentBlog/Banner';
-import axios from 'axios';
-import { API_ROOT } from '../../../../constants';
+import useFetchBlogDetail from '../../../../hook/useFetchBlogDetail';
 
 export const BlogDetail = () => {
   const { id } = useParams();
-  const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  const fetchBlogDetail = async () => {
-    try {
-      const response = await axios.get(`${API_ROOT}/user/blog/detail/${id}`);
-      setPost(response.data.blog);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching blogs:', error.response || error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchBlogDetail();
-  }, [id]);
+  const { blog, loading } = useFetchBlogDetail(id);
 
   if (loading) {
     return <div className="text-center py-20 text-gray-500">Loading...</div>;
   }
 
-  if (!post) {
+  if (!blog) {
     return (
       <div className="text-center py-20 text-gray-500">Blog not found.</div>
     );
@@ -41,35 +22,36 @@ export const BlogDetail = () => {
     <div>
       <Header />
       <Banner />
-      <div className="max-w-4xl mx-auto p-6">
-        <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
 
-        <p className="text-sm text-gray-500 mb-4">
-          {new Date(post.createdAt).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </p>
-
-        {post.thumbnail && Array.isArray(post.thumbnail) ? (
-          <img
-            src={post.thumbnail[0]}
-            alt={post.title}
-            className="w-full h-96 object-cover mb-4"
-          />
-        ) : post.thumbnail && typeof post.thumbnail === 'string' ? (
-          <img
-            src={post.thumbnail}
-            alt={post.title}
-            className="w-full h-96 object-cover mb-4"
-          />
-        ) : null}
-
+      <div className="max-w-screen-xl mx-auto p-5 sm:p-10 md:p-16 relative">
         <div
-          className="text-gray-700 leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: post.fullDesc }}
-        />
+          className="bg-cover bg-center text-center overflow-hidden"
+          style={{
+            minHeight: '500px',
+            backgroundImage: `url(${blog.thumbnail})`,
+          }}
+          title="Woman holding a mug"
+        ></div>
+        <div className="max-w-3xl mx-auto">
+          <div className="mt-3 bg-white rounded-b lg:rounded-b-none lg:rounded-r flex flex-col justify-between leading-normal">
+            <div className="bg-white relative top-0 -mt-32 p-5 sm:p-10">
+              <h1 href="#" className="text-gray-900 font-bold text-3xl mb-2">
+                {blog.title}
+              </h1>
+              <p className="text-gray-700 text-xs mt-2">
+                {new Date(blog.createdAt).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                })}
+              </p>
+              <div
+                className="text-gray-700 leading-relaxed"
+                dangerouslySetInnerHTML={{ __html: blog.fullDesc }}
+              />
+            </div>
+          </div>
+        </div>
       </div>
       <Footer />
     </div>

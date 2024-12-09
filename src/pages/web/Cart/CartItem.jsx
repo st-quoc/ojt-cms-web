@@ -6,7 +6,7 @@ import { formatCurrencyVND } from '../../../utils';
 const CartItem = ({ product }) => {
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(product.quantity);
-  const { updateQuantity, removeFromCart } = useCart();
+  const { updateQuantity, removeFromCart, fetchCart } = useCart();
 
   const handleQuantityChange = e => {
     const newQuantity = parseInt(e.target.value);
@@ -37,6 +37,7 @@ const CartItem = ({ product }) => {
     const newQuantity = quantity - 1;
     if (newQuantity === 0) {
       removeFromCart(product.productId, product.color._id, product.size._id);
+      fetchCart();
     } else {
       updateQuantity(
         product.productId,

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Header } from '../../../component/Header';
 import Footer from '../../../component/Footer/Footer';
-import { ScrollToTop } from '../../../component/ScrollToTop';
 
 export const AboutUs = () => {
   const [showVideo, setShowVideo] = useState(false);
@@ -81,7 +80,6 @@ export const AboutUs = () => {
         </section>
       </main>
       <Footer />
-      <ScrollToTop />
     </div>
   );
 };

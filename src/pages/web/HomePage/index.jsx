@@ -4,7 +4,6 @@ import BestSeller from './Components/BestSeller';
 import MostCategory from './Components/MostCategory';
 import Newsletter from './Components/Newsletter';
 import Footer from '../../../component/Footer/Footer';
-import { ScrollToTop } from '../../../component/ScrollToTop';
 
 export const HomePage = () => {
   return (
@@ -15,7 +14,6 @@ export const HomePage = () => {
       <MostCategory />
       <Newsletter />
       <Footer />
-      <ScrollToTop />
     </div>
   );
 };
