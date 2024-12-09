@@ -52,17 +52,23 @@ export const BlogDetail = () => {
           })}
         </p>
 
-        {post.images.length > 0 && (
+        {post.thumbnail && Array.isArray(post.thumbnail) ? (
           <img
-            src={post.images[0]}
+            src={post.thumbnail[0]}
             alt={post.title}
             className="w-full h-96 object-cover mb-4"
           />
-        )}
+        ) : post.thumbnail && typeof post.thumbnail === 'string' ? (
+          <img
+            src={post.thumbnail}
+            alt={post.title}
+            className="w-full h-96 object-cover mb-4"
+          />
+        ) : null}
 
         <div
           className="text-gray-700 leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: post.fullDescription }}
+          dangerouslySetInnerHTML={{ __html: post.fullDesc }}
         />
       </div>
       <Footer />
