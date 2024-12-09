@@ -46,7 +46,7 @@ export const BlogDetail = () => {
                 })}
               </p>
               <div
-                className="text-gray-700 leading-relaxed"
+                className="text-gray-700 leading-relaxed py-24"
                 dangerouslySetInnerHTML={{ __html: blog.fullDesc }}
               />
             </div>
