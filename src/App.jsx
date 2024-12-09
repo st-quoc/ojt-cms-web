@@ -12,8 +12,8 @@ function App() {
         <Header />
         <ScrollToTop />
         <Router />
+        <Footer />
       </CartProvider>
-      <Footer />
     </AuthProvider>
   );
 }

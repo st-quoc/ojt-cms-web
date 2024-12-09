@@ -1,17 +1,37 @@
-import LandingPage from './Components/LandingPage';
-import BestSeller from './Components/BestSeller';
-import MostCategory from './Components/MostCategory';
-import Newsletter from './Components/Newsletter';
-import { ScrollToTop } from '../../../component/ScrollToTop';
+import {
+  CustomerReviews,
+  PopularProducts,
+  Services,
+  SpecialOffer,
+  Subscribe,
+  SuperQuality,
+  Hero,
+} from './sections';
 
 export const HomePage = () => {
   return (
-    <div className="relative min-h-screen w-full bg-gray-100">
-      <LandingPage />
-      <BestSeller />
-      <MostCategory />
-      <Newsletter />
-      <ScrollToTop />
-    </div>
+    <main className="relative">
+      <section className="xl:padding-l wide:padding-r padding-b">
+        <Hero />
+      </section>
+      <section className="padding">
+        <PopularProducts />
+      </section>
+      <section className="padding">
+        <SuperQuality />
+      </section>
+      <section className="padding-x py-10">
+        <Services />
+      </section>
+      <section className="padding">
+        <SpecialOffer />
+      </section>
+      <section className="bg-pale-blue padding">
+        <CustomerReviews />
+      </section>
+      <section className="padding-x sm:py-32 py-16 w-full">
+        <Subscribe />
+      </section>
+    </main>
   );
 };

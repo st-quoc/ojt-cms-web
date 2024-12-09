@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { Banner } from '../ComponentBlog/Banner';
-import useFetchBlogDetail from '../../../../hook/useFetchBlogDetail';
+import useFetchBlogDetail from '../../../../hooks/useFetchBlogDetail';
 
 export const BlogDetail = () => {
   const { id } = useParams();

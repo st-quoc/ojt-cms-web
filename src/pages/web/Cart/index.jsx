@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Alert, CircularProgress } from '@mui/material';
-import useCartItems from '../../../hook/useCartItems';
+import useCartItems from '../../../hooks/useCartItems';
 import CartItem from './CartItem';
 import { useCart } from '../../../context/CartContext';
 import { formatCurrencyVND } from '../../../utils';
