@@ -1,18 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCart } from '../../../context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { formatCurrencyVND } from '../../../utils';
 
 const CartItem = ({ product }) => {
   const navigate = useNavigate();
+  const { updateQuantity, removeFromCart, fetchCart } = useCart();
   const [quantity, setQuantity] = useState(product.quantity);
-  const { updateQuantity, removeFromCart } = useCart();
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    setQuantity(product.quantity);
+  }, [product.quantity]);
 
   const handleQuantityChange = e => {
-    const newQuantity = parseInt(e.target.value);
+    const newQuantity = parseInt(e.target.value) || 0;
     if (newQuantity <= 0) {
       removeFromCart(product.productId, product.color._id, product.size._id);
+      setIsVisible(false);
+      fetchCart();
     } else {
+      setQuantity(newQuantity);
       updateQuantity(
         product.productId,
         product.color._id,
@@ -35,9 +43,12 @@ const CartItem = ({ product }) => {
 
   const handleQuantityDecrement = () => {
     const newQuantity = quantity - 1;
-    if (newQuantity === 0) {
+    if (newQuantity <= 0) {
       removeFromCart(product.productId, product.color._id, product.size._id);
+      setIsVisible(false);
+      fetchCart();
     } else {
+      setQuantity(newQuantity);
       updateQuantity(
         product.productId,
         product.color._id,
@@ -46,6 +57,10 @@ const CartItem = ({ product }) => {
       );
     }
   };
+
+  if (!isVisible) {
+    return null;
+  }
 
   return (
     <div className="flex flex-col min-[500px]:flex-row min-[500px]:items-center gap-5 py-6 border-b border-gray-200 group">
@@ -91,7 +106,6 @@ const CartItem = ({ product }) => {
               >
                 <path
                   d="M16.5 11H5.5"
-                  stroke=""
                   strokeWidth="1.6"
                   strokeLinecap="round"
                 />
@@ -117,7 +131,6 @@ const CartItem = ({ product }) => {
               >
                 <path
                   d="M11 5.5V16.5M16.5 11H5.5"
-                  stroke=""
                   strokeWidth="1.6"
                   strokeLinecap="round"
                 />

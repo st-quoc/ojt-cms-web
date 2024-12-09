@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import Footer from '../../../../component/Footer/Footer';
 import { Header } from '../../../../component/Header';
 import { Banner } from '../ComponentBlog/Banner';
 import axios from 'axios';
@@ -65,7 +64,6 @@ export const BlogDetail = () => {
           dangerouslySetInnerHTML={{ __html: post.fullDescription }}
         />
       </div>
-      <Footer />
     </div>
   );
 };

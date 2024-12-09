@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { Header } from '../../../component/Header';
-import Footer from '../../../component/Footer/Footer';
 import { ScrollToTop } from '../../../component/ScrollToTop';
 
 export const AboutUs = () => {
@@ -8,7 +6,6 @@ export const AboutUs = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header />
       <main className="flex-grow bg-gray-50">
         <div
           className="relative w-full h-64 bg-cover bg-center"
@@ -80,7 +77,6 @@ export const AboutUs = () => {
           </div>
         </section>
       </main>
-      <Footer />
       <ScrollToTop />
     </div>
   );

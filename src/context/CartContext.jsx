@@ -158,6 +158,9 @@ export const CartProvider = ({ children }) => {
   const getTotalQuantity = () => {
     return cartItems.reduce((total, item) => total + item.quantity, 0);
   };
+  const getTotalItems = () => {
+    return cartItems.length;
+  };
 
   const getTotalPrice = () => {
     return cartItems.reduce(
@@ -175,6 +178,7 @@ export const CartProvider = ({ children }) => {
         removeFromCart,
         updateQuantity,
         getTotalQuantity,
+        getTotalItems,
         getTotalPrice,
         fetchCart,
         clearCart,

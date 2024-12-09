@@ -30,8 +30,8 @@ export const Header = () => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [openUserMenu, setOpenUserMenu] = useState(false);
-  const { getTotalQuantity, fetchCart, clearCart } = useCart();
-  const cartQuantity = getTotalQuantity();
+  const { getTotalItems, fetchCart, clearCart } = useCart();
+  const cartQuantity = getTotalItems();
   const navigate = useNavigate();
 
   useEffect(() => {
