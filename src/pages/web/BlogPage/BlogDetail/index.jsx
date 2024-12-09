@@ -1,5 +1,4 @@
 import { useParams } from 'react-router-dom';
-import { Header } from '../../../../component/Header';
 import { Banner } from '../ComponentBlog/Banner';
 import useFetchBlogDetail from '../../../../hook/useFetchBlogDetail';
 
@@ -19,7 +18,6 @@ export const BlogDetail = () => {
 
   return (
     <div>
-      <Header />
       <Banner />
 
       <div className="max-w-screen-xl mx-auto p-5 sm:p-10 md:p-16 relative">
