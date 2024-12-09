@@ -19,6 +19,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import LoginPopup from '../../pages/login/Login';
+import RegisterPopup from '../../pages/login/Register';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { API_ROOT } from '../../constants';
@@ -27,6 +28,7 @@ import logo from '../../assets/logo.png';
 export const Header = () => {
   const [isScrolled, setScrolled] = useState(false);
   const [isLoginOpen, setLoginOpen] = useState(false);
+  const [isRegisterOpen, setRegisterOpen] = useState(false);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [openUserMenu, setOpenUserMenu] = useState(false);
@@ -58,17 +60,17 @@ export const Header = () => {
   const handleOpenLogin = () => setLoginOpen(true);
   const handleCloseLogin = () => setLoginOpen(false);
 
+  const handleCloseRegister = () => setRegisterOpen(false);
+
   const handleLogin = async data => {
     try {
-      const res = await axios.post(`${API_ROOT}/auth/login`, {
+      const res = await axios.post(`${API_ROOT}/user/login`, {
         email: data.email,
         password: data.password,
       });
       const userInfo = {
         id: res.data.id,
         email: res.data.email,
-        role: res.data.role,
-        permissions: res.data.permissions,
         avatar: res.data.avatar,
       };
 
@@ -82,6 +84,19 @@ export const Header = () => {
       navigate('/');
     } catch {
       toast.error('Login failed!');
+    }
+  };
+
+  const handleRegister = async data => {
+    try {
+      await axios.post(`${API_ROOT}/user/register`, {
+        ...data,
+      });
+      toast.success('Registration successful! Please log in.');
+      setRegisterOpen(false);
+      setLoginOpen(true);
+    } catch {
+      toast.error('Registration failed!');
     }
   };
 
@@ -126,6 +141,12 @@ export const Header = () => {
         open={isLoginOpen}
         onClose={handleCloseLogin}
         onLogin={handleLogin}
+        setRegisterOpen={setRegisterOpen}
+      />
+      <RegisterPopup
+        open={isRegisterOpen}
+        onClose={handleCloseRegister}
+        onRegister={handleRegister}
       />
 
       <AppBar
