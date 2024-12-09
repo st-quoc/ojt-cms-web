@@ -2,11 +2,11 @@ import { useState } from 'react';
 import Footer from '../../../component/Footer/Footer';
 import Header from '../../../component/Header';
 import Profile from './profile';
-import PurchaseHistory from './purchaseHistory';
 import Notifications from './notifications';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import HistoryIcon from '@mui/icons-material/History';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import { PurchaseHistory } from './purchaseHistory';
 
 export const Account = () => {
   const [selectedSection, setSelectedSection] = useState('profile');
@@ -29,7 +29,6 @@ export const Account = () => {
     <>
       <Header />
       <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
-        {/* Sidebar */}
         <aside className="w-full md:w-64 bg-white shadow-md p-6 mb-6 md:mb-0">
           <h2 className="text-2xl font-bold mb-6 text-center md:text-left">
             Account Settings
@@ -54,7 +53,6 @@ export const Account = () => {
           </nav>
         </aside>
 
-        {/* Main Content */}
         <main className="flex-1 p-4 md:p-10 bg-white rounded-lg shadow-md mx-6 md:mx-0">
           {selectedSection === 'profile' && <Profile />}
           {selectedSection === 'history' && <PurchaseHistory />}

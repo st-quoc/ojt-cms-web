@@ -29,5 +29,3 @@ export const PurchaseHistory = () => {
     </div>
   );
 };
-
-export default PurchaseHistory;
