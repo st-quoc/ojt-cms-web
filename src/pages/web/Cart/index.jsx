@@ -1,28 +1,61 @@
+import { useEffect } from 'react';
 import { Alert, CircularProgress } from '@mui/material';
-import Footer from '../../../component/Footer/Footer';
-import Header from '../../../component/Header';
 import useCartItems from '../../../hooks/useCartItems';
 import CartItem from './CartItem';
 import { useCart } from '../../../context/CartContext';
 import { formatCurrencyVND } from '../../../utils';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 export const CartPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const userId = JSON.parse(localStorage.getItem('userInfo'))?.id;
   const { cartItems, loading, error } = useCartItems(userId);
 
-  const { getTotalQuantity, getTotalPrice } = useCart();
-  const cartQuantity = getTotalQuantity();
+  const { getTotalPrice, getTotalItems } = useCart();
+  const cartQuantity = getTotalItems();
   const totalPrice = getTotalPrice();
+
+  useEffect(() => {
+    if (!userId) {
+      console.error('User ID is undefined or null');
+      return;
+    }
+
+    const searchParams = new URLSearchParams(location.search);
+    if (searchParams.has('success')) {
+      const deleteCartItems = async () => {
+        try {
+          const response = await axios.delete(
+            'http://localhost:8017/v1/user/cart/delete-all',
+            { data: { userId } },
+          );
+          console.log('Cart cleared:', response.data.message);
+        } catch (error) {
+          console.error(
+            'Error clearing cart:',
+            error.response?.data || error.message,
+          );
+        }
+
+        localStorage.removeItem('totalPrice');
+      };
+      deleteCartItems();
+      toast.success('Order placed successfully!');
+    }
+    if (searchParams.has('payment-fail')) {
+      toast.error('Payment fail !');
+    }
+  }, [location.search, userId]);
 
   return (
     <>
-      <Header />
       <section className="relative z-10 after:contents-[''] after:absolute after:z-0 after:h-full  after:top-0 after:right-0 after:bg-gray-50">
         <div className="w-full max-w-7xl px-4 mx-auto relative z-10">
-          <div className="grid grid-cols-12">
-            <div className="col-span-12  pt-14 pb-8  w-full ">
+          <div className="grid grid-cols-12 gap-8">
+            <div className="col-span-12 md:col-span-8">
               <div className="flex items-center justify-between pb-8 border-b border-gray-300">
                 <h2 className="font-manrope font-bold text-3xl leading-10 text-black">
                   Shopping Cart
@@ -32,27 +65,6 @@ export const CartPage = () => {
                     ? `${cartQuantity} Items`
                     : `${cartQuantity} Item`}
                 </h2>
-              </div>
-              <div className="grid grid-cols-12 mt-8 max-md:hidden pb-6 border-b border-gray-200">
-                <div className="col-span-12 md:col-span-7">
-                  <p className="font-normal text-lg leading-8 text-gray-400">
-                    Product Details
-                  </p>
-                </div>
-                <div className="col-span-12 md:col-span-5">
-                  <div className="grid grid-cols-5">
-                    <div className="col-span-3">
-                      <p className="font-normal text-lg leading-8 text-gray-400 text-center">
-                        Quantity
-                      </p>
-                    </div>
-                    <div className="col-span-2">
-                      <p className="font-normal text-lg leading-8 text-gray-400 text-center">
-                        Total
-                      </p>
-                    </div>
-                  </div>
-                </div>
               </div>
               {loading ? (
                 <CircularProgress />
@@ -67,63 +79,40 @@ export const CartPage = () => {
                 ))
               )}
             </div>
-          </div>
-        </div>
-        <div
-          className="w-full py-12"
-          style={{
-            position: 'sticky',
-            bottom: 0,
-            zIndex: 10,
-            backgroundColor: 'white',
-            padding: '24px',
-            boxShadow: '0 -4px 6px rgba(0, 0, 0, 0.1)',
-          }}
-        >
-          <div className="max-w-3xl mx-auto">
-            <h2 className="font-manrope font-bold text-xl leading-10 text-black pb-2 border-b border-gray-300">
-              Order Summary
-            </h2>
-            <div className="mt-2">
-              <form>
-                <label className="flex items-center mb-1.5 text-gray-400 text-sm font-medium">
-                  Promo Code
-                </label>
-                <div className="flex  w-full">
-                  <div className="relative w-full flex">
-                    <input
-                      type="text"
-                      className="block w-[90%] h-11 pr-11 pl-5 py-2 text-base font-normal shadow-xs text-gray-900 bg-white border border-gray-300 rounded-lg placeholder-gray-500 focus:outline-gray-400 "
-                      placeholder="xxxx xxxx xxxx"
-                    />
-                    <button className="rounded-lg  bg-black py-2.5 px-4 text-white text-sm font-semibold text-center  transition-all duration-500 hover:bg-black/80">
-                      Apply
-                    </button>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between py-2">
-                  <p className="font-medium text-xl leading-8 text-black">
-                    {cartQuantity > 1
-                      ? `${cartQuantity} Items`
-                      : `${cartQuantity} Item`}
+
+            <div className="col-span-12 md:col-span-4">
+              <div
+                className="sticky top-4 p-6 bg-white rounded-lg shadow-md"
+                id="checkout"
+              >
+                <h2 className="font-manrope font-bold text-xl leading-10 text-black pb-2 border-b border-gray-300">
+                  Order Summary
+                </h2>
+                <div className="mt-2">
+                  <p className="font-medium text-lg leading-8 text-gray-500 mb-4">
+                    Total Price:{' '}
+                    <span className="font-semibold text-black">
+                      {formatCurrencyVND(totalPrice)}
+                    </span>
                   </p>
-                  <p className="font-semibold text-xl leading-8 text-indigo-600">
-                    {formatCurrencyVND(totalPrice)}
-                  </p>
+                  <button
+                    className="w-full text-center bg-indigo-600 rounded-xl py-1 px-6 font-semibold text-white transition-all duration-500 hover:bg-indigo-700"
+                    onClick={() => {
+                      localStorage.setItem(
+                        'totalPrice',
+                        JSON.stringify(totalPrice),
+                      );
+                      navigate(`/checkout`);
+                    }}
+                  >
+                    Checkout
+                  </button>
                 </div>
-                <button
-                  className="w-full text-center bg-indigo-600 rounded-xl py-1 px-6 font-semibold  text-white transition-all duration-500 hover:bg-indigo-700"
-                  onClick={() => navigate(`/checkout`)}
-                >
-                  Checkout
-                </button>
-              </form>
+              </div>
             </div>
           </div>
         </div>
       </section>
-
-      <Footer />
     </>
   );
 };

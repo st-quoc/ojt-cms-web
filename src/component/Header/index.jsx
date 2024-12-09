@@ -32,8 +32,8 @@ export const Header = () => {
   const [isDrawerOpen, setDrawerOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [openUserMenu, setOpenUserMenu] = useState(false);
-  const { getTotalQuantity, fetchCart, clearCart } = useCart();
-  const cartQuantity = getTotalQuantity();
+  const { getTotalItems, fetchCart, clearCart } = useCart();
+  const cartQuantity = getTotalItems();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -164,7 +164,7 @@ export const Header = () => {
             sx={{
               width: '100%',
               height: '100%',
-              background: isScrolled ? '##68a98c' : 'transparent',
+              background: isScrolled ? '#68a98c' : 'transparent',
               borderRadius: 15,
               boxShadow: isScrolled ? 2 : 0,
             }}

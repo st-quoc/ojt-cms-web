@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import { Header } from '../../../component/Header';
 import { ProductListContainer } from '../../../component/ProductGrid';
 import PaginationBase from '../../../component/Pagination';
 import { Sort } from '../../../component/Sort';
@@ -45,7 +44,6 @@ export const ProductsListPage = () => {
 
   return (
     <Box>
-      <Header />
       <Container maxWidth="xl" className="py-8">
         <Box>
           <Box className="bg-gray-100 p-10 rounded-lg mb-6 flex items-center justify-center">

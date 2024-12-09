@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import Footer from '../../../component/Footer/Footer';
-import Header from '../../../component/Header';
 import Profile from './profile';
 import Notifications from './notifications';
 // import PurchaseHistory from './purchasehistory';
@@ -27,7 +25,6 @@ export const Account = () => {
 
   return (
     <>
-      <Header />
       <div className="flex flex-col md:flex-row min-h-screen bg-gray-100">
         <aside className="w-full md:w-64 bg-white shadow-md p-6 mb-6 md:mb-0">
           <h2 className="text-2xl font-bold mb-6 text-center md:text-left">
@@ -59,7 +56,6 @@ export const Account = () => {
           {selectedSection === 'notifications' && <Notifications />}
         </main>
       </div>
-      <Footer />
     </>
   );
 };
