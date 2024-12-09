@@ -14,7 +14,7 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <AuthProvider>
         <ThemeProvider theme={theme}>
-          <ToastContainer />
+          <ToastContainer autoClose={1000} limit={1} />
           <CssBaseline />
           <App />
         </ThemeProvider>
