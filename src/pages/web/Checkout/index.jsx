@@ -1,4 +1,49 @@
+import { useState } from 'react';
+import axios from 'axios';
+
+const totalPrice = JSON.parse(localStorage.getItem('totalPrice'));
+const userId = JSON.parse(localStorage.getItem('userInfo'))?.id;
 export default function Checkout() {
+  const [, setIsLoading] = useState(false);
+
+  const handlePayment = async e => {
+    e.preventDefault();
+
+    const country = document.getElementById('select-country-input-3').value;
+    const city = document.getElementById('select-city-input-3').value;
+    const address = document.getElementById('address').value;
+
+    const shippingAddress = `${country}, ${city}, ${address}`;
+
+    if (!shippingAddress || !userId) {
+      alert('Please provide all the required information!');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+
+      const response = await axios.post(
+        'http://localhost:8017/v1/vnpay/create-payment-url',
+        {
+          userId,
+          shippingAddress,
+        },
+      );
+
+      if (response.data.paymentUrl) {
+        window.location.href = response.data.paymentUrl;
+      } else {
+        alert('Payment URL not found.');
+      }
+    } catch (error) {
+      console.error('Error processing payment:', error);
+      alert('Failed to process payment. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
       <form action="#" className="mx-auto max-w-screen-xl px-4 2xl:px-0">
@@ -110,49 +155,64 @@ export default function Checkout() {
                     required
                   />
                 </div>
-
-                <div>
-                  <div className="mb-2 flex items-center gap-2">
-                    <label
-                      htmlFor="select-country-input-3"
-                      className="block text-sm font-medium text-gray-900 dark:text-white"
+                <div className="address">
+                  <div>
+                    <div className="mb-2 flex items-center gap-2">
+                      <label
+                        htmlFor="select-country-input-3"
+                        className="block text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        Country*{' '}
+                      </label>
+                    </div>
+                    <select
+                      id="select-country-input-3"
+                      className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
                     >
-                      Country*{' '}
-                    </label>
+                      <option selected>United States</option>
+                      <option value="AS">Australia</option>
+                      <option value="FR">France</option>
+                      <option value="ES">Spain</option>
+                      <option value="UK">United Kingdom</option>
+                    </select>
                   </div>
-                  <select
-                    id="select-country-input-3"
-                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                  >
-                    <option selected>United States</option>
-                    <option value="AS">Australia</option>
-                    <option value="FR">France</option>
-                    <option value="ES">Spain</option>
-                    <option value="UK">United Kingdom</option>
-                  </select>
-                </div>
 
-                <div>
-                  <div className="mb-2 flex items-center gap-2">
-                    <label
-                      htmlFor="select-city-input-3"
-                      className="block text-sm font-medium text-gray-900 dark:text-white"
+                  <div>
+                    <div className="mb-2 flex items-center gap-2">
+                      <label
+                        htmlFor="select-city-input-3"
+                        className="block text-sm font-medium text-gray-900 dark:text-white"
+                      >
+                        City*
+                      </label>
+                    </div>
+                    <select
+                      id="select-city-input-3"
+                      className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
                     >
-                      City*
-                    </label>
+                      <option selected>San Francisco</option>
+                      <option value="NY">New York</option>
+                      <option value="LA">Los Angeles</option>
+                      <option value="CH">Chicago</option>
+                      <option value="HU">Houston</option>
+                    </select>
                   </div>
-                  <select
-                    id="select-city-input-3"
-                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                  >
-                    <option selected>San Francisco</option>
-                    <option value="NY">New York</option>
-                    <option value="LA">Los Angeles</option>
-                    <option value="CH">Chicago</option>
-                    <option value="HU">Houston</option>
-                  </select>
+                  <div>
+                    <label
+                      htmlFor="address"
+                      className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                    >
+                      Address*
+                    </label>
+                    <input
+                      type="text"
+                      id="address"
+                      className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                      placeholder="123 Ngo Quyen"
+                      required
+                    />
+                  </div>
                 </div>
-
                 <div>
                   <label
                     htmlFor="phone-input-3"
@@ -231,7 +291,6 @@ export default function Checkout() {
                         className="z-20 block w-full rounded-e-lg border border-s-0 border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:border-s-gray-700  dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500"
                         pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                         placeholder="123-456-7890"
-                        required
                       />
                     </div>
                   </div>
@@ -264,13 +323,13 @@ export default function Checkout() {
                         className="font-medium leading-none text-gray-900 dark:text-white"
                       >
                         {' '}
-                        Credit Card{' '}
+                        VN PAY{' '}
                       </label>
                       <p
                         id="credit-card-text"
                         className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400"
                       >
-                        Pay with your credit card
+                        Pay with VNPay
                       </p>
                     </div>
                   </div>
@@ -313,13 +372,13 @@ export default function Checkout() {
                         className="font-medium leading-none text-gray-900 dark:text-white"
                       >
                         {' '}
-                        Payment on delivery{' '}
+                        Stripe{' '}
                       </label>
                       <p
                         id="pay-on-delivery-text"
                         className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400"
                       >
-                        +$15 payment processing fee
+                        Payment with stripe
                       </p>
                     </div>
                   </div>
@@ -362,13 +421,13 @@ export default function Checkout() {
                         className="font-medium leading-none text-gray-900 dark:text-white"
                       >
                         {' '}
-                        Paypal account{' '}
+                        Cash On Delivery{' '}
                       </label>
                       <p
                         id="paypal-text"
                         className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400"
                       >
-                        Connect to your account
+                        +$5 for Cash On Delivery
                       </p>
                     </div>
                   </div>
@@ -509,7 +568,6 @@ export default function Checkout() {
                   id="voucher"
                   className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
                   placeholder=""
-                  required
                 />
                 <button
                   type="button"
@@ -529,7 +587,7 @@ export default function Checkout() {
                     Subtotal
                   </dt>
                   <dd className="text-base font-medium text-gray-900 dark:text-white">
-                    $8,094.00
+                    ${totalPrice}
                   </dd>
                 </dl>
 
@@ -545,7 +603,7 @@ export default function Checkout() {
                     Store Pickup
                   </dt>
                   <dd className="text-base font-medium text-gray-900 dark:text-white">
-                    $99
+                    $0
                   </dd>
                 </dl>
 
@@ -554,7 +612,7 @@ export default function Checkout() {
                     Tax
                   </dt>
                   <dd className="text-base font-medium text-gray-900 dark:text-white">
-                    $199
+                    $0
                   </dd>
                 </dl>
 
@@ -563,7 +621,7 @@ export default function Checkout() {
                     Total
                   </dt>
                   <dd className="text-base font-bold text-gray-900 dark:text-white">
-                    $8,392.00
+                    ${totalPrice}
                   </dd>
                 </dl>
               </div>
@@ -571,6 +629,7 @@ export default function Checkout() {
 
             <div className="space-y-3">
               <button
+                onClick={handlePayment}
                 type="submit"
                 className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4  focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
               >
