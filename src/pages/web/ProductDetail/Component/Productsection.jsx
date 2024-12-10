@@ -50,10 +50,6 @@ export const Product = ({ product }) => {
     const findSize = variants.find(item => item.size.name === selectedSize);
     const storedUserInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
 
-    /**
- *   const { userId, productId, name, price, quantity, sizeId, colorId } =
-      req.body
- */
     const data = {
       name: product?.name,
       productId,
@@ -296,9 +292,7 @@ export const Product = ({ product }) => {
               color="text.secondary"
               sx={{ textAlign: 'justify' }}
               dangerouslySetInnerHTML={{ __html: product?.fullDesc }}
-            >
-              {/* {product?.fullDesc} */}
-            </Typography>
+            ></Typography>
           </Grid>
 
           <Grid

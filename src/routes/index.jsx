@@ -9,6 +9,8 @@ import { BlogDetail } from '../pages/web/BlogPage/BlogDetail';
 import { AboutUs } from '../pages/web/AboutUs';
 import ProductsListPage from '../pages/web/ProductsListPage';
 import { NotFound } from '../404';
+import Profile from '../pages/web/Account/profile';
+import OrderHistory from '../pages/web/Order/Index';
 
 export const Router = () => {
   return (
@@ -23,6 +25,8 @@ export const Router = () => {
         <Route element={<BlogPage />} path="blogs" />
         <Route element={<BlogDetail />} path="/blog/:id" />
         <Route element={<AboutUs />} path="about-us" />
+        <Route element={<Profile />} path="profile" />
+        <Route element={<OrderHistory />} path="order" />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>

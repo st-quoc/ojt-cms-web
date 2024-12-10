@@ -1,11 +1,31 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_ROOT } from '../../../constants';
 
-const totalPrice = JSON.parse(localStorage.getItem('totalPrice'));
+import { toast } from 'react-toastify';
 const userId = JSON.parse(localStorage.getItem('userInfo'))?.id;
+
 export default function Checkout() {
+  const initialTotalPrice = JSON.parse(localStorage.getItem('totalPrice')) || 0;
   const [, setIsLoading] = useState(false);
+  const [shippingFee, setShippingFee] = useState(0);
+  const [finalPrice, setFinalPrice] = useState(initialTotalPrice);
+
+  useEffect(() => {
+    console.log('Initial total price:', initialTotalPrice);
+    console.log('Current shipping fee:', shippingFee);
+    setFinalPrice(initialTotalPrice + shippingFee);
+    console.log('Updated final price:', initialTotalPrice + shippingFee);
+  }, [shippingFee, initialTotalPrice]);
+
+  const handleShippingFeeChange = e => {
+    const fee = parseFloat(e.target.value);
+    if (isNaN(fee)) {
+      toast.error('Invalid shipping fee selected!');
+      return;
+    }
+    setShippingFee(fee);
+  };
 
   const handlePayment = async e => {
     e.preventDefault();
@@ -13,44 +33,44 @@ export default function Checkout() {
     const country = document.getElementById('select-country-input-3').value;
     const city = document.getElementById('select-city-input-3').value;
     const address = document.getElementById('address').value;
+    const phoneNumber = document.getElementById('phone-input').value;
 
-    const shippingAddress = `${country}, ${city}, ${address}`;
-
-    if (!shippingAddress || !userId) {
-      alert('Please provide all the required information!');
+    if (!country || !city || !address || !phoneNumber) {
+      toast.error('Please provide all the required information!');
       return;
     }
 
     try {
       setIsLoading(true);
-
       const response = await axios.post(
         `${API_ROOT}/vnpay/create-payment-url`,
         {
           userId,
-          shippingAddress,
+          shippingAddress: `${country}, ${city}, ${address}`,
+          phoneNumber,
+          shippingFee,
         },
       );
 
       if (response.data.paymentUrl) {
         window.location.href = response.data.paymentUrl;
       } else {
-        alert('Payment URL not found.');
+        toast.error('Payment URL not found.');
       }
     } catch (error) {
-      console.error('Error processing payment:', error);
-      alert('Failed to process payment. Please try again.');
+      toast.error('Error during payment process. Please try again.');
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <section className="bg-white py-8 antialiased dark:bg-gray-900 md:py-16">
+    <section className="bg-white py-8 antialiased dark:bg-gray-100 md:py-16">
       <form action="#" className="mx-auto max-w-screen-xl px-4 2xl:px-0">
         <ol className="items-center flex w-full max-w-2xl text-center text-sm font-medium text-gray-500 dark:text-gray-400 sm:text-base">
-          <li className="after:border-1 flex items-center text-primary-700 after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-gray-200 dark:text-primary-500 dark:after:border-gray-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
-            <span className="flex items-center after:mx-2 after:text-gray-200 after:content-['/'] dark:after:text-gray-500 sm:after:hidden">
+          <li className="after:border-1 flex items-center text-primary-700 after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-primary-200 dark:text-primary-500 dark:after:border-primary-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
+            <span className="flex items-center after:mx-2 after:text-primary-200 after:content-['/'] dark:after:text-primary-500 sm:after:hidden">
               <svg
                 className="me-2 h-4 w-4 sm:h-5 sm:w-5"
                 aria-hidden="true"
@@ -72,8 +92,8 @@ export default function Checkout() {
             </span>
           </li>
 
-          <li className="after:border-1 flex items-center text-primary-700 after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-gray-200 dark:text-primary-500 dark:after:border-gray-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
-            <span className="flex items-center after:mx-2 after:text-gray-200 after:content-['/'] dark:after:text-gray-500 sm:after:hidden">
+          <li className="after:border-1 flex items-center text-primary-700 after:mx-6 after:hidden after:h-1 after:w-full after:border-b after:border-primary-700 dark:text-primary-500 dark:after:border-primary-700 sm:after:inline-block sm:after:content-[''] md:w-full xl:after:mx-10">
+            <span className="flex items-center after:mx-2 after:text-primary-700 after:content-['/'] dark:after:text-primary-700 sm:after:hidden">
               <svg
                 className="me-2 h-4 w-4 sm:h-5 sm:w-5"
                 aria-hidden="true"
@@ -95,7 +115,7 @@ export default function Checkout() {
             </span>
           </li>
 
-          <li className="flex shrink-0 items-center">
+          <li className="flex shrink-0 items-center text-gray-600">
             <svg
               className="me-2 h-4 w-4 sm:h-5 sm:w-5"
               aria-hidden="true"
@@ -120,55 +140,22 @@ export default function Checkout() {
         <div className="mt-6 sm:mt-8 lg:flex lg:items-start lg:gap-12 xl:gap-16">
           <div className="min-w-0 flex-1 space-y-8">
             <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-700">
                 Delivery Details
               </h2>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
-                  <label
-                    htmlFor="your_name"
-                    className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Your name
-                  </label>
-                  <input
-                    type="text"
-                    id="your_name"
-                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                    placeholder="Bonnie Green"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="your_email"
-                    className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Your email*
-                  </label>
-                  <input
-                    type="email"
-                    id="your_email"
-                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                    placeholder="name@flowbite.com"
-                    required
-                  />
-                </div>
-                <div className="address">
+              <div className="grid grid-cols-1 gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <div className="mb-2 flex items-center gap-2">
-                      <label
-                        htmlFor="select-country-input-3"
-                        className="block text-sm font-medium text-gray-900 dark:text-white"
-                      >
-                        Country*{' '}
-                      </label>
-                    </div>
+                    <label
+                      htmlFor="select-country-input-3"
+                      className="block text-sm font-medium text-gray-900 dark:text-gray-600"
+                    >
+                      Country*
+                    </label>
                     <select
                       id="select-country-input-3"
-                      className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                      className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-gray-500 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-100 dark:text-gray-600 dark:placeholder:text-gray-400 dark:focus:border-gray-500 dark:focus:ring-gray-500"
                     >
                       <option selected>United States</option>
                       <option value="AS">Australia</option>
@@ -179,17 +166,15 @@ export default function Checkout() {
                   </div>
 
                   <div>
-                    <div className="mb-2 flex items-center gap-2">
-                      <label
-                        htmlFor="select-city-input-3"
-                        className="block text-sm font-medium text-gray-900 dark:text-white"
-                      >
-                        City*
-                      </label>
-                    </div>
+                    <label
+                      htmlFor="select-city-input-3"
+                      className="block text-sm font-medium text-gray-900 dark:text-gray-600"
+                    >
+                      City*
+                    </label>
                     <select
                       id="select-city-input-3"
-                      className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
+                      className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-gray-500 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-100 dark:text-gray-600 dark:placeholder:text-gray-400 dark:focus:border-gray-500 dark:focus:ring-gray-500"
                     >
                       <option selected>San Francisco</option>
                       <option value="NY">New York</option>
@@ -198,98 +183,46 @@ export default function Checkout() {
                       <option value="HU">Houston</option>
                     </select>
                   </div>
-                  <div>
-                    <label
-                      htmlFor="address"
-                      className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-                    >
-                      Address*
-                    </label>
-                    <input
-                      type="text"
-                      id="address"
-                      className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                      placeholder="123 Ngo Quyen"
-                      required
-                    />
-                  </div>
                 </div>
+
+                <div>
+                  <label
+                    htmlFor="address"
+                    className="block text-sm font-medium text-gray-900 dark:text-gray-600"
+                  >
+                    Address*
+                  </label>
+                  <input
+                    type="text"
+                    id="address"
+                    className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm  focus:border-gray-500 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-100 dark:text-gray-800 dark:placeholder:text-gray-400 dark:focus:border-gray-500 dark:focus:ring-gray-500"
+                    placeholder="123 Ngo Quyen"
+                    required
+                  />
+                </div>
+
                 <div>
                   <label
                     htmlFor="phone-input-3"
-                    className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
+                    className="block text-sm font-medium text-gray-900 dark:text-gray-600"
                   >
-                    Phone Number*{' '}
+                    Phone Number*
                   </label>
                   <div className="flex items-center">
                     <button
                       id="dropdown-phone-button-3"
                       data-dropdown-toggle="dropdown-phone-3"
-                      className="z-10 inline-flex shrink-0 items-center rounded-s-lg border border-gray-300 bg-gray-100 px-4 py-2.5 text-center text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-700"
+                      className="z-10 inline-flex shrink-0 items-center rounded-s-lg border border-gray-300 bg-gray-100 px-4 py-2.5 text-center text-sm font-medium text-gray-900 hover:bg-gray-200 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-200 dark:text-gray-600 dark:hover:bg-gray-300 dark:focus:ring-gray-700"
                       type="button"
                     >
-                      aaa
+                      +84
                     </button>
-                    <div
-                      id="dropdown-phone-3"
-                      className="z-10 hidden w-56 divide-y divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700"
-                    >
-                      <ul
-                        className="p-2 text-sm font-medium text-gray-700 dark:text-gray-200"
-                        aria-labelledby="dropdown-phone-button-2"
-                      >
-                        <li>
-                          <button
-                            type="button"
-                            className="inline-flex w-full rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
-                            role="menuitem"
-                          >
-                            ssss
-                          </button>
-                        </li>
-                        <li>
-                          <button
-                            type="button"
-                            className="inline-flex w-full rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
-                            role="menuitem"
-                          >
-                            bbb
-                          </button>
-                        </li>
-                        <li>
-                          <button
-                            type="button"
-                            className="inline-flex w-full rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
-                            role="menuitem"
-                          >
-                            ccc
-                          </button>
-                        </li>
-                        <li>
-                          <button
-                            type="button"
-                            className="inline-flex w-full rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
-                            role="menuitem"
-                          >
-                            ddd
-                          </button>
-                        </li>
-                        <li>
-                          <button
-                            type="button"
-                            className="inline-flex w-full rounded-md px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
-                            role="menuitem"
-                          >
-                            eee
-                          </button>
-                        </li>
-                      </ul>
-                    </div>
+
                     <div className="relative w-full">
                       <input
                         type="text"
                         id="phone-input"
-                        className="z-20 block w-full rounded-e-lg border border-s-0 border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:border-s-gray-700  dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500"
+                        className="z-20 block w-full rounded-e-lg border border-s-0 border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-gray-500 focus:ring-gray-500 dark:border-gray-600 dark:border-s-gray-700 dark:bg-gray-100 dark:text-gray-600 dark:placeholder:text-gray-400 dark:focus:border-gray-500"
                         pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                         placeholder="123-456-7890"
                       />
@@ -300,12 +233,12 @@ export default function Checkout() {
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-600">
                 Payment
               </h3>
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
+                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-700">
                   <div className="flex items-start">
                     <div className="flex h-5 items-center">
                       <input
@@ -314,14 +247,14 @@ export default function Checkout() {
                         type="radio"
                         name="payment-method"
                         value=""
-                        className="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600"
+                        className="h-4 w-4 border-gray-300 bg-white text-gray-600 focus:ring-2 focus:ring-gray-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-gray-600"
                       />
                     </div>
 
                     <div className="ms-4 text-sm">
                       <label
                         htmlFor="credit-card"
-                        className="font-medium leading-none text-gray-900 dark:text-white"
+                        className="font-medium leading-none text-gray-800 dark:text-white"
                       >
                         {' '}
                         VN PAY{' '}
@@ -334,27 +267,9 @@ export default function Checkout() {
                       </p>
                     </div>
                   </div>
-
-                  <div className="mt-4 flex items-center gap-2">
-                    <button
-                      type="button"
-                      className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-                    >
-                      Delete
-                    </button>
-
-                    <div className="h-3 w-px shrink-0 bg-gray-200 dark:bg-gray-700"></div>
-
-                    <button
-                      type="button"
-                      className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-                    >
-                      Edit
-                    </button>
-                  </div>
                 </div>
 
-                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
+                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-700">
                   <div className="flex items-start">
                     <div className="flex h-5 items-center">
                       <input
@@ -363,7 +278,7 @@ export default function Checkout() {
                         type="radio"
                         name="payment-method"
                         value=""
-                        className="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600"
+                        className="h-4 w-4 border-gray-300 bg-white text-gray-600 focus:ring-2 focus:ring-gray-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-gray-600"
                       />
                     </div>
 
@@ -383,27 +298,9 @@ export default function Checkout() {
                       </p>
                     </div>
                   </div>
-
-                  <div className="mt-4 flex items-center gap-2">
-                    <button
-                      type="button"
-                      className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-                    >
-                      Delete
-                    </button>
-
-                    <div className="h-3 w-px shrink-0 bg-gray-200 dark:bg-gray-700"></div>
-
-                    <button
-                      type="button"
-                      className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-                    >
-                      Edit
-                    </button>
-                  </div>
                 </div>
 
-                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
+                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-700">
                   <div className="flex items-start">
                     <div className="flex h-5 items-center">
                       <input
@@ -412,7 +309,7 @@ export default function Checkout() {
                         type="radio"
                         name="payment-method"
                         value=""
-                        className="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600"
+                        className="h-4 w-4 border-gray-300 bg-white text-gray-600 focus:ring-2 focus:ring-gray-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-gray-600"
                       />
                     </div>
 
@@ -428,154 +325,79 @@ export default function Checkout() {
                         id="paypal-text"
                         className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400"
                       >
-                        +$5 for Cash On Delivery
+                        Pay when receive the product
                       </p>
                     </div>
-                  </div>
-
-                  <div className="mt-4 flex items-center gap-2">
-                    <button
-                      type="button"
-                      className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-                    >
-                      Delete
-                    </button>
-
-                    <div className="h-3 w-px shrink-0 bg-gray-200 dark:bg-gray-700"></div>
-
-                    <button
-                      type="button"
-                      className="text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
-                    >
-                      Edit
-                    </button>
                   </div>
                 </div>
               </div>
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-600">
                 Delivery Methods
               </h3>
 
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
-                  <div className="flex items-start">
-                    <div className="flex h-5 items-center">
-                      <input
-                        id="dhl"
-                        aria-describedby="dhl-text"
-                        type="radio"
-                        name="delivery-method"
-                        value=""
-                        className="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600"
-                      />
-                    </div>
-
-                    <div className="ms-4 text-sm">
-                      <label
-                        htmlFor="dhl"
-                        className="font-medium leading-none text-gray-900 dark:text-white"
-                      >
-                        {' '}
-                        $15 - DHL Fast Delivery{' '}
-                      </label>
-                      <p
-                        id="dhl-text"
-                        className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400"
-                      >
-                        Get it by Tommorow
-                      </p>
-                    </div>
+              <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-800 dark:bg-gray-100">
+                <div className="flex items-start">
+                  <div className="flex h-5 items-center">
+                    <input
+                      id="dhl"
+                      aria-describedby="dhl-text"
+                      type="radio"
+                      name="delivery-method"
+                      value="55000"
+                      className="h-4 w-4 border-gray-300 bg-white text-gray-600 focus:ring-2 focus:ring-gray-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-gray-600"
+                      onChange={handleShippingFeeChange}
+                    />
                   </div>
-                </div>
 
-                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
-                  <div className="flex items-start">
-                    <div className="flex h-5 items-center">
-                      <input
-                        id="fedex"
-                        aria-describedby="fedex-text"
-                        type="radio"
-                        name="delivery-method"
-                        value=""
-                        className="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600"
-                      />
-                    </div>
-
-                    <div className="ms-4 text-sm">
-                      <label
-                        htmlFor="fedex"
-                        className="font-medium leading-none text-gray-900 dark:text-white"
-                      >
-                        {' '}
-                        Free Delivery - FedEx{' '}
-                      </label>
-                      <p
-                        id="fedex-text"
-                        className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400"
-                      >
-                        Get it by Friday, 13 Dec 2023
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-800">
-                  <div className="flex items-start">
-                    <div className="flex h-5 items-center">
-                      <input
-                        id="express"
-                        aria-describedby="express-text"
-                        type="radio"
-                        name="delivery-method"
-                        value=""
-                        className="h-4 w-4 border-gray-300 bg-white text-primary-600 focus:ring-2 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600"
-                      />
-                    </div>
-
-                    <div className="ms-4 text-sm">
-                      <label
-                        htmlFor="express"
-                        className="font-medium leading-none text-gray-900 dark:text-white"
-                      >
-                        {' '}
-                        $49 - Express Delivery{' '}
-                      </label>
-                      <p
-                        id="express-text"
-                        className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400"
-                      >
-                        Get it today
-                      </p>
-                    </div>
+                  <div className="ms-4 text-sm">
+                    <label
+                      htmlFor="dhl"
+                      className="font-medium leading-none text-gray-900 dark:text-gray-800"
+                    >
+                      55.000 VND - DHL Fast Delivery
+                    </label>
+                    <p
+                      id="dhl-text"
+                      className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-600"
+                    >
+                      Get it by Tomorrow
+                    </p>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div>
-              <label
-                htmlFor="voucher"
-                className="mb-2 block text-sm font-medium text-gray-900 dark:text-white"
-              >
-                {' '}
-                Enter a gift card, voucher or promotional code{' '}
-              </label>
-              <div className="flex max-w-md items-center gap-4">
-                <input
-                  type="text"
-                  id="voucher"
-                  className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-                  placeholder=""
-                />
-                <button
-                  type="button"
-                  className="flex items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                >
-                  Apply
-                </button>
+              <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-100">
+                <div className="flex items-start">
+                  <div className="flex h-5 items-center">
+                    <input
+                      id="fedex"
+                      aria-describedby="fedex-text"
+                      type="radio"
+                      name="delivery-method"
+                      value="10000"
+                      className="h-4 w-4 border-gray-300 bg-white text-gray-600 focus:ring-2 focus:ring-gray-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-gray-600"
+                      onChange={handleShippingFeeChange}
+                    />
+                  </div>
+
+                  <div className="ms-4 text-sm">
+                    <label
+                      htmlFor="fedex"
+                      className="font-medium leading-none text-gray-900 dark:text-gray-800"
+                    >
+                      10.000 VND - Standard Delivery
+                    </label>
+                    <p
+                      id="fedex-text"
+                      className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-600"
+                    >
+                      Get it after 3 days
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -584,45 +406,38 @@ export default function Checkout() {
             <div className="flow-root">
               <div className="-my-3 divide-y divide-gray-200 dark:divide-gray-800">
                 <dl className="flex items-center justify-between gap-4 py-3">
-                  <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
+                  <dt className="text-base font-normal text-gray-800 dark:text-gray-800">
                     Subtotal
                   </dt>
-                  <dd className="text-base font-medium text-gray-900 dark:text-white">
-                    ${totalPrice}
+                  <dd className="text-base font-medium text-gray-900 dark:text-gray-800">
+                    {initialTotalPrice.toLocaleString()} VND
                   </dd>
                 </dl>
 
                 <dl className="flex items-center justify-between gap-4 py-3">
-                  <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
-                    Savings
+                  <dt className="text-base font-normal text-gray-500 dark:text-gray-800">
+                    Shipping Fee
                   </dt>
-                  <dd className="text-base font-medium text-green-500">0</dd>
-                </dl>
-
-                <dl className="flex items-center justify-between gap-4 py-3">
-                  <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
-                    Store Pickup
-                  </dt>
-                  <dd className="text-base font-medium text-gray-900 dark:text-white">
-                    $0
+                  <dd className="text-base font-medium text-gray-900 dark:text-gray-800">
+                    {shippingFee.toLocaleString()} VND
                   </dd>
                 </dl>
 
                 <dl className="flex items-center justify-between gap-4 py-3">
-                  <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
+                  <dt className="text-base font-normal text-gray-500 dark:text-gray-800">
                     Tax
                   </dt>
-                  <dd className="text-base font-medium text-gray-900 dark:text-white">
-                    $0
+                  <dd className="text-base font-medium text-gray-900 dark:text-gray-800">
+                    0 VND
                   </dd>
                 </dl>
 
                 <dl className="flex items-center justify-between gap-4 py-3">
-                  <dt className="text-base font-bold text-gray-900 dark:text-white">
+                  <dt className="text-base font-bold text-gray-900 dark:text-gray-800">
                     Total
                   </dt>
-                  <dd className="text-base font-bold text-gray-900 dark:text-white">
-                    ${totalPrice}
+                  <dd className="text-base font-bold text-gray-900 dark:text-gray-800">
+                    {finalPrice.toLocaleString()} VND
                   </dd>
                 </dl>
               </div>
@@ -632,7 +447,7 @@ export default function Checkout() {
               <button
                 onClick={handlePayment}
                 type="submit"
-                className="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4  focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                className="flex w-full items-center justify-center rounded-lg bg-gray-500 px-5 py-2.5 text-sm font-medium text-white hover:bg-gray-800 focus:outline-none focus:ring-4  focus:ring-gray-300 dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
               >
                 Proceed to Payment
               </button>
