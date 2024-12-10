@@ -2,67 +2,13 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { Box, Card, CardMedia, CardContent, Typography } from '@mui/material';
 import Slider from 'react-slick';
-
-const data = {
-  products: [
-    {
-      id: '1',
-      name: 'Nike Airforce 1',
-      brand: 'Nike',
-      images: [
-        'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/b7d9211c-26e7-431a-ac24-b0540fb3c00f/AIR+FORCE+1+%2707.png',
-      ],
-      price: '200',
-    },
-    {
-      id: '2',
-      name: 'Nike Airforce 1',
-      brand: 'Nike',
-      images: [
-        'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/b7d9211c-26e7-431a-ac24-b0540fb3c00f/AIR+FORCE+1+%2707.png',
-      ],
-      price: '200',
-    },
-    {
-      id: '3',
-      name: 'Nike Airforce 1',
-      brand: 'Nike',
-      images: [
-        'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/b7d9211c-26e7-431a-ac24-b0540fb3c00f/AIR+FORCE+1+%2707.png',
-      ],
-      price: '200',
-    },
-    {
-      id: '4',
-      name: 'Nike Airforce 1',
-      brand: 'Nike',
-      images: [
-        'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/b7d9211c-26e7-431a-ac24-b0540fb3c00f/AIR+FORCE+1+%2707.png',
-      ],
-      price: '200',
-    },
-    {
-      id: '6',
-      name: 'Nike Airforce 1',
-      brand: 'Nike',
-      images: [
-        'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/b7d9211c-26e7-431a-ac24-b0540fb3c00f/AIR+FORCE+1+%2707.png',
-      ],
-      price: '200',
-    },
-    {
-      id: '7',
-      name: 'Nike Airforce 1',
-      brand: 'Nike',
-      images: [
-        'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/b7d9211c-26e7-431a-ac24-b0540fb3c00f/AIR+FORCE+1+%2707.png',
-      ],
-      price: '200',
-    },
-  ],
-};
+import useFetchProducts from '../../../../hooks/useFetchProducts';
+import { useNavigate } from 'react-router-dom';
 
 const ProductCarousel = () => {
+  const { products } = useFetchProducts(null, 1, 4);
+  const navigate = useNavigate();
+  console.log(products);
   const settings = {
     dots: true,
     infinite: true,
@@ -123,10 +69,17 @@ const ProductCarousel = () => {
         RECOMMENDATIONS FOR YOU
       </Typography>
       <Slider {...settings} style={{ width: '100%' }}>
-        {data.products.map(product => (
-          <Box key={product.id} px={{ xs: 0.5, sm: 1 }}>
+        {products?.map(product => (
+          <Box
+            key={product.id}
+            px={{ xs: 0.5, sm: 1 }}
+            onClick={() => navigate(`/product/${product.id}`)}
+          >
             <Card
-              sx={{ maxWidth: { xs: 180, sm: 200, md: 240 }, margin: 'auto' }}
+              sx={{
+                maxWidth: { xs: 260, sm: 200, md: 240 },
+                margin: '10px auto',
+              }}
             >
               <CardMedia
                 component="img"
@@ -134,20 +87,20 @@ const ProductCarousel = () => {
                 image={product.images[0]}
                 alt={product.name}
               />
-              <CardContent>
+              <CardContent sx={{ height: '130px' }}>
                 <Typography
                   gutterBottom
                   variant="h6"
                   component="div"
                   fontSize={{ xs: 12, sm: 14 }}
                 >
-                  {product.name}
+                  {product?.name}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Brand: {product.brand}
+                  Brand: {product?.categories?.[0]}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Price: {product.price} €
+                  Price: {product?.variants?.[0]?.price} €
                 </Typography>
               </CardContent>
             </Card>
