@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
-import { Banner } from '../ComponentBlog/Banner';
 import useFetchBlogDetail from '../../../../hooks/useFetchBlogDetail';
+import HomeIcon from '@mui/icons-material/Home';
 
 export const BlogDetail = () => {
   const { id } = useParams();
@@ -18,8 +18,40 @@ export const BlogDetail = () => {
 
   return (
     <div>
-      <Banner />
-
+      <div>
+        <div className="relative">
+          <img
+            src="https://cdn.pixabay.com/photo/2017/06/04/16/32/chilli-2371498_960_720.jpg"
+            alt="Background"
+            className="absolute inset-0 w-full h-48 object-cover"
+          />
+          <div className="relative flex justify-center items-center h-48 bg-opacity-60 bg-black">
+            <div className="text-center text-white">
+              <h1 className="text-4xl font-bold">BLOG</h1>
+              <div className="flex items-center justify-center space-x-2 mt-2">
+                <span className="text-sm">
+                  <a
+                    href="/"
+                    className="hover:underline flex items-center space-x-1"
+                  >
+                    <HomeIcon fontSize="small" />
+                    <span>Home</span>
+                  </a>
+                </span>
+                <span>/</span>
+                <a
+                  href="/blogs"
+                  className="hover:underline flex items-center space-x-1"
+                >
+                  <span className="text-sm">Blog</span>
+                </a>
+                <span>/</span>
+                <span className="text-sm">Blog Detail</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="max-w-screen-xl mx-auto p-5 sm:p-10 md:p-16 relative">
         <div
           className="bg-cover bg-center text-center overflow-hidden"
