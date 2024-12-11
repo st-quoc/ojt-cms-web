@@ -1,106 +1,379 @@
-import { useState } from 'react';
+import {
+  Box,
+  Stack,
+  Typography,
+  TextField,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  InputAdornment,
+  Container,
+  Paper,
+  Breadcrumbs,
+  Link,
+} from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
+import { AvatarUploader } from '../../../component/AvatarUploader';
+import useChangePassword from '../../../hooks/useChangePassword';
+import { API_ROOT } from '../../../constants';
+import { toast } from 'react-toastify';
+import axiosClient from '../../../config/axios';
+import { useUser } from '../../../context/UserProvider';
 
 export const Profile = () => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [profile, setProfile] = useState({
-    name: 'Nguyễn Văn A',
-    email: 'nguyenvana@example.com',
-    phone: '0123456789',
-    address: 'Hà Nội, Việt Nam',
+  const { user, error, loading, changeProfile } = useUser();
+  const { changePassword } = useChangePassword();
+  const [isEdit, setIsEdit] = useState(false);
+  const [openPasswordDialog, setOpenPasswordDialog] = useState(false);
+  const [openForgotPasswordDialog, setOpenForgotPasswordDialog] =
+    useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [oldPassword, setOldPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    defaultValues: {
+      name: '',
+      email: '',
+      address: '',
+      phone: '',
+    },
   });
 
-  const [formData, setFormData] = useState({ ...profile });
+  useEffect(() => {
+    if (user && !loading) {
+      reset(user);
+    }
+  }, [user, loading]);
 
-  const handleEdit = () => setIsEditing(true);
-  const handleCancel = () => {
-    setFormData({ ...profile });
-    setIsEditing(false);
+  const handleChange = (key, value) => {
+    user[key] = value;
   };
-  const handleSave = () => {
-    setProfile({ ...formData });
-    setIsEditing(false);
+
+  const handleSave = async data => {
+    await changeProfile(data);
+    setIsEdit(false);
   };
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+
+  const handleClosePasswordDialog = () => {
+    setOpenPasswordDialog(false);
+    setNewPassword('');
+    setConfirmPassword('');
+    setOldPassword('');
   };
+
+  const handleCloseForgotPasswordDialog = () => {
+    setOpenForgotPasswordDialog(false);
+    setEmail('');
+  };
+
+  const handleChangePassword = async () => {
+    const success = await changePassword(
+      user.email,
+      oldPassword,
+      newPassword,
+      confirmPassword,
+    );
+    if (success) {
+      handleClosePasswordDialog();
+      setNewPassword('');
+      setConfirmPassword('');
+      setOldPassword('');
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    try {
+      await axiosClient.post(`${API_ROOT}/auth/forgot-password`, { email });
+
+      toast.success('Please check your email to reset password!');
+      setOpenForgotPasswordDialog(false);
+    } catch {
+      toast.error('Failed to request reset password');
+    }
+  };
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100%',
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return <Navigate to={'/404'} />;
+  }
 
   return (
-    <div className="max-w-4xl mx-auto mt-8 p-6 sm:p-8 bg-white rounded-2xl shadow-lg relative">
-      {/* Avatar và thông tin cơ bản */}
-      <div className="flex flex-col items-center md:flex-row md:items-start md:space-x-6">
-        <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden shadow-md mb-4 md:mb-0">
-          <img
-            src="https://via.placeholder.com/150"
-            alt="Avatar"
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <div className="text-center md:text-left">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
-            {profile.name}
-          </h1>
-          <p className="text-gray-500">{profile.email}</p>
-          {!isEditing && (
-            <button
-              className="mt-4 bg-blue-600 text-white px-6 py-2 rounded-full shadow-md hover:bg-blue-700 transition duration-300"
-              onClick={handleEdit}
-            >
-              Edit information
-            </button>
-          )}
-        </div>
-      </div>
-
-      {/* Form thông tin cá nhân */}
-      <div className="mt-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {['name', 'email', 'phone', 'address'].map(field => (
-            <div key={field}>
-              <label className="block text-lg font-medium text-gray-600 mb-1">
-                {field === 'name'
-                  ? 'Full Name'
-                  : field === 'email'
-                    ? 'Email'
-                    : field === 'phone'
-                      ? 'Phone Number'
-                      : 'Address'}
-              </label>
-              <input
-                type="text"
-                name={field}
-                value={formData[field]}
-                onChange={handleChange}
-                disabled={!isEditing}
-                className={`w-full px-4 py-3 rounded-lg border ${
-                  isEditing
-                    ? 'border-blue-500 focus:outline-none focus:ring focus:ring-blue-200'
-                    : 'border-gray-300 bg-gray-100 text-gray-500'
-                }`}
+    <Box sx={{ p: 4, mb: 4 }}>
+      <Box sx={{ p: 4 }}>
+        <Breadcrumbs aria-label="breadcrumb">
+          <Link underline="hover" color="inherit" href="/">
+            Home
+          </Link>
+          <Typography sx={{ color: 'text.primary' }}>
+            Profile: {user?.name}
+          </Typography>
+        </Breadcrumbs>
+      </Box>
+      <Container maxWidth="md">
+        <Paper elevation={4} sx={{ p: 4, mb: 4 }}>
+          <Stack spacing={2}>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <AvatarUploader
+                initialSrc={user?.avatar}
+                onChange={newAvatar => handleChange('avatar', newAvatar)}
               />
-            </div>
-          ))}
-        </div>
-      </div>
+            </Box>
+            <Stack spacing={2} sx={{ width: '100%' }}>
+              <Stack direction={'column'} sx={{ width: '100%' }} spacing={2}>
+                <TextField
+                  fullWidth
+                  disabled={!isEdit}
+                  label="Name"
+                  {...register('name', { required: 'Name is required' })}
+                  error={!!errors.name}
+                  helperText={errors.name?.message}
+                />
+                <TextField
+                  fullWidth
+                  disabled={!isEdit}
+                  label="Email"
+                  {...register('email', {
+                    required: 'Email is required',
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: 'Invalid email address',
+                    },
+                  })}
+                  error={!!errors.email}
+                  helperText={errors.email?.message}
+                />
+                <TextField
+                  fullWidth
+                  disabled={!isEdit}
+                  label="Address"
+                  {...register('address')}
+                />
+                <TextField
+                  fullWidth
+                  disabled={!isEdit}
+                  label="Phone Number"
+                  {...register('phoneNumber', {
+                    pattern: {
+                      value: /^[0-9]{10,12}$/,
+                      message: 'Invalid Phone Number number',
+                    },
+                  })}
+                  error={!!errors.phoneNumber}
+                  helperText={errors.phoneNumber?.message}
+                />
+              </Stack>
+            </Stack>
+            <Stack
+              direction="row"
+              spacing={2}
+              justifyContent="end"
+              sx={{ mb: 2, width: '100%' }}
+            >
+              {isEdit ? (
+                <>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    onClick={handleSubmit(handleSave)}
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Saving...' : 'Save'}
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    color="secondary"
+                    onClick={() => setIsEdit(false)}
+                  >
+                    Cancel
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={() => setIsEdit(true)}
+                >
+                  Edit Profile
+                </Button>
+              )}
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => setOpenPasswordDialog(true)}
+              >
+                Change Password
+              </Button>
+            </Stack>
+            <Box sx={{ mb: 2 }}>
+              <Typography
+                color={'error'}
+                textAlign="end"
+                sx={{ cursor: 'pointer', fontStyle: 'italic' }}
+                onClick={() => setOpenForgotPasswordDialog(true)}
+              >
+                Forgot password?
+              </Typography>
+            </Box>
+          </Stack>
+        </Paper>
+      </Container>
 
-      {/* Nút lưu và hủy */}
-      {isEditing && (
-        <div className="flex justify-center mt-8 space-x-4">
-          <button
-            className="bg-green-500 text-white px-6 py-2 rounded-full shadow-md hover:bg-green-600 transition duration-300"
-            onClick={handleSave}
-          >
-            Save
-          </button>
-          <button
-            className="bg-red-500 text-white px-6 py-2 rounded-full shadow-md hover:bg-red-600 transition duration-300"
-            onClick={handleCancel}
-          >
+      <Dialog open={openPasswordDialog} onClose={handleClosePasswordDialog}>
+        <DialogTitle>Change Password</DialogTitle>
+        <DialogContent>
+          <Box sx={{ p: 2 }}>
+            <Box sx={{ mb: 2 }}>
+              <Typography
+                color={'error'}
+                textAlign="end"
+                sx={{ cursor: 'pointer', fontStyle: 'italic' }}
+                onClick={() => {
+                  handleClosePasswordDialog();
+                  setOpenForgotPasswordDialog(true);
+                }}
+              >
+                Forgot password?
+              </Typography>
+            </Box>
+            <TextField
+              label="Old Password"
+              type={showOldPassword ? 'text' : 'password'}
+              fullWidth
+              value={oldPassword}
+              onChange={e => setOldPassword(e.target.value)}
+              sx={{ mb: 2 }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowOldPassword(prev => !prev)}
+                      edge="end"
+                    >
+                      {showOldPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <TextField
+              label="New Password"
+              type={showNewPassword ? 'text' : 'password'}
+              fullWidth
+              value={newPassword}
+              onChange={e => setNewPassword(e.target.value)}
+              sx={{ mb: 2 }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowNewPassword(prev => !prev)}
+                      edge="end"
+                    >
+                      {showNewPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <TextField
+              label="Confirm Password"
+              type={showConfirmPassword ? 'text' : 'password'}
+              fullWidth
+              value={confirmPassword}
+              onChange={e => {
+                setConfirmPassword(e.target.value);
+                if (confirmPasswordError) {
+                  setConfirmPasswordError(false);
+                }
+              }}
+              error={confirmPasswordError}
+              helperText={confirmPasswordError ? 'Passwords do not match' : ''}
+              sx={{ mb: 2 }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowConfirmPassword(prev => !prev)}
+                      edge="end"
+                    >
+                      {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClosePasswordDialog} color="secondary">
             Cancel
-          </button>
-        </div>
-      )}
-    </div>
+          </Button>
+          <Button onClick={handleChangePassword} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openForgotPasswordDialog}
+        onClose={handleCloseForgotPasswordDialog}
+      >
+        <DialogTitle>Forgot Password</DialogTitle>
+        <DialogContent>
+          <Box sx={{ p: 2, width: '100%' }}>
+            <TextField
+              label="Email"
+              type="email"
+              fullWidth
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseForgotPasswordDialog} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={handleForgotPassword} color="primary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 };
 

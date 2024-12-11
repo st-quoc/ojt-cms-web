@@ -175,6 +175,11 @@
     "@babel/helper-string-parser" "^7.25.9"
     "@babel/helper-validator-identifier" "^7.25.9"
 
+"@dynamicss/dynamicss@^2.2.8":
+  version "2.2.8"
+  resolved "https://registry.yarnpkg.com/@dynamicss/dynamicss/-/dynamicss-2.2.8.tgz#e28c3209ed44fa768ea1ba609d0825b402ca72f7"
+  integrity sha512-e6hrGUydr8f+c9E/9fHFSG5LoSLdq/MdZXXfbzEDWIVuzKF2hcdxZE7nHNqUNF2htw1mZ17Pyoshu3A6kFEeFA==
+
 "@emotion/babel-plugin@^11.13.5":
   version "11.13.5"
   resolved "https://registry.yarnpkg.com/@emotion/babel-plugin/-/babel-plugin-11.13.5.tgz#eab8d65dbded74e0ecfd28dc218e75607c4e7bc0"
@@ -454,6 +459,19 @@
   integrity sha512-2b/g5hRmpbb1o4GnTZax9N9m0FXzz9OV42ZzI4rDDMDuHUqigAiQCEWChBWCY4ztAGVRjoWT19v0yMmc5/L5kA==
   dependencies:
     levn "^0.4.1"
+
+"@files-ui/core@^2.0.7":
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/@files-ui/core/-/core-2.0.7.tgz#edb99391a09e982d463c57fa92be9f89193ead29"
+  integrity sha512-L/DqdMWMusULUTrOd6AEpiC+Lkfy9eMNN8LVLzPyfHrUgW9jw2b2Aa5BBJyjdiTHTmd8hM/huc0kVu7CgeZWIQ==
+
+"@files-ui/react@^1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@files-ui/react/-/react-1.2.4.tgz#e6f338da874330ffd20abdf32d44ce061cec013e"
+  integrity sha512-7nOfTNhb5FxG5Lgt2/fec4JjeVFiKzqfRAU3tnrqWMUtRh2v53vZOSO39R58g3A5d5Skh1gQUFSx274wW4ozzw==
+  dependencies:
+    "@dynamicss/dynamicss" "^2.2.8"
+    "@files-ui/core" "^2.0.7"
 
 "@hookform/resolvers@^3.9.1":
   version "3.9.1"

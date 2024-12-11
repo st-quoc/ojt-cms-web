@@ -14,7 +14,6 @@ import {
   Container,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
@@ -24,13 +23,14 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { API_ROOT } from '../../constants';
 import logo from '../../assets/logo.png';
+import { useUser } from '../../context/UserProvider';
 
 export const Header = () => {
+  const { user, fetchUser, setUser } = useUser();
   const [isScrolled, setScrolled] = useState(false);
   const [isLoginOpen, setLoginOpen] = useState(false);
   const [isRegisterOpen, setRegisterOpen] = useState(false);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
-  const [user, setUser] = useState(null);
   const [openUserMenu, setOpenUserMenu] = useState(false);
   const { getTotalItems, fetchCart, clearCart } = useCart();
   const cartQuantity = getTotalItems();
@@ -48,13 +48,6 @@ export const Header = () => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const storedUserInfo = localStorage.getItem('userInfo');
-    if (storedUserInfo) {
-      setUser(JSON.parse(storedUserInfo));
-    }
   }, []);
 
   const handleOpenLogin = () => setLoginOpen(true);
@@ -77,8 +70,8 @@ export const Header = () => {
       localStorage.setItem('accessToken', res.data.accessToken);
       localStorage.setItem('refreshToken', res.data.refreshToken);
       localStorage.setItem('userInfo', JSON.stringify(userInfo));
-      setUser(userInfo);
       fetchCart();
+      fetchUser();
       setLoginOpen(false);
       setOpenUserMenu(false);
       navigate('/');
@@ -191,9 +184,6 @@ export const Header = () => {
               </Box>
 
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <IconButton onClick={() => handleNavigate('/#search')}>
-                  <SearchIcon />
-                </IconButton>
                 <IconButton onClick={handleCartClick}>
                   <Badge badgeContent={cartQuantity} color="error">
                     <ShoppingCartIcon />
@@ -220,6 +210,7 @@ export const Header = () => {
                         position: 'absolute',
                         background: '#fff',
                         top: 60,
+                        right: 0,
                         height: openUserMenu ? 'unset' : 0,
                         overflow: 'hidden',
                         borderRadius: 2,
@@ -232,14 +223,20 @@ export const Header = () => {
                     >
                       <ListItem>
                         <ListItemButton
-                          onClick={() => handleNavigate('/profile')}
+                          onClick={() => {
+                            setOpenUserMenu(false);
+                            handleNavigate('/profile');
+                          }}
                         >
                           Profile
                         </ListItemButton>
                       </ListItem>
                       <ListItem>
                         <ListItemButton
-                          onClick={() => handleNavigate('/order')}
+                          onClick={() => {
+                            setOpenUserMenu(false);
+                            handleNavigate('/order');
+                          }}
                         >
                           My Order
                         </ListItemButton>
