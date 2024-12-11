@@ -21,18 +21,15 @@ import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { AvatarUploader } from '../../../component/AvatarUploader';
-import useFetchProfile from '../../../hooks/useFetchProfile';
-import useChangeProfile from '../../../hooks/useChangeProfile';
 import useChangePassword from '../../../hooks/useChangePassword';
 import { API_ROOT } from '../../../constants';
 import { toast } from 'react-toastify';
 import axiosClient from '../../../config/axios';
+import { useUser } from '../../../context/UserProvider';
 
 export const Profile = () => {
-  const { userInfo, loading, error } = useFetchProfile();
-  const { changeProfile } = useChangeProfile();
+  const { user, error, loading, changeProfile } = useUser();
   const { changePassword } = useChangePassword();
-
   const [isEdit, setIsEdit] = useState(false);
   const [openPasswordDialog, setOpenPasswordDialog] = useState(false);
   const [openForgotPasswordDialog, setOpenForgotPasswordDialog] =
@@ -61,13 +58,13 @@ export const Profile = () => {
   });
 
   useEffect(() => {
-    if (userInfo && !loading) {
-      reset(userInfo);
+    if (user && !loading) {
+      reset(user);
     }
-  }, [userInfo, loading]);
+  }, [user, loading]);
 
   const handleChange = (key, value) => {
-    userInfo[key] = value;
+    user[key] = value;
   };
 
   const handleSave = async data => {
@@ -89,7 +86,7 @@ export const Profile = () => {
 
   const handleChangePassword = async () => {
     const success = await changePassword(
-      userInfo.email,
+      user.email,
       oldPassword,
       newPassword,
       confirmPassword,
@@ -140,7 +137,7 @@ export const Profile = () => {
             Home
           </Link>
           <Typography sx={{ color: 'text.primary' }}>
-            Profile: {userInfo.name}
+            Profile: {user?.name}
           </Typography>
         </Breadcrumbs>
       </Box>
@@ -149,7 +146,7 @@ export const Profile = () => {
           <Stack spacing={2}>
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               <AvatarUploader
-                initialSrc={userInfo?.avatar}
+                initialSrc={user?.avatar}
                 onChange={newAvatar => handleChange('avatar', newAvatar)}
               />
             </Box>
@@ -187,14 +184,14 @@ export const Profile = () => {
                   fullWidth
                   disabled={!isEdit}
                   label="Phone Number"
-                  {...register('phone', {
+                  {...register('phoneNumber', {
                     pattern: {
                       value: /^[0-9]{10,12}$/,
-                      message: 'Invalid phone number',
+                      message: 'Invalid Phone Number number',
                     },
                   })}
-                  error={!!errors.phone}
-                  helperText={errors.phone?.message}
+                  error={!!errors.phoneNumber}
+                  helperText={errors.phoneNumber?.message}
                 />
               </Stack>
             </Stack>

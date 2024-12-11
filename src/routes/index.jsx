@@ -11,6 +11,7 @@ import ProductsListPage from '../pages/web/ProductsListPage';
 import { NotFound } from '../404';
 import Profile from '../pages/web/Account/profile';
 import OrderHistory from '../pages/web/Order/Index';
+import ResetPassword from '../reset-password';
 
 export const Router = () => {
   return (
@@ -29,6 +30,7 @@ export const Router = () => {
         <Route element={<OrderHistory />} path="order" />
       </Route>
       <Route path="*" element={<NotFound />} />
+      <Route path="reset-password/:token" element={<ResetPassword />} />
     </Routes>
   );
 };

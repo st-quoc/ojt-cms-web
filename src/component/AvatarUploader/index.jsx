@@ -3,8 +3,10 @@ import { useState } from 'react';
 import axiosClient from '../../config/axios';
 import { API_ROOT } from '../../constants';
 import { toast } from 'react-toastify';
+import { useUser } from '../../context/UserProvider';
 
 export const AvatarUploader = ({ initialSrc }) => {
+  const { fetchUser } = useUser();
   const [imageSource, setImageSource] = useState(initialSrc);
   const [loading, setLoading] = useState(false);
 
@@ -29,6 +31,7 @@ export const AvatarUploader = ({ initialSrc }) => {
           );
 
           if (response.status === 200) {
+            fetchUser();
             toast.success('Avatar uploaded successfully');
           } else {
             toast.error('Error uploading avatar');
