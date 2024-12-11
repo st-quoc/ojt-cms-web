@@ -8,6 +8,7 @@ import 'swiper/css';
 import { useNavigate, useParams } from 'react-router-dom';
 import axiosClient from '../../../../config/axios';
 import { API_ROOT } from '../../../../constants';
+import { toast } from 'react-toastify';
 
 const data = {
   product: {
@@ -49,6 +50,11 @@ export const Product = ({ product }) => {
     const variants = product.variants;
     const findSize = variants.find(item => item.size.name === selectedSize);
     const storedUserInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+
+    if (!storedUserInfo.id) {
+      toast.error('Please log in to add items to the cart!');
+      return;
+    }
 
     /**
  *   const { userId, productId, name, price, quantity, sizeId, colorId } =
