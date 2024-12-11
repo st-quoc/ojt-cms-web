@@ -12,12 +12,13 @@
     "lint-staged": "lint-staged"
   },
   "dependencies": {
-    "animate.css": "^4.1.1",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "@files-ui/react": "^1.2.4",
     "@hookform/resolvers": "^3.9.1",
     "@mui/icons-material": "^6.1.9",
     "@mui/material": "^6.1.8",
+    "animate.css": "^4.1.1",
     "autoprefixer": "^10.4.20",
     "axios": "^1.7.7",
     "cloudinary-react": "^1.8.1",

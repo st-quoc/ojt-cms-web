@@ -14,7 +14,6 @@ import {
   Container,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
@@ -191,9 +190,6 @@ export const Header = () => {
               </Box>
 
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <IconButton onClick={() => handleNavigate('/#search')}>
-                  <SearchIcon />
-                </IconButton>
                 <IconButton onClick={handleCartClick}>
                   <Badge badgeContent={cartQuantity} color="error">
                     <ShoppingCartIcon />
@@ -220,6 +216,7 @@ export const Header = () => {
                         position: 'absolute',
                         background: '#fff',
                         top: 60,
+                        right: 0,
                         height: openUserMenu ? 'unset' : 0,
                         overflow: 'hidden',
                         borderRadius: 2,
@@ -232,14 +229,20 @@ export const Header = () => {
                     >
                       <ListItem>
                         <ListItemButton
-                          onClick={() => handleNavigate('/profile')}
+                          onClick={() => {
+                            setOpenUserMenu(false);
+                            handleNavigate('/profile');
+                          }}
                         >
                           Profile
                         </ListItemButton>
                       </ListItem>
                       <ListItem>
                         <ListItemButton
-                          onClick={() => handleNavigate('/order')}
+                          onClick={() => {
+                            setOpenUserMenu(false);
+                            handleNavigate('/order');
+                          }}
                         >
                           My Order
                         </ListItemButton>
