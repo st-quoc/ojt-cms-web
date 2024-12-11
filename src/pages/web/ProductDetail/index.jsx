@@ -13,6 +13,7 @@ import { API_ROOT } from '../../../constants';
 const ProductDetailPage = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
+
   const fetchProductDetail = async () => {
     try {
       const response = await axiosClient.get(
