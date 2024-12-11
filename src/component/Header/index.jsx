@@ -26,7 +26,7 @@ import logo from '../../assets/logo.png';
 import { useUser } from '../../context/UserProvider';
 
 export const Header = () => {
-  const { user } = useUser();
+  const { user, fetchUser, setUser } = useUser();
   const [isScrolled, setScrolled] = useState(false);
   const [isLoginOpen, setLoginOpen] = useState(false);
   const [isRegisterOpen, setRegisterOpen] = useState(false);
@@ -71,6 +71,7 @@ export const Header = () => {
       localStorage.setItem('refreshToken', res.data.refreshToken);
       localStorage.setItem('userInfo', JSON.stringify(userInfo));
       fetchCart();
+      fetchUser();
       setLoginOpen(false);
       setOpenUserMenu(false);
       navigate('/');
@@ -100,6 +101,7 @@ export const Header = () => {
   const handleLogout = () => {
     localStorage.clear();
     clearCart();
+    setUser(null);
     navigate('/');
   };
 
