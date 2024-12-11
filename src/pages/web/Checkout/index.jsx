@@ -82,7 +82,6 @@ export default function Checkout() {
           toast.error('Payment URL not found.');
         }
       } else if (paymentMethod === 'stripe') {
-        // Logic xử lý cho Stripe (nếu có)
         toast.info('Stripe payment not implemented yet.');
       } else {
         toast.error('Invalid payment method selected!');
