@@ -5,26 +5,20 @@ import 'slick-carousel/slick/slick-theme.css';
 import { Box, Typography, Button, Divider } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import 'swiper/css';
-import { useNavigate, useParams } from 'react-router-dom';
-import axiosClient from '../../../../config/axios';
-import { API_ROOT } from '../../../../constants';
-
-const data = {
-  product: {
-    releaseDate: '2023-09-15',
-  },
-};
+import { useParams } from 'react-router-dom';
+import { useCart } from '../../../../context/CartContext';
 
 export const Product = ({ product }) => {
   const defaultVariant = product?.variants?.[0] || {};
   const defaultColor = defaultVariant?.color?.name || '';
   const defaultSize = defaultVariant?.size?.name || '';
-  const navigate = useNavigate();
   const { productId } = useParams();
   const [selectedColor, setSelectedColor] = useState(defaultColor);
   const [selectedSize, setSelectedSize] = useState(defaultSize);
   const [price, setPrice] = useState(null);
   const [listColor, setListColor] = useState([]);
+  const { addToCart } = useCart();
+
   const handleColorClick = color => {
     setSelectedColor(color);
     setPrice(0);
@@ -63,14 +57,12 @@ export const Product = ({ product }) => {
       sizeId: findSize?.size._id,
       userId: storedUserInfo.id,
     };
-    try {
-      const res = await axiosClient.post(`${API_ROOT}/user/cart/add`, data);
-      console.log('res', res);
-      navigate('/cart');
-    } catch (err) {
-      console.log('🚀  err  🚀', err);
-    }
+    addToCart({
+      productId: productId,
+      ...data,
+    });
   };
+
   useEffect(() => {
     if (product?.variants) {
       const uniqueColors = Array.from(
@@ -79,6 +71,7 @@ export const Product = ({ product }) => {
       setListColor(uniqueColors);
     }
   }, [product?.variants]);
+
   useEffect(() => {
     setSelectedColor(defaultColor);
     setSelectedSize(defaultSize);
@@ -90,7 +83,8 @@ export const Product = ({ product }) => {
     if (variant) {
       setPrice(variant.price);
     }
-  }, [product]);
+  }, [product, defaultColor, defaultSize, selectedColor, selectedSize]);
+
   const settings = {
     dots: true,
     infinite: true,
@@ -108,7 +102,14 @@ export const Product = ({ product }) => {
       padding="0px 52px"
     >
       <Grid container gap={4} justifyContent="center" width="100%">
-        <Grid item xs={12} md={6} width="63%" height="600px">
+        <Grid
+          item
+          xs={12}
+          md={6}
+          width="63%"
+          height="600px"
+          sx={{ width: { xs: '100%', lg: '63%' } }}
+        >
           <Box
             display="flex"
             alignItems="center"
@@ -140,6 +141,7 @@ export const Product = ({ product }) => {
           xs={12}
           md={6}
           width="34%"
+          sx={{ width: { xs: '100%', lg: '34%' } }}
           display="flex"
           flexDirection="column"
           alignItems="flex-start"
@@ -270,6 +272,7 @@ export const Product = ({ product }) => {
           flexDirection="row"
           alignItems="flex-start"
           width="100%"
+          sx={{ flexDirection: { xs: 'column', lg: 'row' } }}
         >
           <Grid
             item
@@ -278,7 +281,8 @@ export const Product = ({ product }) => {
             flexDirection="column"
             alignItems="center"
             width="65%"
-            pr={3}
+            sx={{ width: { xs: '100%', lg: '65%' } }}
+            pr={{ xs: 0, lg: 3 }}
           >
             <Typography variant="h6" fontWeight="bold" textAlign="left">
               DETAILS
@@ -308,7 +312,8 @@ export const Product = ({ product }) => {
             flexDirection="column"
             alignItems="center"
             width="35%"
-            pl={2}
+            sx={{ width: { xs: '100%', lg: '35%' } }}
+            pl={{ xs: 0, lg: 2 }}
           >
             <Typography variant="h6" fontWeight="bold" textAlign="left">
               FACTS
@@ -323,7 +328,7 @@ export const Product = ({ product }) => {
             />
             {[
               { label: 'Brand:', value: product?.categories?.[0]?.name },
-              { label: 'Manufacturer ID:', value: data.product.id },
+              { label: 'Manufacturer ID:', value: listColor.join(', ') },
               {
                 label: 'Category:',
                 value: product?.categories
@@ -331,7 +336,14 @@ export const Product = ({ product }) => {
                   .map(item => item.name)
                   .join(', '),
               },
-              { label: 'Release Date:', value: data.product.releaseDate },
+              {
+                label: 'size',
+                value: product?.variants
+                  .filter(variant => variant.color.name === selectedColor)
+                  .map(variant => variant.size.name)
+                  .map(size => size)
+                  .join(', '),
+              },
             ].map((fact, index) => (
               <Box
                 display="flex"
