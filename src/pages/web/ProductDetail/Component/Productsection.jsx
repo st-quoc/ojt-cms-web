@@ -86,6 +86,12 @@ export const Product = ({ product }) => {
     }
   }, [product, defaultColor, defaultSize]);
 
+  const isValidColor = color => {
+    const s = new Option().style;
+    s.color = color;
+    return s.color !== '';
+  };
+
   const settings = {
     dots: true,
     infinite: true,
@@ -155,7 +161,7 @@ export const Product = ({ product }) => {
               .map(item => item.name)
               .join(', ') || 'No categories available'}
           </Typography>
-          <Typography variant="subtitle1" color="text.secondary" mt={1}>
+          <Typography variant="subtitle" color="text.secondary" mt={1}>
             {product?.name}
           </Typography>
           <Typography variant="h6" fontWeight="bold" mt={2}>
@@ -179,7 +185,18 @@ export const Product = ({ product }) => {
                             background: `linear-gradient(45deg, ${colors[0].toLowerCase()} 50%, ${colors[1].toLowerCase()} 50%)`,
                           }
                         : {
-                            bgcolor: colorObj.toLowerCase(),
+                            bgcolor: isValidColor(colorObj)
+                              ? colorObj.toLowerCase()
+                              : 'transparent',
+                            background: isValidColor(colorObj)
+                              ? undefined
+                              : `linear-gradient(
+                  135deg,
+                  #e5e4e2,   
+                  #c8c8c8,   
+                  #d3d3d3,   
+                  #e5e4e2    
+                )`,
                           }),
                       height: '50px',
                       width: '50px',
@@ -327,7 +344,7 @@ export const Product = ({ product }) => {
             />
             {[
               { label: 'Brand:', value: product?.categories?.[0]?.name },
-              { label: 'Manufacturer ID:', value: listColor.join(', ') },
+              { label: 'Colors:', value: listColor.join(', ') },
               {
                 label: 'Category:',
                 value: product?.categories
@@ -336,7 +353,7 @@ export const Product = ({ product }) => {
                   .join(', '),
               },
               {
-                label: 'size',
+                label: 'Sizes:',
                 value: product?.variants
                   .filter(variant => variant.color.name === selectedColor)
                   .map(variant => variant.size.name)

@@ -1,18 +1,16 @@
 import {
   Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   TextField,
   Button,
   Box,
-  InputAdornment,
   IconButton,
-  Stack,
+  Typography,
+  InputAdornment,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useForm, Controller } from 'react-hook-form';
 import { useState } from 'react';
+import { useTheme, useMediaQuery } from '@mui/material';
 
 const RegisterPopup = ({ open, onClose, onRegister }) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,6 +23,9 @@ const RegisterPopup = ({ open, onClose, onRegister }) => {
     formState: { errors },
   } = useForm();
   const password = watch('password');
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const togglePasswordVisibility = () => {
     setShowPassword(prev => !prev);
@@ -39,9 +40,52 @@ const RegisterPopup = ({ open, onClose, onRegister }) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth>
-      <DialogTitle>Register</DialogTitle>
-      <DialogContent>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth="sm"
+      sx={{
+        '& .MuiPaper-root': {
+          display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
+          minHeight: isMobile ? 'auto' : '500px',
+          borderRadius: '16px',
+          overflow: 'hidden',
+        },
+      }}
+    >
+      <Box
+        sx={{
+          backgroundColor: '#000',
+          color: '#fff',
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 2,
+          textAlign: 'center',
+          p: isMobile ? 2 : 0,
+        }}
+      >
+        <Typography variant={isMobile ? 'h5' : 'h4'} fontWeight="bold">
+          CREATE ACCOUNT
+        </Typography>
+        <Typography variant="body1">Join us today!</Typography>
+      </Box>
+      <Box
+        sx={{
+          flex: 1,
+          backgroundColor: '#fff',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 2,
+          p: isMobile ? 2 : 3,
+        }}
+      >
         <Box
           component="form"
           sx={{
@@ -49,7 +93,6 @@ const RegisterPopup = ({ open, onClose, onRegister }) => {
             flexDirection: 'column',
             gap: 2,
             width: '100%',
-            p: 2,
           }}
           onSubmit={handleSubmit(onSubmit)}
         >
@@ -61,7 +104,7 @@ const RegisterPopup = ({ open, onClose, onRegister }) => {
             render={({ field }) => (
               <TextField
                 {...field}
-                label="Full Name"
+                label="Full Name *"
                 fullWidth
                 error={!!errors.name}
                 helperText={errors.name?.message}
@@ -82,7 +125,7 @@ const RegisterPopup = ({ open, onClose, onRegister }) => {
             render={({ field }) => (
               <TextField
                 {...field}
-                label="Phone Number"
+                label="Phone Number *"
                 fullWidth
                 error={!!errors.phoneNumber}
                 helperText={errors.phoneNumber?.message}
@@ -103,7 +146,7 @@ const RegisterPopup = ({ open, onClose, onRegister }) => {
             render={({ field }) => (
               <TextField
                 {...field}
-                label="Email"
+                label="Email *"
                 type="email"
                 fullWidth
                 error={!!errors.email}
@@ -119,7 +162,7 @@ const RegisterPopup = ({ open, onClose, onRegister }) => {
             render={({ field }) => (
               <TextField
                 {...field}
-                label="Password"
+                label="Password *"
                 type={showPassword ? 'text' : 'password'}
                 fullWidth
                 error={!!errors.password}
@@ -148,7 +191,7 @@ const RegisterPopup = ({ open, onClose, onRegister }) => {
             render={({ field }) => (
               <TextField
                 {...field}
-                label="Confirm Password"
+                label="Confirm Password *"
                 type={showConfirmPassword ? 'text' : 'password'}
                 fullWidth
                 error={!!errors.confirmPassword}
@@ -172,22 +215,19 @@ const RegisterPopup = ({ open, onClose, onRegister }) => {
               />
             )}
           />
-        </Box>
-      </DialogContent>
-      <DialogActions>
-        <Stack sx={{ p: 2 }} direction={'row'} spacing={2}>
-          <Button onClick={onClose} color="secondary">
-            Cancel
-          </Button>
           <Button
-            onClick={handleSubmit(onSubmit)}
-            color="primary"
+            type="submit"
             variant="contained"
+            sx={{
+              backgroundColor: '#000',
+              color: '#fff',
+              width: '100%',
+            }}
           >
             Register
           </Button>
-        </Stack>
-      </DialogActions>
+        </Box>
+      </Box>
     </Dialog>
   );
 };

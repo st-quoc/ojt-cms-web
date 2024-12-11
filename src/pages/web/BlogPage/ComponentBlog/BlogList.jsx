@@ -58,10 +58,10 @@ export const BlogList = () => {
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4 ">
               {blogs.map((blog, index) => (
                 <div
-                  className="group w-full max-lg:max-w-xl  border border-gray-300 rounded-2xl"
+                  className="group w-full max-lg:max-w-xl border border-gray-300 rounded-2xl transition-transform duration-300 hover:scale-105"
                   key={blog._id}
                   style={{
-                    backgroundImage: `linear-gradient(360deg, rgba(0, 9, 225, 0.5) 6.79%, rgba(0, 0, 0, 0) 61.34%), url(${blog.thumbnail})`,
+                    backgroundImage: `linear-gradient(360deg, rgba(0, 100, 225, 0.3) 6.79%, rgba(0, 0, 0, 0) 61.34%), url(${blog.thumbnail})`,
                     height: '400px',
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
@@ -70,10 +70,11 @@ export const BlogList = () => {
                     alignItems: 'flex-end',
                     marginTop: index % 2 === 0 ? '0px' : '30px',
                   }}
+                  onClick={() => navigate(`/blog/${blog._id}`)}
                 >
-                  <div className="p-4 lg:p-6 transition-all duration-300 rounded-b-2xl  ">
+                  <div className="p-4 lg:p-6 transition-all duration-300 rounded-b-2xl">
                     <h4
-                      className="text-xl font-medium leading-8 "
+                      className="text-xl font-medium leading-8"
                       style={{
                         color: 'white',
                         fontWeight: '600',
@@ -83,7 +84,7 @@ export const BlogList = () => {
                       {blog.title}
                     </h4>
                     <span
-                      className="font-medium  block"
+                      className="font-medium block"
                       style={{ color: 'white' }}
                     >
                       {formatDate(blog.createdAt)}
