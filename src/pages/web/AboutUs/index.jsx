@@ -5,8 +5,8 @@ export const AboutUs = () => {
   const [showVideo, setShowVideo] = useState(false);
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <main className="flex-grow bg-gray-50">
+    <div className="flex flex-col min-h-screen ">
+      <main className="flex-grow bg-gray-50 bg-hero bg-cover bg-center">
         <div
           className="relative w-full h-64 bg-cover bg-center"
           style={{

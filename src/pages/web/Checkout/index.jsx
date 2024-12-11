@@ -34,32 +34,62 @@ export default function Checkout() {
     const city = document.getElementById('select-city-input-3').value;
     const address = document.getElementById('address').value;
     const phoneNumber = document.getElementById('phone-input').value;
+    const paymentMethod = document.querySelector(
+      'input[name="payment-method"]:checked',
+    )?.id;
 
-    if (!country || !city || !address || !phoneNumber) {
+    if (!country || !city || !address || !phoneNumber || !paymentMethod) {
       toast.error('Please provide all the required information!');
       return;
     }
 
     try {
       setIsLoading(true);
-      const response = await axios.post(
-        `${API_ROOT}/vnpay/create-payment-url`,
-        {
-          userId,
-          shippingAddress: `${country}, ${city}, ${address}`,
-          phoneNumber,
-          shippingFee,
-        },
-      );
 
-      if (response.data.paymentUrl) {
-        window.location.href = response.data.paymentUrl;
+      const orderDetails = {
+        userId,
+        shippingAddress: `${country}, ${city}, ${address}`,
+        phoneNumber,
+        shippingFee,
+        totalPrice: finalPrice,
+        paymentMethod,
+      };
+
+      if (paymentMethod === 'cod') {
+        orderDetails.paymentStatus = 'pending';
+        orderDetails.orderStatus = 'processing';
+
+        const response = await axios.post(
+          `${API_ROOT}/user/order/createOrder`,
+          orderDetails,
+        );
+
+        if (response.status === 201) {
+          toast.success('Order created successfully with Cash On Delivery!');
+          window.location.href = '/order?success';
+        } else {
+          toast.error('Failed to create the order.');
+        }
+      } else if (paymentMethod === 'vnpay') {
+        const response = await axios.post(
+          `${API_ROOT}/vnpay/create-payment-url`,
+          orderDetails,
+        );
+
+        if (response.data.paymentUrl) {
+          window.location.href = response.data.paymentUrl;
+        } else {
+          toast.error('Payment URL not found.');
+        }
+      } else if (paymentMethod === 'stripe') {
+        // Logic xử lý cho Stripe (nếu có)
+        toast.info('Stripe payment not implemented yet.');
       } else {
-        toast.error('Payment URL not found.');
+        toast.error('Invalid payment method selected!');
       }
     } catch (error) {
       toast.error('Error during payment process. Please try again.');
-      console.log(error);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -238,93 +268,78 @@ export default function Checkout() {
               </h3>
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                {/* VN PAY */}
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-700">
                   <div className="flex items-start">
                     <div className="flex h-5 items-center">
                       <input
-                        id="credit-card"
-                        aria-describedby="credit-card-text"
+                        id="vnpay"
                         type="radio"
                         name="payment-method"
-                        value=""
+                        value="vnpay"
                         className="h-4 w-4 border-gray-300 bg-white text-gray-600 focus:ring-2 focus:ring-gray-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-gray-600"
                       />
                     </div>
-
                     <div className="ms-4 text-sm">
                       <label
-                        htmlFor="credit-card"
+                        htmlFor="vnpay"
                         className="font-medium leading-none text-gray-800 dark:text-white"
                       >
-                        {' '}
-                        VN PAY{' '}
+                        VN PAY
                       </label>
-                      <p
-                        id="credit-card-text"
-                        className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400"
-                      >
+                      <p className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400">
                         Pay with VNPay
                       </p>
                     </div>
                   </div>
                 </div>
 
+                {/* Stripe */}
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-700">
                   <div className="flex items-start">
                     <div className="flex h-5 items-center">
                       <input
-                        id="pay-on-delivery"
-                        aria-describedby="pay-on-delivery-text"
+                        id="stripe"
                         type="radio"
                         name="payment-method"
-                        value=""
+                        value="stripe"
                         className="h-4 w-4 border-gray-300 bg-white text-gray-600 focus:ring-2 focus:ring-gray-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-gray-600"
                       />
                     </div>
-
                     <div className="ms-4 text-sm">
                       <label
-                        htmlFor="pay-on-delivery"
-                        className="font-medium leading-none text-gray-900 dark:text-white"
+                        htmlFor="stripe"
+                        className="font-medium leading-none text-gray-800 dark:text-white"
                       >
-                        {' '}
-                        Stripe{' '}
+                        Stripe
                       </label>
-                      <p
-                        id="pay-on-delivery-text"
-                        className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400"
-                      >
-                        Payment with stripe
+                      <p className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400">
+                        Payment with Stripe
                       </p>
                     </div>
                   </div>
                 </div>
 
+                {/* Cash On Delivery */}
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-700">
                   <div className="flex items-start">
                     <div className="flex h-5 items-center">
                       <input
-                        id="paypal-2"
-                        aria-describedby="paypal-text"
+                        id="cod"
                         type="radio"
                         name="payment-method"
-                        value=""
+                        value="cod"
                         className="h-4 w-4 border-gray-300 bg-white text-gray-600 focus:ring-2 focus:ring-gray-600 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-gray-600"
                       />
                     </div>
-
                     <div className="ms-4 text-sm">
                       <label
-                        htmlFor="paypal-2"
-                        className="font-medium leading-none text-gray-900 dark:text-white"
+                        htmlFor="cod"
+                        className="font-medium leading-none text-gray-800 dark:text-white"
                       >
-                        {' '}
-                        Cash On Delivery{' '}
+                        Cash On Delivery
                       </label>
-                      <p
-                        id="paypal-text"
-                        className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400"
-                      >
+                      <p className="mt-1 text-xs font-normal text-gray-500 dark:text-gray-400">
                         Pay when receive the product
                       </p>
                     </div>

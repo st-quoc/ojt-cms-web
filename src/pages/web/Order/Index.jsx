@@ -66,14 +66,14 @@ export default function OrderHistory() {
 
   return (
     <div className="p-6 space-y-6 bg-gray-100 text-gray-900 min-h-screen">
-      <h1 className="text-3xl font-bold text-center text-blue-600">
+      <h1 className="text-3xl font-bold text-center text-gray-800">
         Order History
       </h1>
 
       <div className="flex justify-center gap-4 mb-6">
         <button
           className={`px-4 py-2 rounded-lg font-semibold ${
-            filter === 'all' ? 'bg-blue-500 text-white' : 'bg-gray-200'
+            filter === 'all' ? 'bg-gray-600 text-white' : 'bg-gray-200'
           }`}
           onClick={() => setFilter('all')}
         >
@@ -81,7 +81,7 @@ export default function OrderHistory() {
         </button>
         <button
           className={`px-4 py-2 rounded-lg font-semibold ${
-            filter === 'paid' ? 'bg-blue-500 text-white' : 'bg-gray-200'
+            filter === 'paid' ? 'bg-gray-600 text-white' : 'bg-gray-200'
           }`}
           onClick={() => setFilter('paid')}
         >
@@ -89,7 +89,7 @@ export default function OrderHistory() {
         </button>
         <button
           className={`px-4 py-2 rounded-lg font-semibold ${
-            filter === 'failed' ? 'bg-blue-500 text-white' : 'bg-gray-200'
+            filter === 'failed' ? 'bg-gray-600 text-white' : 'bg-gray-200'
           }`}
           onClick={() => setFilter('failed')}
         >
@@ -106,7 +106,7 @@ export default function OrderHistory() {
             .map(order => (
               <div
                 key={order._id}
-                className="border border-blue-400 bg-white p-6 rounded-lg shadow-md"
+                className="border border-gray-800 bg-white p-6 rounded-lg shadow-md"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="flex flex-col justify-center space-y-2">
@@ -114,7 +114,7 @@ export default function OrderHistory() {
                     <p>
                       Total Price:{' '}
                       <span className="font-semibold">
-                        ${order.totalPrice.toLocaleString()}
+                        {order.totalPrice.toLocaleString()} VND
                       </span>
                     </p>
                     <p>
@@ -149,9 +149,10 @@ export default function OrderHistory() {
                               <p className="font-bold">{item.product.name}</p>
                               <p>Quantity: {item.quantity}</p>
                               <p>
-                                Price per Unit: $
+                                Price per Unit:
                                 {item.product.variants[0]?.price.toLocaleString() ||
-                                  'N/A'}
+                                  'N/A'}{' '}
+                                VND
                               </p>
                               <p className="text-sm text-gray-500">
                                 Description: {item.product.sortDesc}
