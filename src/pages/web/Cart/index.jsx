@@ -20,6 +20,10 @@ export const CartPage = () => {
   const totalPrice = getTotalPrice();
 
   useEffect(() => {
+    localStorage.setItem('totalPrice', JSON.stringify(totalPrice));
+  }, [totalPrice]);
+
+  useEffect(() => {
     if (!userId) {
       console.error('User ID is undefined or null');
       return;
@@ -47,7 +51,7 @@ export const CartPage = () => {
       toast.success('Order placed successfully!');
     }
     if (searchParams.has('payment-fail')) {
-      toast.error('Payment fail !');
+      toast.error('Payment fail!');
     }
   }, [location.search, userId]);
 
@@ -99,10 +103,6 @@ export const CartPage = () => {
                   <button
                     className="w-full text-center bg-indigo-600 rounded-xl py-1 px-6 font-semibold text-white transition-all duration-500 hover:bg-indigo-700"
                     onClick={() => {
-                      localStorage.setItem(
-                        'totalPrice',
-                        JSON.stringify(totalPrice),
-                      );
                       navigate(`/checkout`);
                     }}
                   >

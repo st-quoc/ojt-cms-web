@@ -225,7 +225,10 @@ export const ProductsListFilter = ({ filters, setFilters }) => {
   };
 
   return (
-    <Box className="p-4" sx={{ width: 300 }}>
+    <Box
+      className="p-4 border-1 h-2/3 bg-white border-gray-400 rounded-md"
+      sx={{ width: 300 }}
+    >
       <Divider textAlign="left" className="pb-4">
         <strong> Search:</strong>
       </Divider>

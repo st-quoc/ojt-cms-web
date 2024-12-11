@@ -164,7 +164,7 @@ export const Header = () => {
             sx={{
               width: '100%',
               height: '100%',
-              background: isScrolled ? '#68a98c' : 'transparent',
+              background: isScrolled ? '#eceeff' : 'transparent',
               borderRadius: 15,
               boxShadow: isScrolled ? 2 : 0,
             }}
@@ -225,6 +225,9 @@ export const Header = () => {
                         borderRadius: 2,
                         boxShadow: 4,
                         p: 0,
+                        width: '200px',
+                        minWidth: '150px',
+                        transition: 'width 0.3s ease',
                       }}
                     >
                       <ListItem>
@@ -232,6 +235,13 @@ export const Header = () => {
                           onClick={() => handleNavigate('/profile')}
                         >
                           Profile
+                        </ListItemButton>
+                      </ListItem>
+                      <ListItem>
+                        <ListItemButton
+                          onClick={() => handleNavigate('/order')}
+                        >
+                          My Order
                         </ListItemButton>
                       </ListItem>
                       <ListItem>

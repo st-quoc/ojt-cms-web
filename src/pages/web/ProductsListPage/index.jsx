@@ -43,17 +43,15 @@ export const ProductsListPage = () => {
   if (error) return <Navigate to={'/404'} />;
 
   return (
-    <Box>
-      <Container maxWidth="xl" className="py-8">
+    <Box className="bg-hero bg-cover bg-center">
+      <Container maxWidth="xl" className="py-8 ">
         <Box>
-          <Box className="bg-gray-100 p-10 rounded-lg mb-6 flex items-center justify-center">
+          <Box className=" p-10 rounded-2xl mb-6 flex items-center justify-center border-white border-8 ">
             <Box className="text-center">
               <Box className="text-gray-500">Save up to 25% off</Box>
-              <h1 className="text-xl font-bold">Geographic Map Compass</h1>
-              <Button
-                variant="contained"
-                className="mt-2 px-8 py-2 bg-black text-white"
-              >
+              <h1 className="text-xl font-bold">Geographic Map Compass</h1>{' '}
+              <br />
+              <Button variant="contained" color="success">
                 Shop Now
               </Button>
             </Box>
@@ -61,7 +59,7 @@ export const ProductsListPage = () => {
           <Stack direction={'row'} spacing={2}>
             <ProductsListFilter filters={filters} setFilters={setFilters} />
             <Stack spacing={3} flex={1}>
-              <Box className="flex justify-between items-center bg-gray-100 p-4 rounded-lg mb-4">
+              <Box className="flex justify-between items-center bg-white p-4 rounded-lg mb-4">
                 <Box className="flex space-x-2"></Box>
 
                 <Stack direction={'row'} spacing={3}>

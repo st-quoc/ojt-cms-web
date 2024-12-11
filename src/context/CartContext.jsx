@@ -2,7 +2,7 @@ import { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { API_ROOT } from '../constants';
-
+import { useRef } from 'react';
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
@@ -38,14 +38,19 @@ export const CartProvider = ({ children }) => {
     fetchCart();
   }, [userId]);
 
+  const toastIds = useRef({});
+
   const addToCart = async item => {
     if (!userId) {
-      toast.error('Please log in to add items to the cart!');
+      toast.error('Please log in to add items to the cart!', {
+        autoClose: 1000,
+      });
       return;
     }
 
     setLoading(true);
     setError(null);
+
     try {
       await axios.post(`${API_ROOT}/user/cart/add`, {
         userId,
@@ -54,15 +59,29 @@ export const CartProvider = ({ children }) => {
 
       fetchCart();
 
-      if (!toastVisible) {
-        toast.success('Product added to cart!');
-        setToastVisible(true);
-        setTimeout(() => {
-          setToastVisible(false);
-        }, 5000);
+      const productId = item.id;
+
+      if (!toastIds.current[productId]) {
+        toastIds.current[productId] = toast.success(
+          `Product "${item.name}" added to cart!`,
+          {
+            autoClose: 1000,
+            onClose: () => {
+              delete toastIds.current[productId];
+            },
+          },
+        );
+      } else {
+        toast.update(toastIds.current[productId], {
+          render: `Product "${item.name}" added to cart!`,
+          autoClose: 1000,
+        });
       }
     } catch (err) {
       setError('Failed to add product to cart.');
+      toast.error('Failed to add product. Please try again later.', {
+        autoClose: 1000,
+      });
       console.error(err);
     } finally {
       setLoading(false);
@@ -90,7 +109,7 @@ export const CartProvider = ({ children }) => {
         setToastVisible(true);
         setTimeout(() => {
           setToastVisible(false);
-        }, 5000);
+        }, 500);
       }
     } catch (err) {
       setError('Failed to remove product from cart.');
@@ -99,7 +118,7 @@ export const CartProvider = ({ children }) => {
         setToastVisible(true);
         setTimeout(() => {
           setToastVisible(false);
-        }, 2000);
+        }, 500);
       }
       console.error(err);
     } finally {
@@ -134,11 +153,9 @@ export const CartProvider = ({ children }) => {
       fetchCart();
 
       if (!toastVisible) {
-        toast.success(`Cart updated successfully.`);
-        setToastVisible(true);
-        setTimeout(() => {
-          setToastVisible(false);
-        }, 5000);
+        toast.success(`Cart updated successfully.`, {
+          autoClose: 1000,
+        });
       }
     } catch (err) {
       setError('Failed to update cart.');
@@ -147,7 +164,7 @@ export const CartProvider = ({ children }) => {
         setToastVisible(true);
         setTimeout(() => {
           setToastVisible(false);
-        }, 2000);
+        }, 500);
       }
       console.error(err);
     } finally {
