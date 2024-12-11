@@ -64,16 +64,16 @@ export default function OrderHistory() {
             order.paymentStatus === filter || order.orderStatus === filter,
         );
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>{error}</p>;
+  if (loading) return <p className="p-4">Loading...</p>;
+  if (error) return <p className="p-4">{error}</p>;
 
   return (
-    <div className="p-6 space-y-6 bg-gray-100 text-gray-900 min-h-screen">
-      <h1 className="text-3xl font-bold text-center text-gray-800">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-6 bg-gray-100 text-gray-900 min-h-screen">
+      <h1 className="text-2xl md:text-3xl font-bold text-center text-gray-800">
         Order History
       </h1>
 
-      <div className="flex justify-center gap-4 mb-6">
+      <div className="flex flex-col md:flex-row justify-center gap-4 mb-6">
         <button
           className={`px-4 py-2 rounded-lg font-semibold ${
             filter === 'all' ? 'bg-gray-600 text-white' : 'bg-gray-200'
@@ -117,11 +117,13 @@ export default function OrderHistory() {
             .map(order => (
               <div
                 key={order._id}
-                className="border border-gray-800 bg-white p-6 rounded-lg shadow-md"
+                className="border border-gray-800 bg-white p-4 md:p-6 rounded-lg shadow-md"
               >
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                   <div className="flex flex-col justify-center space-y-2">
-                    <h2 className="text-xl font-bold mb-2">Email: {email}</h2>
+                    <h2 className="text-lg md:text-xl font-bold mb-2">
+                      Email: {email}
+                    </h2>
                     <p>
                       Total Price:{' '}
                       <span className="font-semibold">
@@ -154,13 +156,13 @@ export default function OrderHistory() {
                                 'https://via.placeholder.com/100'
                               }
                               alt={item.product.name}
-                              className="w-20 h-20 object-cover rounded-md"
+                              className="w-16 h-16 md:w-20 md:h-20 object-cover rounded-md"
                             />
                             <div>
                               <p className="font-bold">{item.product.name}</p>
                               <p>Quantity: {item.quantity}</p>
                               <p>
-                                Price per Unit:
+                                Price per Unit:{' '}
                                 {item.product.variants[0]?.price.toLocaleString() ||
                                   'N/A'}{' '}
                                 VND
