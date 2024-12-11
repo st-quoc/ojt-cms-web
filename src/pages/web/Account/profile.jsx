@@ -24,6 +24,9 @@ import { AvatarUploader } from '../../../component/AvatarUploader';
 import useFetchProfile from '../../../hooks/useFetchProfile';
 import useChangeProfile from '../../../hooks/useChangeProfile';
 import useChangePassword from '../../../hooks/useChangePassword';
+import { API_ROOT } from '../../../constants';
+import { toast } from 'react-toastify';
+import axiosClient from '../../../config/axios';
 
 export const Profile = () => {
   const { userInfo, loading, error } = useFetchProfile();
@@ -86,6 +89,7 @@ export const Profile = () => {
 
   const handleChangePassword = async () => {
     const success = await changePassword(
+      userInfo.email,
       oldPassword,
       newPassword,
       confirmPassword,
@@ -98,12 +102,14 @@ export const Profile = () => {
     }
   };
 
-  const handleForgotPassword = () => {
-    if (!email) {
-      alert('Please enter your email');
-    } else {
-      alert(`Password reset instructions sent to ${email}`);
-      handleCloseForgotPasswordDialog();
+  const handleForgotPassword = async () => {
+    try {
+      await axiosClient.post(`${API_ROOT}/auth/forgot-password`, { email });
+
+      toast.success('Please check your email to reset password!');
+      setOpenForgotPasswordDialog(false);
+    } catch {
+      toast.error('Failed to request reset password');
     }
   };
 
