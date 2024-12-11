@@ -22,15 +22,18 @@ export const Product = ({ product }) => {
   const handleColorClick = color => {
     setSelectedColor(color);
     setPrice(0);
+
     const variant = product.variants.find(
-      variant => variant.color.name === selectedColor,
+      variant => variant.color.name === color,
     );
     if (variant) {
       setPrice(variant.price);
     }
   };
+
   const handleSizeClick = size => {
     setSelectedSize(size);
+
     const variant = product.variants.find(
       variant =>
         variant.color.name === selectedColor && variant.size.name === size,
@@ -39,6 +42,7 @@ export const Product = ({ product }) => {
       setPrice(variant.price);
     }
   };
+
   const handleAddToCart = async () => {
     const variants = product.variants;
     const findSize = variants.find(item => item.size.name === selectedSize);
@@ -71,15 +75,16 @@ export const Product = ({ product }) => {
   useEffect(() => {
     setSelectedColor(defaultColor);
     setSelectedSize(defaultSize);
+
     const variant = product?.variants?.find(
       variant =>
-        variant.color.name === selectedColor &&
-        variant.size.name === selectedSize,
+        variant.color.name === defaultColor &&
+        variant.size.name === defaultSize,
     );
     if (variant) {
       setPrice(variant.price);
     }
-  }, [product, defaultColor, defaultSize, selectedColor, selectedSize]);
+  }, [product, defaultColor, defaultSize]);
 
   const settings = {
     dots: true,
