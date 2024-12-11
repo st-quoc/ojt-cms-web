@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { API_ROOT } from '../../../constants';
 
 export default function OrderHistory() {
   const [orders, setOrders] = useState([]);
@@ -20,10 +21,9 @@ export default function OrderHistory() {
 
     const fetchOrders = async () => {
       try {
-        const response = await axios.post(
-          'http://localhost:8017/v1/user/order/my-orders',
-          { userId },
-        );
+        const response = await axios.post(`${API_ROOT}/user/order/my-orders`, {
+          userId,
+        });
         setOrders(response.data);
       } catch (err) {
         setError('Failed to fetch orders', err);
@@ -38,7 +38,7 @@ export default function OrderHistory() {
     if (searchParams.has('success')) {
       const deleteCartItems = async () => {
         try {
-          await axios.delete('http://localhost:8017/v1/user/cart/delete-all', {
+          await axios.delete(`${API_ROOT}/user/cart/delete-all`, {
             data: { userId },
           });
           localStorage.removeItem('totalPrice');
