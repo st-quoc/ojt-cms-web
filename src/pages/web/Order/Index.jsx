@@ -59,7 +59,10 @@ export default function OrderHistory() {
   const filteredOrders =
     filter === 'all'
       ? orders
-      : orders.filter(order => order.paymentStatus === filter);
+      : orders.filter(
+          order =>
+            order.paymentStatus === filter || order.orderStatus === filter,
+        );
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>{error}</p>;
@@ -93,7 +96,15 @@ export default function OrderHistory() {
           }`}
           onClick={() => setFilter('failed')}
         >
-          Order canceled
+          Order Canceled
+        </button>
+        <button
+          className={`px-4 py-2 rounded-lg font-semibold ${
+            filter === 'pending' ? 'bg-gray-600 text-white' : 'bg-gray-200'
+          }`}
+          onClick={() => setFilter('pending')}
+        >
+          Pending Orders
         </button>
       </div>
 

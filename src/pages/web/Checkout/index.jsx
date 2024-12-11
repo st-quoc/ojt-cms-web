@@ -18,6 +18,23 @@ export default function Checkout() {
     console.log('Updated final price:', initialTotalPrice + shippingFee);
   }, [shippingFee, initialTotalPrice]);
 
+  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedDistricts, setDistricts] = useState([]);
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+
+  const handleCityChange = e => {
+    const city = e.target.value;
+    setSelectedCity(city);
+
+    const selected = citiesData.find(item => item.city === city);
+    const districts = selected ? selected.districts : [];
+    setDistricts(districts);
+
+    setSelectedDistrict('');
+
+    console.log('Updated districts:', districts);
+  };
+
   const handleShippingFeeChange = e => {
     const fee = parseFloat(e.target.value);
     if (isNaN(fee)) {
@@ -30,15 +47,15 @@ export default function Checkout() {
   const handlePayment = async e => {
     e.preventDefault();
 
-    const country = document.getElementById('select-country-input-3').value;
-    const city = document.getElementById('select-city-input-3').value;
+    const province = selectedCity;
+    const district = selectedDistrict;
     const address = document.getElementById('address').value;
     const phoneNumber = document.getElementById('phone-input').value;
     const paymentMethod = document.querySelector(
       'input[name="payment-method"]:checked',
     )?.id;
 
-    if (!country || !city || !address || !phoneNumber || !paymentMethod) {
+    if (!province || !district || !address || !phoneNumber || !paymentMethod) {
       toast.error('Please provide all the required information!');
       return;
     }
@@ -48,7 +65,7 @@ export default function Checkout() {
 
       const orderDetails = {
         userId,
-        shippingAddress: `${country}, ${city}, ${address}`,
+        shippingAddress: `${address}, ${district}, ${province}`,
         phoneNumber,
         shippingFee,
         totalPrice: finalPrice,
@@ -177,39 +194,46 @@ export default function Checkout() {
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
                     <label
-                      htmlFor="select-country-input-3"
-                      className="block text-sm font-medium text-gray-900 dark:text-gray-600"
-                    >
-                      Country*
-                    </label>
-                    <select
-                      id="select-country-input-3"
-                      className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-gray-500 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-100 dark:text-gray-600 dark:placeholder:text-gray-400 dark:focus:border-gray-500 dark:focus:ring-gray-500"
-                    >
-                      <option selected>United States</option>
-                      <option value="AS">Australia</option>
-                      <option value="FR">France</option>
-                      <option value="ES">Spain</option>
-                      <option value="UK">United Kingdom</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="select-city-input-3"
+                      htmlFor="select-city-input"
                       className="block text-sm font-medium text-gray-900 dark:text-gray-600"
                     >
                       City*
                     </label>
                     <select
-                      id="select-city-input-3"
+                      id="select-city-input"
                       className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-gray-500 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-100 dark:text-gray-600 dark:placeholder:text-gray-400 dark:focus:border-gray-500 dark:focus:ring-gray-500"
+                      onChange={handleCityChange}
+                      value={selectedCity}
                     >
-                      <option selected>San Francisco</option>
-                      <option value="NY">New York</option>
-                      <option value="LA">Los Angeles</option>
-                      <option value="CH">Chicago</option>
-                      <option value="HU">Houston</option>
+                      <option value="">Select a city</option>
+                      {citiesData.map((city, index) => (
+                        <option key={index} value={city.city}>
+                          {city.city}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="select-district-input"
+                      className="block text-sm font-medium text-gray-900 dark:text-gray-600"
+                    >
+                      District*
+                    </label>
+                    <select
+                      id="select-district-input"
+                      className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-gray-500 focus:ring-gray-500 dark:border-gray-600 dark:bg-gray-100 dark:text-gray-600 dark:placeholder:text-gray-400 dark:focus:border-gray-500 dark:focus:ring-gray-500"
+                      disabled={!selectedDistricts.length}
+                      onChange={e => setSelectedDistrict(e.target.value)}
+                      value={selectedDistrict}
+                    >
+                      <option value="">Select a district</option>
+                      {selectedDistricts.map((district, index) => (
+                        <option key={index} value={district}>
+                          {district}
+                        </option>
+                      ))}
                     </select>
                   </div>
                 </div>
@@ -267,7 +291,6 @@ export default function Checkout() {
               </h3>
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                {/* VN PAY */}
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-700">
                   <div className="flex items-start">
                     <div className="flex h-5 items-center">
@@ -293,7 +316,6 @@ export default function Checkout() {
                   </div>
                 </div>
 
-                {/* Stripe */}
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-700">
                   <div className="flex items-start">
                     <div className="flex h-5 items-center">
@@ -319,7 +341,6 @@ export default function Checkout() {
                   </div>
                 </div>
 
-                {/* Cash On Delivery */}
                 <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 ps-4 dark:border-gray-700 dark:bg-gray-700">
                   <div className="flex items-start">
                     <div className="flex h-5 items-center">
@@ -472,3 +493,95 @@ export default function Checkout() {
     </section>
   );
 }
+const citiesData = [
+  {
+    city: 'Hà Nội',
+    districts: [
+      'Ba Đình',
+      'Hoàn Kiếm',
+      'Hai Bà Trưng',
+      'Đống Đa',
+      'Tây Hồ',
+      'Cầu Giấy',
+      'Thanh Xuân',
+      'Hoàng Mai',
+    ],
+  },
+  {
+    city: 'Hồ Chí Minh',
+    districts: [
+      'Quận 1',
+      'Quận 2',
+      'Quận 3',
+      'Quận 4',
+      'Quận 5',
+      'Quận 6',
+      'Quận 7',
+      'Quận 8',
+      'Bình Thạnh',
+      'Phú Nhuận',
+    ],
+  },
+  {
+    city: 'Đà Nẵng',
+    districts: [
+      'Hải Châu',
+      'Thanh Khê',
+      'Cẩm Lệ',
+      'Ngũ Hành Sơn',
+      'Sơn Trà',
+      'Liên Chiểu',
+      'Hòa Vang',
+      'Hoàng Sa',
+    ],
+  },
+  {
+    city: 'Cần Thơ',
+    districts: [
+      'Ninh Kiều',
+      'Bình Thủy',
+      'Cái Răng',
+      'Ô Môn',
+      'Thốt Nốt',
+      'Phong Điền',
+      'Cờ Đỏ',
+      'Vĩnh Thạnh',
+      'Thới Lai',
+    ],
+  },
+  {
+    city: 'Hải Phòng',
+    districts: [
+      'Hồng Bàng',
+      'Ngô Quyền',
+      'Lê Chân',
+      'Hải An',
+      'Kiến An',
+      'Đồ Sơn',
+      'Dương Kinh',
+      'Thủy Nguyên',
+      'An Dương',
+      'An Lão',
+      'Kiến Thụy',
+      'Tiên Lãng',
+      'Vĩnh Bảo',
+      'Cát Hải',
+      'Bạch Long Vĩ',
+    ],
+  },
+  {
+    city: 'An Giang',
+    districts: [
+      'Long Xuyên',
+      'Châu Đốc',
+      'Tân Châu',
+      'An Phú',
+      'Tịnh Biên',
+      'Tri Tôn',
+      'Châu Phú',
+      'Châu Thành',
+      'Phú Tân',
+      'Thoại Sơn',
+    ],
+  },
+];
